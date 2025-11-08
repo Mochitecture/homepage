@@ -1,25 +1,38 @@
-<script>
-document.addEventListener('DOMContentLoaded', async () => {
-  const targets = document.querySelectorAll('[data-include]');
-  for (const el of targets) {
+// /assets/include.js  ← <script>タグは不要
+async function injectPartials() {
+  const nodes = document.querySelectorAll('[data-include]');
+  for (const el of nodes) {
     const url = el.getAttribute('data-include');
     try {
       const res = await fetch(url, { cache: 'no-store' });
       if (!res.ok) throw new Error(`Fetch failed: ${url}`);
       const html = await res.text();
-      el.outerHTML = html;
-    } catch (e) { console.error(e); }
+      const tmp = document.createElement('div');
+      tmp.innerHTML = html;
+      // script要素も実行されるように差し替え処理
+      const scripts = tmp.querySelectorAll('script');
+      scripts.forEach(s => {
+        const ns = document.createElement('script');
+        if (s.src) ns.src = s.src; else ns.textContent = s.textContent;
+        s.replaceWith(ns);
+      });
+      el.replaceWith(...tmp.childNodes);
+    } catch (e) {
+      console.error('include error:', url, e);
+    }
   }
 
-  // 置換後に実行されるよう、少し遅らせて active を付与
-  setTimeout(() => {
-    const path = location.pathname.replace(/\/+$/, '') || '/';
-    document.querySelectorAll('a.nav').forEach(a => {
-      const href = a.getAttribute('href');
-      // /index をトップ扱い
-      const normalized = (href === '/index' ? '/' : href);
-      if (normalized === path) a.classList.add('active');
-    });
-  }, 0);
-});
-</script>
+  // activeハイライト
+  const path = location.pathname.replace(/\/+$/, '') || '/';
+  document.querySelectorAll('a.nav').forEach(a => {
+    const href = a.getAttribute('href');
+    const normalized = (href === '/index' ? '/' : href);
+    if (normalized === path) a.classList.add('active');
+  });
+
+  // 年号（footer内の #y に代入）
+  const y = document.getElementById('y');
+  if (y) y.textContent = new Date().getFullYear();
+}
+
+document.addEventListener('DOMContentLoaded', injectPartials);
