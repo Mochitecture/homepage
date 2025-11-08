@@ -30,6 +30,17 @@ main, .site-main, .content-wrap{ flex:1; }
 .nav:hover{ background:rgba(0,0,0,.06) }
 @media (prefers-color-scheme: dark){ .nav:hover{ background:rgba(255,255,255,.06) } }
 
+/* Brand link (header/footer 共通) */
+.brand{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  text-decoration:none;      /* 下線を消す */
+  color:var(--fg);           /* 訪問済みでも色を固定 */
+}
+.brand:visited{ color:var(--fg); }
+.brand:hover{ text-decoration:none; opacity:.9; }
+
 /* Layout */
 .content-wrap{
   display:flex;                /* 中央寄せ */
