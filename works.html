@@ -8,66 +8,31 @@
   <meta property="og:title" content="Mochitecture">
   <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速に。">
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/">
+  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/works">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <style>
-    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif;background:#fafafa;color:#111}
-    .header{height:64px;background:#fff;display:flex;align-items:center;padding:0 24px;box-shadow:0 2px 18px rgba(0,0,0,.04);position:sticky;top:0;z-index:10}
-    .logo{width:32px;height:32px;margin-right:12px}
-    .site-title{font-size:20px;font-weight:600}
-    .nav{text-decoration:none;color:#111;padding:6px 8px;border-radius:10px}
-    .nav:hover{background:#f3f3f3}
-    .wrap{max-width:1000px;margin:0 auto;padding:32px 20px}
-    h1{font-size:28px;margin:16px 0}
-    .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
-    .card{background:#fff;border-radius:14px;box-shadow:0 4px 18px rgba(0,0,0,.08);padding:16px}
-    .card h3{margin:0 0 8px}
-    .tag{display:inline-block;font-size:12px;border:1px solid #ddd;border-radius:999px;padding:2px 8px;margin-right:6px}
-
-    :root{ --bg:#fafafa; --fg:#111; --card:#fff; --shadow:0 4px 28px rgba(0,0,0,.08) }
-    @media (prefers-color-scheme: dark){
-      :root{ --bg:#0f1115; --fg:#e8e8e8; --card:#151822; --shadow:0 6px 28px rgba(0,0,0,.45) }
-    }
-    body{ background:var(--bg); color:var(--fg); }
-    .header{ background:var(--card); box-shadow:0 2px 18px rgba(0,0,0,.12) }
-    .card{ background:var(--card); box-shadow:var(--shadow) }
-    .nav:hover{ background:rgba(0,0,0,.06) }
-    @media (prefers-color-scheme: dark){
-      .nav:hover{ background:rgba(255,255,255,.06) }
-      .button{ background:var(--card); color:var(--fg); border-color:#333 }
-      .button:hover{ box-shadow:0 3px 12px rgba(0,0,0,.4) }
-    }
-    
-  </style>
+  <link rel="stylesheet" href="/assets/base.css">
 </head>
 <body>
-  <header class="header">
-    <img class="logo" src="/mochitecture_icon.png" alt="logo"><div class="site-title">Mochitecture</div>
-    <nav style="margin-left:auto; display:flex; gap:16px;">
-      <a href="/index" class="nav">Home</a>
-      <a href="/about" class="nav">About</a>
-      <a href="/works" class="nav">Works</a>
-      <a href="/contact" class="nav">Contact</a>
-    </nav>
-  </header>
+  <div data-include="/partials/header.html"></div>
 
   <main class="wrap">
     <h1>Works</h1>
     <div class="grid">
-      <article class="card">
+      <article class="card-works">
         <h3>Mini Landing（本サイトの土台）</h3>
         <p>1ファイルから始める最小LP。GitHub→Vercelで自動公開。</p>
         <span class="tag">HTML/CSS</span><span class="tag">Vercel</span>
       </article>
-      <article class="card">
+      <article class="card-works">
         <h3>Energy UI Snippets</h3>
         <p>エネルギー×SaaSで使い回せるUIコンポーネントの実験。</p>
         <span class="tag">UI</span><span class="tag">Design</span>
       </article>
-      <!-- 追加したくなったら上の <article> をコピペ -->
     </div>
   </main>
+
+  <script src="/assets/include.js"></script>
 </body>
 </html>
