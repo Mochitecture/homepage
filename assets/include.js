@@ -1,4 +1,4 @@
-// /assets/include.js  ← <script>タグは不要
+// /assets/include.js
 async function injectPartials() {
   const nodes = document.querySelectorAll('[data-include]');
   for (const el of nodes) {
@@ -9,32 +9,23 @@ async function injectPartials() {
       const html = await res.text();
       const tmp = document.createElement('div');
       tmp.innerHTML = html;
-      // script要素も実行されるように差し替え処理
+
+      // (任意) 内部scriptも実行したい場合の処理
       const scripts = tmp.querySelectorAll('script');
       scripts.forEach(s => {
         const ns = document.createElement('script');
         if (s.src) ns.src = s.src; else ns.textContent = s.textContent;
         s.replaceWith(ns);
       });
-      el.replaceWith(...tmp.childNodes);
+
+      el.replaceWith(...Array.from(tmp.childNodes)); // 安全に展開
     } catch (e) {
       console.error('include error:', url, e);
     }
-  }
-
-  // activeハイライト
-  function () {
-    const path = location.pathname.replace(/\/index\.html?$/, "/");
-    document.querySelectorAll('.nav-wrap .nav').forEach(a => {
-      const to = a.getAttribute('href').replace(/\.html$/, '');
-      if (path === (to.endsWith('/') ? to : to + '/')) a.classList.add('active');
-      if (path === to) a.classList.add('active');
-    });
   }
 
   // 年号（footer内の #y に代入）
   const y = document.getElementById('y');
   if (y) y.textContent = new Date().getFullYear();
 }
-
 document.addEventListener('DOMContentLoaded', injectPartials);
