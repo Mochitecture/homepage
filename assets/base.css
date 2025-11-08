@@ -56,3 +56,9 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 .footer .brand{ display:flex; align-items:center }
 .footer-nav{ margin-left:auto; display:flex; gap:12px }
 .copy{ opacity:.7; font-size:13px }
+
+
+.nav.active{ background:rgba(0,0,0,.08) }
+@media (prefers-color-scheme: dark){
+  .nav.active{ background:rgba(255,255,255,.12) }
+}
