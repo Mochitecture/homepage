@@ -1,6 +1,7 @@
+<!-- sitemap.xml を更新 -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url><loc>https://homepage-virid-zeta.vercel.app/</loc></url>
-  <url><loc>https://homepage-virid-zeta.vercel.app/about</loc></url>
-  <url><loc>https://homepage-virid-zeta.vercel.app/works</loc></url>
-  <url><loc>https://homepage-virid-zeta.vercel.app/contact</loc></url>
+  <url><loc>https://homepage-virid-zeta.vercel.app/archive.html</loc></url>
+  <url><loc>https://homepage-virid-zeta.vercel.app/about.html</loc></url>
+  <url><loc>https://homepage-virid-zeta.vercel.app/contact.html</loc></url>
 </urlset>
