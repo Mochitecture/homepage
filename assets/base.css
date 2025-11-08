@@ -48,3 +48,11 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 .card-works{ background:var(--card); border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.08); padding:16px }
 .card-works h3{ margin:0 0 8px }
 .tag{ display:inline-block; font-size:12px; border:1px solid #ddd; border-radius:999px; padding:2px 8px; margin-right:6px }
+
+.footer{ margin-top:48px; background:var(--card); box-shadow:0 -2px 18px rgba(0,0,0,.06) }
+.footer-inner{
+  max-width:1000px; margin:0 auto; padding:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
+}
+.footer .brand{ display:flex; align-items:center }
+.footer-nav{ margin-left:auto; display:flex; gap:12px }
+.copy{ opacity:.7; font-size:13px }
