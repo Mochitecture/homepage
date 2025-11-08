@@ -19,6 +19,22 @@
     a.button:hover{border-color:#bbb;box-shadow:0 3px 12px rgba(0,0,0,.06)}
     .nav { text-decoration:none; color:#111; padding:6px 8px; border-radius:10px; }
     .nav:hover { background:#f3f3f3; }
+    
+
+    :root{ --bg:#fafafa; --fg:#111; --card:#fff; --shadow:0 4px 28px rgba(0,0,0,.08) }
+    @media (prefers-color-scheme: dark){
+      :root{ --bg:#0f1115; --fg:#e8e8e8; --card:#151822; --shadow:0 6px 28px rgba(0,0,0,.45) }
+    }
+    body{ background:var(--bg); color:var(--fg); }
+    .header{ background:var(--card); box-shadow:0 2px 18px rgba(0,0,0,.12) }
+    .card{ background:var(--card); box-shadow:var(--shadow) }
+    .nav:hover{ background:rgba(0,0,0,.06) }
+    @media (prefers-color-scheme: dark){
+      .nav:hover{ background:rgba(255,255,255,.06) }
+      .button{ background:var(--card); color:var(--fg); border-color:#333 }
+      .button:hover{ box-shadow:0 3px 12px rgba(0,0,0,.4) }
+    }
+    
   </style>
 </head>
 <body>
