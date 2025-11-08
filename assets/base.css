@@ -5,8 +5,18 @@
 }
 
 *{ box-sizing: border-box }
-body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif;
-      background:var(--bg); color:var(--fg) }
+
+/* ★ フッター常時最下部レイアウト：bodyを縦フレックス、mainを伸ばす */
+body{
+  margin:0;
+  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif;
+  background:var(--bg); color:var(--fg);
+  min-height:100vh;
+  display:flex;               /* 縦フレックス */
+  flex-direction:column;
+}
+/* main があるページも、ないページ(Homeのcontent-wrapだけ等)も対応 */
+main, .site-main, .content-wrap{ flex:1; }
 
 /* Header */
 .header{
@@ -22,7 +32,9 @@ body{ margin:0; font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","He
 
 /* Layout */
 .content-wrap{
-  display:flex; min-height:calc(100vh - 64px); align-items:center; justify-content:center
+  display:flex;                /* 中央寄せ */
+  align-items:center; justify-content:center;
+  /* 以前の min-height は不要。flex:1 で高さを確保 */
 }
 .wrap{ max-width:1000px; margin:0 auto; padding:32px 20px }
 
@@ -49,6 +61,7 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 .card-works h3{ margin:0 0 8px }
 .tag{ display:inline-block; font-size:12px; border:1px solid #ddd; border-radius:999px; padding:2px 8px; margin-right:6px }
 
+/* Footer（bodyのフレックスで自然に最下部へ） */
 .footer{ margin-top:48px; background:var(--card); box-shadow:0 -2px 18px rgba(0,0,0,.06) }
 .footer-inner{
   max-width:1000px; margin:0 auto; padding:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
@@ -57,7 +70,7 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 .footer-nav{ margin-left:auto; display:flex; gap:12px }
 .copy{ opacity:.7; font-size:13px }
 
-
+/* Active nav */
 .nav.active{ background:rgba(0,0,0,.08) }
 @media (prefers-color-scheme: dark){
   .nav.active{ background:rgba(255,255,255,.12) }
