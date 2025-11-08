@@ -1,3 +1,4 @@
 User-agent: *
 Allow: /
+
 Sitemap: https://homepage-virid-zeta.vercel.app/sitemap.xml
