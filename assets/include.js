@@ -23,12 +23,14 @@ async function injectPartials() {
   }
 
   // activeハイライト
-  const path = location.pathname.replace(/\/+$/, '') || '/';
-  document.querySelectorAll('a.nav').forEach(a => {
-    const href = a.getAttribute('href');
-    const normalized = (href === '/index' ? '/' : href);
-    if (normalized === path) a.classList.add('active');
-  });
+  function () {
+    const path = location.pathname.replace(/\/index\.html?$/, "/");
+    document.querySelectorAll('.nav-wrap .nav').forEach(a => {
+      const to = a.getAttribute('href').replace(/\.html$/, '');
+      if (path === (to.endsWith('/') ? to : to + '/')) a.classList.add('active');
+      if (path === to) a.classList.add('active');
+    });
+  }
 
   // 年号（footer内の #y に代入）
   const y = document.getElementById('y');
