@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mochitecture – Schedule (Week View)</title>
+<style>
+  :root{
+    --bg:#0f0f10; --panel:#171718; --grid:#2a2a2c; --text:#eaeaea; --muted:#a8a8ad;
+    --accent:#6da9ff; --event-a:#6da9ff; --event-b:#ff7aa2; --event-c:#7ad1a8; --event-d:#f6c85f;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);font:14px/1.4 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+  header.appbar{
+    display:flex;align-items:center;gap:.75rem;padding:.8rem 1rem;border-bottom:1px solid var(--grid);background:var(--panel);position:sticky;top:0;z-index:50;
+  }
+  header.appbar h1{font-size:16px;margin:0 0 0 .25rem}
+  .toolbar{margin-left:auto;display:flex;gap:.5rem;align-items:center}
+  .toolbar input, .toolbar select, .toolbar button{
+    background:#111; color:var(--text); border:1px solid var(--grid); border-radius:8px; padding:.45rem .6rem;
+  }
+  .toolbar button{cursor:pointer}
+  .wrap{padding:1rem;max-width:1200px;margin:0 auto}
+  .weekbar{display:grid;grid-template-columns:80px repeat(7, 1fr); gap:0; align-items:end; padding:.3rem 0 .5rem}
+  .weekbar .dow{padding:.25rem .5rem; color:var(--muted)}
+  .weekbar .dow .date{display:block; font-size:20px; color:var(--text)}
+  .calendar{
+    display:grid; grid-template-columns:80px repeat(7, 1fr); position:relative; border-top:1px solid var(--grid); border-bottom:1px solid var(--grid);
+    height: calc(100vh - 160px); min-height:600px; background:var(--panel);
+  }
+  /* time gutter */
+  .times{display:grid; grid-auto-rows:60px; border-right:1px solid var(--grid)}
+  .timecell{padding:.25rem .5rem; color:var(--muted); font-size:12px; border-top:1px solid var(--grid)}
+  .timecell:first-child{border-top:none}
+  /* day columns */
+  .day{position:relative;display:grid; grid-auto-rows:60px; border-right:1px solid var(--grid)}
+  .day:last-child{border-right:none}
+  .slot{border-top:1px solid var(--grid); position:relative}
+  .slot:nth-child(odd){background:rgba(255,255,255,0.01)}
+  /* events */
+  .event{
+    position:absolute; left:6px; right:6px; border-radius:10px; padding:.25rem .4rem .3rem; overflow:hidden;
+    color:#0b0b0c; font-weight:600; box-shadow:0 2px 6px rgba(0,0,0,.35);
+  }
+  .event small{display:block; font-weight:500; opacity:.85}
+  .legend{display:flex; gap:.5rem; flex-wrap:wrap; align-items:center}
+  .legend .item{display:flex; align-items:center; gap:.35rem; color:var(--muted)}
+  .legend .sw{width:12px; height:12px; border-radius:3px; display:inline-block}
+  /* modal */
+  dialog{
+    border:1px solid var(--grid); background:#111; color:var(--text); border-radius:12px; padding:1rem; width:min(400px, 90vw);
+  }
+  dialog form{display:grid; gap:.6rem}
+  dialog input, dialog select{background:#0c0c0d; border:1px solid var(--grid); border-radius:8px; color:var(--text); padding:.5rem}
+  dialog .row{display:grid; grid-template-columns:1fr 1fr; gap:.5rem}
+  dialog .actions{display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem}
+  dialog button{background:#1a1a1c; color:var(--text); border:1px solid var(--grid); border-radius:8px; padding:.45rem .7rem; cursor:pointer}
+  @media (max-width:960px){
+    .calendar{grid-template-columns:50px repeat(7,1fr)}
+    .weekbar{grid-template-columns:50px repeat(7,1fr)}
+    .timecell{font-size:11px}
+  }
+</style>
+</head>
+<body>
+  <header class="appbar">
+    <h1>Schedule – Week View</h1>
+    <div class="legend" id="legend"></div>
+    <div class="toolbar">
+      <button id="prevBtn" aria-label="Previous week">←</button>
+      <button id="todayBtn">今日</button>
+      <button id="nextBtn" aria-label="Next week">→</button>
+      <select id="hourStart">
+        <option value="6">開始 6:00</option><option value="7">開始 7:00</option><option value="8" selected>開始 8:00</option>
+      </select>
+      <select id="hourEnd">
+        <option value="20">終了 20:00</option><option value="21">終了 21:00</option><option value="22" selected>終了 22:00</option>
+      </select>
+      <button id="newEventBtn">＋ 新規</button>
+      <button id="clearBtn" title="このデモの予定を全消去">Clear</button>
+    </div>
+  </header>
+
+  <div class="wrap">
+    <div class="weekbar" id="weekbar"></div>
+    <div class="calendar" id="calendar"></div>
+  </div>
+
+  <!-- 新規/編集ダイアログ -->
+  <dialog id="eventDialog">
+    <form method="dialog" id="eventForm">
+      <strong>予定</strong>
+      <input type="hidden" name="id" />
+      <label>タイトル
+        <input name="title" placeholder="タイトル" required />
+      </label>
+      <div class="row">
+        <label>開始
+          <input type="datetime-local" name="start" required />
+        </label>
+        <label>終了
+          <input type="datetime-local" name="end" required />
+        </label>
+      </div>
+      <label>カレンダー（用途）
+        <select name="calendar">
+          <option value="Work">Work</option>
+          <option value="Personal">Personal</option>
+          <option value="Mochitecture" selected>Mochitecture</option>
+          <option value="Research">Research</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button value="cancel">キャンセル</button>
+        <button id="saveBtn" value="default">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+<script>
+(() => {
+  // ---------- State ----------
+  const colors = {
+    Work: getComputedStyle(document.documentElement).getPropertyValue('--event-a').trim(),
+    Personal: getComputedStyle(document.documentElement).getPropertyValue('--event-b').trim(),
+    Mochitecture: getComputedStyle(document.documentElement).getPropertyValue('--event-c').trim(),
+    Research: getComputedStyle(document.documentElement).getPropertyValue('--event-d').trim(),
+  };
+  const STORAGE_KEY = 'mochitecture.week.events.v0';
+  let events = load();
+  let currentMonday = startOfWeek(new Date());
+
+  // ---------- Helpers ----------
+  function startOfWeek(d){
+    const x = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const day = x.getDay(); // 0 Sun
+    const diff = (day===0 ? -6 : 1 - day); // Monday start
+    x.setDate(x.getDate() + diff);
+    x.setHours(0,0,0,0);
+    return x;
+  }
+  function fmtDate(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+  function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
+  function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
+  function hoursRange(){ return { start: +hourStart.value, end: +hourEnd.value }; }
+  function clampDay(d){ const h = d.getHours(); if(h<0||h>23){ d.setHours(Math.min(23, Math.max(0,h))); } return d; }
+
+  // ---------- UI Build ----------
+  const weekbar = document.getElementById('weekbar');
+  const calendar = document.getElementById('calendar');
+  const hourStart = document.getElementById('hourStart');
+  const hourEnd = document.getElementById('hourEnd');
+
+  function renderLegend(){
+    const el = document.getElementById('legend'); el.innerHTML='';
+    Object.entries(colors).forEach(([name,color])=>{
+      const item = document.createElement('span'); item.className='item';
+      item.innerHTML = `<span class="sw" style="background:${color}"></span>${name}`;
+      el.appendChild(item);
+    });
+  }
+
+  function render(){
+    // Weekbar
+    weekbar.innerHTML = `<div></div>`; // gutter
+    for(let i=0;i<7;i++){
+      const d = new Date(currentMonday); d.setDate(currentMonday.getDate()+i);
+      const dow = ['月','火','水','木','金','土','日'][i];
+      const isToday = fmtDate(d) === fmtDate(new Date());
+      weekbar.insertAdjacentHTML('beforeend', `
+        <div class="dow" aria-label="${d.toDateString()}">
+          <span class="date" style="${isToday?'color:var(--accent)':''}">${d.getDate()}</span>
+          ${dow}
+        </div>
+      `);
+    }
+
+    // Grid
+    const {start,end} = hoursRange();
+    const rows = (end - start);
+    calendar.innerHTML = '';
+    // time gutter
+    const times = document.createElement('div'); times.className='times';
+    for(let r=0;r<rows;r++){
+      const label = `${String(start+r).padStart(2,'0')}:00`;
+      times.insertAdjacentHTML('beforeend', `<div class="timecell">${label}</div>`);
+    }
+    calendar.appendChild(times);
+    // day columns
+    const columns = [];
+    for(let c=0;c<7;c++){
+      const dayCol = document.createElement('div'); dayCol.className='day'; dayCol.dataset.col = c;
+      for(let r=0;r<rows;r++){ dayCol.insertAdjacentHTML('beforeend', `<div class="slot" data-hour="${start+r}"></div>`); }
+      calendar.appendChild(dayCol); columns.push(dayCol);
+    }
+
+    // Events
+    // Filter events inside visible week
+    const weekStart = new Date(currentMonday);
+    const weekEnd = new Date(currentMonday); weekEnd.setDate(weekEnd.getDate()+7); weekEnd.setHours(0,0,0,0);
+    const visible = events.filter(e => new Date(e.end) > weekStart && new Date(e.start) < weekEnd);
+    const columnTop = columns[0].getBoundingClientRect().top; // consistent height
+
+    visible.forEach(e=>{
+      const s = new Date(e.start), t = new Date(e.end);
+      // clamp to viewport hours for placement
+      const sDayIdx = Math.max(0, Math.min(6, Math.floor((startOfWeek(s).getTime() - currentMonday.getTime())/86400000) + (s.getDay()===0?6:s.getDay()-1)));
+      // event may span multiple days: split by day
+      let cur = new Date(s);
+      while(cur < t){
+        const dayIdx = (cur.getDay()===0?6:cur.getDay()-1);
+        const dayDate = new Date(cur.getFullYear(), cur.getMonth(), cur.getDate());
+        const dayEnd = new Date(dayDate); dayEnd.setDate(dayEnd.getDate()+1);
+        const segStart = new Date(Math.max(cur, new Date(dayDate.setHours(0,0,0,0))));
+        const segEnd = new Date(Math.min(t, dayEnd));
+        placeSegment(e, dayIdx, segStart, segEnd);
+        cur = new Date(dayEnd);
+      }
+    });
+
+    function placeSegment(e, dayIdx, segStart, segEnd){
+      if(dayIdx<0 || dayIdx>6) return;
+      const col = columns[dayIdx]; if(!col) return;
+
+      const {start,end} = hoursRange();
+      const msPerHour = 3600000;
+      // pixel calc
+      const colRect = col.getBoundingClientRect();
+      const rowHeight = colRect.height / (end - start);
+
+      const startH = segStart.getHours() + segStart.getMinutes()/60;
+      const endH = segEnd.getHours() + segEnd.getMinutes()/60;
+
+      const top = Math.max(0, (startH - start) * rowHeight);
+      const height = Math.max(22, (Math.min(end, endH) - Math.max(start, startH)) * rowHeight);
+
+      const div = document.createElement('div');
+      div.className='event';
+      div.style.top = `${top}px`;
+      div.style.height = `${height}px`;
+      div.style.background = colors[e.calendar] || 'var(--accent)';
+      div.title = `${e.title}\n${new Date(e.start).toLocaleString()} - ${new Date(e.end).toLocaleString()}\n${e.calendar}`;
+      div.innerHTML = `<div>${e.title}</div><small>${e.calendar}</small>`;
+      div.addEventListener('click', ()=> openEdit(e));
+      col.appendChild(div);
+    }
+  }
+
+  // ---------- Dialog ----------
+  const dialog = document.getElementById('eventDialog');
+  const form = document.getElementById('eventForm');
+  const newBtn = document.getElementById('newEventBtn');
+  const clearBtn = document.getElementById('clearBtn');
+
+  function openNew(){
+    const base = new Date();
+    const start = new Date(base.getFullYear(), base.getMonth(), base.getDate(), 10, 0, 0);
+    const end = new Date(base.getFullYear(), base.getMonth(), base.getDate(), 11, 0, 0);
+    form.id.value = '';
+    form.title.value = '';
+    form.start.value = toLocalInput(start);
+    form.end.value = toLocalInput(end);
+    form.calendar.value = 'Mochitecture';
+    dialog.showModal();
+  }
+  function openEdit(e){
+    form.id.value = e.id;
+    form.title.value = e.title;
+    form.calendar.value = e.calendar;
+    form.start.value = toLocalInput(new Date(e.start));
+    form.end.value = toLocalInput(new Date(e.end));
+    dialog.showModal();
+  }
+  function toLocalInput(d){
+    const pad=n=>String(n).padStart(2,'0');
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+
+  form.addEventListener('submit', (ev)=>{
+    ev.preventDefault();
+    const id = form.id.value || `e_${Date.now()}`;
+    const start = new Date(form.start.value);
+    const end = new Date(form.end.value);
+    if(end <= start){ alert('終了は開始より後にしてください'); return; }
+    const payload = {
+      id, title: form.title.value.trim() || '(無題)',
+      start: start.toISOString(), end: end.toISOString(),
+      calendar: form.calendar.value
+    };
+    const idx = events.findIndex(x=>x.id===id);
+    if(idx>=0) events[idx]=payload; else events.push(payload);
+    save(); dialog.close(); render();
+  });
+  newBtn.addEventListener('click', openNew);
+  clearBtn.addEventListener('click', ()=>{
+    if(confirm('このデモで保存した予定を全て削除します。よろしいですか？')){
+      events = []; save(); render();
+    }
+  });
+
+  // ---------- Navigation ----------
+  document.getElementById('prevBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()-7); render(); });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()+7); render(); });
+  document.getElementById('todayBtn').addEventListener('click', ()=>{ currentMonday = startOfWeek(new Date()); render(); });
+  hourStart.addEventListener('change', render);
+  hourEnd.addEventListener('change', render);
+
+  // Seed examples on first run
+  if(!events.length){
+    const now = new Date();
+    const mon = startOfWeek(now);
+    const mk = (dow,h1,m1,h2,m2,title,cal)=>({
+      id:`seed_${title}_${dow}`, title, calendar:cal,
+      start:new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+dow,h1,m1).toISOString(),
+      end:new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+dow,h2,m2).toISOString()
+    });
+    events = [
+      mk(0, 9,0, 11,0, '企画レビュー', 'Work'),
+      mk(1, 13,0, 14,30, 'Mochitecture: アーカイブ整備', 'Mochitecture'),
+      mk(2, 19,0, 20,30, 'ランニング', 'Personal'),
+      mk(4, 10,0, 12,0, '調査: UIパターン', 'Research'),
+      mk(4, 13,0, 15,0, '顧客打合せ', 'Work'),
+      mk(6, 9,30, 10,30, '家族', 'Personal'),
+    ];
+    save();
+  }
+
+  renderLegend();
+  render();
+})();
+</script>
+</body>
+</html>
