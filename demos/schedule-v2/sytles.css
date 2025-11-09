@@ -1,0 +1,109 @@
+:root{
+  --bg:#0f1115; --panel:#151822; --grid:#252936; --text:#e8e8ef; --muted:#9aa0ae;
+  --accent:#60a5fa;
+  --event-a:#60a5fa; --event-b:#f472b6; --event-c:#34d399; --event-d:#facc15;
+  --now:#00d2ff;
+}
+
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font:14px/1.5 ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto;
+}
+
+.appbar{
+  position:sticky; top:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between;
+  gap:.75rem; padding:.8rem 1rem; border-bottom:1px solid var(--grid); background:var(--panel);
+}
+.appbar h1{margin:0 1rem 0 0; font-size:16px}
+.legend{display:flex; gap:.6rem; flex-wrap:wrap}
+.legend .item{display:flex; align-items:center; gap:.35rem; color:var(--muted)}
+.legend .sw{width:12px; height:12px; border-radius:3px; display:inline-block}
+.toolbar{display:flex; gap:.5rem}
+.toolbar button{
+  background:#0f131b; color:var(--text); border:1px solid var(--grid);
+  border-radius:8px; padding:.45rem .6rem; cursor:pointer;
+}
+
+.wrap{max-width:1200px; margin:0 auto; padding:1rem}
+.weekbar{
+  display:grid; grid-template-columns:56px repeat(7,1fr); align-items:end; gap:0;
+  padding:.3rem 0 .6rem;
+}
+.weekbar .dow{padding:.2rem .4rem; color:var(--muted)}
+.weekbar .date{display:block; font-size:18px; color:var(--text)}
+
+.calendar-wrap{
+  position:relative; border:1px solid var(--grid); border-radius:12px; overflow:auto;
+  height: calc(100vh - 200px); min-height:600px; background:var(--panel);
+}
+.calendar{
+  position:relative; display:grid; grid-template-columns:56px repeat(7,1fr);
+  border-bottom:1px solid var(--grid);
+}
+
+/* 時刻ガター（24h, 15分刻みで行を引く） */
+.times{display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid)}
+.timecell{
+  border-top:1px solid var(--grid); padding:.1rem .3rem; color:var(--muted); font-size:12px;
+}
+.timecell:nth-child(4n+1){ /* ちょうどの時間は少し濃く */
+  color:#c8cbe0; font-weight:600;
+}
+
+/* 日カラム */
+.day{position:relative; display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid)}
+.day:last-child{border-right:none}
+.slot{border-top:1px solid rgba(255,255,255,.04)}
+.slot:nth-child(4n){border-top:1px solid rgba(255,255,255,.10)} /* 時刻ライン */
+
+/* イベント */
+.event{
+  position:absolute; left:6px; right:6px; border-radius:10px; padding:.3rem .45rem .35rem;
+  color:#0b0b0c; font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,.35);
+  cursor:grab; user-select:none;
+}
+.event small{display:block; font-weight:600; opacity:.85}
+.event .handle{position:absolute; left:0; right:0; height:6px; cursor:ns-resize}
+.event .h-top{top:-3px} .event .h-btm{bottom:-3px}
+
+/* 現在時刻ライン */
+.nowline{
+  position:absolute; left:56px; right:0; height:2px;
+  background:linear-gradient(90deg,var(--now),#00ffa3);
+  box-shadow:0 0 8px rgba(0,210,255,.6);
+  pointer-events:none; z-index:5;
+}
+
+/* ダイアログ */
+dialog{
+  border:1px solid var(--grid); background:#0f131b; color:var(--text);
+  border-radius:12px; padding:1rem; width:min(520px, 92vw);
+}
+dialog::backdrop{background:rgba(0,0,0,.5)}
+dialog form{display:grid; gap:.6rem}
+dialog input, dialog select{
+  background:#0b0f17; color:var(--text); border:1px solid var(--grid);
+  border-radius:8px; padding:.5rem;
+}
+.row{display:grid; grid-template-columns:1fr 1fr; gap:.5rem}
+.actions{display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem}
+button.primary{background:#1d4ed8; border:1px solid #1d4ed8; color:#fff}
+button.danger{background:#7f1d1d; border:1px solid #7f1d1d; color:#fff}
+
+/* Finder */
+fieldset.calpick{display:flex; gap:.6rem; flex-wrap:wrap; border:1px dashed var(--grid); padding:.6rem}
+.results{margin-top:.6rem; display:grid; gap:.4rem}
+.result-item{
+  background:#0b0f17; border:1px solid var(--grid); border-radius:10px; padding:.5rem .6rem;
+  display:flex; justify-content:space-between; align-items:center; gap:.5rem;
+}
+.result-item .meta{color:var(--muted)}
+.result-item button{padding:.35rem .6rem; border-radius:8px; border:1px solid var(--grid); background:#0f131b; color:var(--text)}
+
+@media (max-width:960px){
+  .weekbar,.calendar{grid-template-columns:44px repeat(7,1fr)}
+  .calendar-wrap{height: calc(100vh - 180px)}
+}
