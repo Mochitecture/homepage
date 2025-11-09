@@ -27,5 +27,14 @@ async function injectPartials() {
   // 年号（footer内の #y に代入）
   const y = document.getElementById('y');
   if (y) y.textContent = new Date().getFullYear();
+
+  // ▼ 追加：現在ページに応じて nav.active を付与
+  const path = location.pathname.replace(/\/$/, '') || '/';
+  document.querySelectorAll('a.nav').forEach(a => {
+    const href = a.getAttribute('href');
+    // トップ（/）は完全一致、それ以外は前方一致で判定
+    const match = (href === '/' && path === '/') || (href !== '/' && path.startsWith(href));
+    if (match) a.classList.add('active');
+  });
 }
 document.addEventListener('DOMContentLoaded', injectPartials);
