@@ -133,3 +133,37 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
   margin:0 0 1rem;
   letter-spacing:.01em;
 }
+
+/* ===== 追記ここから（既存の末尾に足す） ===== */
+/* Archiveカードの整理 */
+.card-works{ display:flex; flex-direction:column; gap:.5rem; }
+.card-works header h3{ font-size:1.06rem; line-height:1.25; margin:0 0 .1rem; letter-spacing:.01em; }
+.card-works .meta{ font-size:.9rem; color:var(--muted, #6b7280); display:flex; gap:.4rem; flex-wrap:wrap; }
+.card-works .meta span::before{ content:"／"; margin:0 .2rem; color:var(--muted,#6b7280); }
+.card-works .lead{ margin:.25rem 0 .25rem; font-weight:500; color:#111827; }
+@media (prefers-color-scheme: dark){ .card-works .lead{ color:#e5e7eb; } }
+.card-works .bullets{ margin:.25rem 0 .5rem 1.1rem; }
+.card-works .bullets li{ margin:.15rem 0; }
+.card-works .tags{ display:flex; flex-wrap:wrap; gap:.35rem; }
+.pill{ display:inline-block; padding:.18rem .55rem; border:1px solid var(--border,#e5e7eb); border-radius:999px; font-size:.8rem; color:#374151; background:#fff; }
+@media (prefers-color-scheme: dark){ .pill{ background:#0b0b0c; color:#c7cbd1; border-color:#2c2f36; } }
+.card-works .links{ margin-top:.25rem; }
+.card-works .links a{ text-decoration:none; }
+
+/* ボタン */
+.btn{
+  display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
+  padding:.5rem .9rem; border-radius:.7rem; border:1px solid transparent;
+  font-weight:600; line-height:1; text-decoration:none;
+}
+.btn:hover{ transform:translateY(-1px); transition:transform .12s ease; }
+.btn-primary{ background:#111827; color:#fff; }
+.btn-primary:hover{ background:#0f172a; }
+@media (prefers-color-scheme: dark){
+  .btn-primary{ background:#2563eb; }
+  .btn-primary:hover{ background:#1d4ed8; }
+}
+
+/* ページ見出し */
+.page-title{ font-size:1.6rem; line-height:1.25; margin:0 0 1rem; letter-spacing:.01em; }
+/* ===== 追記ここまで ===== */
