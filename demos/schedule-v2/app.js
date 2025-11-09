@@ -113,7 +113,7 @@
       }
     });
 
-    // 現在時刻ライン
+    // 現在時刻ライン（今日だけ）
     drawNowLine();
     // 初回スクロール：現在時刻を中央付近に
     autoscrollToNow();
@@ -172,31 +172,40 @@
     col.appendChild(node);
   }
 
-  // ====== 現在時刻ライン ======
+  // ====== 現在時刻ライン（今日だけ） ======
   let nowTimer = null;
   function drawNowLine(){
-    // remove old
-    const old = $('.nowline'); if(old) old.remove();
+    // 既存ラインを全て除去
+    document.querySelectorAll('.nowline').forEach(el => el.remove());
+    if (nowTimer) { clearInterval(nowTimer); nowTimer = null; }
 
-    const todayIdx = ((new Date().getDay()+6)%7);
-    const nowMin = minutes(new Date());
-    const y = ((nowMin - HOURS.start*60) / STEP_MIN);
+    // 今日が表示週に含まれているか
+    const today = new Date();
+    const ws = new Date(currentMonday);
+    const we = new Date(currentMonday); we.setDate(we.getDate()+7);
+    if (!(today >= ws && today < we)) return;
 
+    const todayIdx = ((today.getDay()+6)%7);
     const col = calendar.querySelector(`.day[data-day="${todayIdx}"]`);
     if(!col) return;
+
     const { perRow } = colGeometry(col);
-
-    const line = document.createElement('div');
-    line.className='nowline';
-    line.style.top = `${y*perRow}px`;
-    calendar.appendChild(line);
-
-    // 1分ごとに更新
-    clearInterval(nowTimer);
-    nowTimer = setInterval(()=>{
+    const put = () => {
+      // 時間帯に関係なく列内で位置を計算
       const nm = minutes(new Date());
-      line.style.top = `${((nm - HOURS.start*60)/STEP_MIN)*perRow}px`;
-    }, 60000);
+      const y = ((nm - HOURS.start*60)/STEP_MIN)*perRow;
+      // 既存を消してから追加（列だけに表示）
+      col.querySelectorAll('.nowline').forEach(el => el.remove());
+      const line = document.createElement('div');
+      line.className='nowline';
+      line.style.position = 'absolute';
+      line.style.left = '0'; line.style.right = '0';
+      line.style.height = '2px';
+      line.style.top = `${y}px`;
+      col.appendChild(line);
+    };
+    put();
+    nowTimer = setInterval(put, 30*1000); // 30秒ごと更新
   }
 
   function autoscrollToNow(){
@@ -263,7 +272,6 @@
     const { perRow, rect } = colGeometry(srcCol);
     const baseMin = minutes(start);
     const offsetY = ev.clientY - rect.top - ((baseMin - HOURS.start*60)/STEP_MIN)*perRow;
-    const origDay = ((start.getDay()+6)%7);
 
     const onMove = (pe)=>{
       const col = pe.target.closest('.day') || srcCol;
@@ -417,7 +425,7 @@
     a.click();
   });
 
-  // ====== 空き時間ファインダ ======
+  // ====== 空き時間ファインダ（連続ブロック表示 & コピー） ======
   $('#finderBtn').addEventListener('click', ()=>{
     // カレンダー選択
     calPick.innerHTML='';
@@ -431,6 +439,23 @@
       calPick.appendChild(w);
     });
     resultsEl.innerHTML='';
+    // コピー全体ボタンを並べる場所を用意（無ければ追加）
+    let copyAll = document.getElementById('copyAllBtn');
+    if(!copyAll){
+      copyAll = document.createElement('button');
+      copyAll.id = 'copyAllBtn';
+      copyAll.textContent = 'メール用候補をコピー';
+      copyAll.style.marginTop = '.6rem';
+      resultsEl.parentElement.appendChild(copyAll);
+      copyAll.addEventListener('click', ()=>{
+        if(copyAll.dataset.payload){
+          navigator.clipboard.writeText(copyAll.dataset.payload).then(()=>alert('候補をコピーしました'));
+        }
+      });
+    }else{
+      copyAll.dataset.payload = '';
+      copyAll.style.display = 'none';
+    }
     finderDialog.showModal();
   });
 
@@ -440,85 +465,100 @@
     const need = +$('#needMin').value;
     const [wStart,wEnd] = $('#window').value.split('-').map(Number);
 
-    const suggestions = findFreeSlots(chosen, need, wStart, wEnd);
-    renderSuggestions(suggestions, chosen, need);
+    const blocks = findFreeBlocks(chosen, need, wStart, wEnd);
+    renderBlocks(blocks, chosen, need);
   });
 
-  function findFreeSlots(cals, needMin, wStart, wEnd){
-    // 今週 7日分について、選択カレンダーの busy を合成→ free を抽出
-    const slots = [];
+  // --- “必要時間以上を連続で確保できる期間ブロック”を求める ---
+  function findFreeBlocks(cals, needMin, wStart, wEnd){
+    const out = [];
     for(let d=0; d<7; d++){
       const dayDate = new Date(currentMonday); dayDate.setDate(currentMonday.getDate()+d);
-      const dayKey = toKey(dayDate);
 
-      // busy intervals（選択カレンダーのみ）
-      const busy = events
-        .filter(e=> cals.includes(e.calendar))
-        .map(e=>({ start:new Date(e.start), end:new Date(e.end) }))
-        .filter(x=> isSameDay(x.start, dayDate) || isSameDay(x.end, dayDate) || (x.start<dayDate && x.end>dayDate));
-
-      // その日の範囲に切り出し
+      // 対象日の時間帯
       const dayStart = new Date(dayDate); dayStart.setHours(wStart,0,0,0);
       const dayEnd   = new Date(dayDate); dayEnd.setHours(wEnd,0,0,0);
 
-      const normalized = busy.map(b=>{
-        const s = new Date(Math.max(+b.start, +dayStart));
-        const t = new Date(Math.min(+b.end,   +dayEnd));
-        return (t>s) ? [minutes(s), minutes(t)] : null;
-      }).filter(Boolean);
+      // busy (選択カレンダー)
+      const busy = events
+        .filter(e=> cals.includes(e.calendar))
+        .map(e=>({ start:new Date(e.start), end:new Date(e.end) }))
+        // 当日と交差する区間だけに
+        .map(b=>{
+          const s = new Date(Math.max(+b.start, +dayStart));
+          const t = new Date(Math.min(+b.end,   +dayEnd));
+          return (t>s) ? [minutes(s), minutes(t)] : null;
+        }).filter(Boolean)
+        .sort((a,b)=>a[0]-b[0]);
 
       // マージ
-      normalized.sort((a,b)=>a[0]-b[0]);
       const merged=[];
-      for(const cur of normalized){
+      for(const cur of busy){
         if(!merged.length || merged.at(-1)[1] < cur[0]) merged.push(cur);
         else merged.at(-1)[1] = Math.max(merged.at(-1)[1], cur[1]);
       }
 
-      // free = complement
+      // free = complement → “必要時間以上の長さ”のものを1ブロックとして採用
       let cursor = wStart*60;
       for(const [bs,be] of merged){
-        if(bs - cursor >= needMin) slots.push({ day:d, startMin:cursor, endMin:bs });
+        if(bs - cursor >= needMin){
+          out.push({ day:d, startMin:cursor, endMin:bs, len: (bs-cursor) });
+        }
         cursor = Math.max(cursor, be);
       }
-      if(wEnd*60 - cursor >= needMin) slots.push({ day:d, startMin:cursor, endMin:wEnd*60 });
-    }
-
-    // 15分刻みに丸めて返す（先頭10件）
-    const packed = [];
-    for(const s of slots){
-      let cur = snap15(s.startMin);
-      while(cur + needMin <= s.endMin){
-        packed.push({ day:s.day, startMin:cur, endMin:cur+needMin });
-        cur += STEP_MIN;
+      if(wEnd*60 - cursor >= needMin){
+        out.push({ day:d, startMin:cursor, endMin:wEnd*60, len: (wEnd*60-cursor) });
       }
     }
-    return packed.slice(0, 10);
+    return out;
   }
 
-  function renderSuggestions(list, cals, needMin){
+  function renderBlocks(list, cals, needMin){
     resultsEl.innerHTML='';
-    if(!list.length){ resultsEl.innerHTML='<p class="meta">候補なし</p>'; return; }
+    const copyAll = document.getElementById('copyAllBtn');
+
+    if(!list.length){
+      resultsEl.innerHTML='<p class="meta">該当なし（候補時間帯を広げる or カレンダーを減らす）</p>';
+      if(copyAll){ copyAll.style.display='none'; copyAll.dataset.payload=''; }
+      return;
+    }
+
+    const lines = [`【候補（${needMin}分以上の連続ブロック）】`];
 
     list.forEach(item=>{
       const d = new Date(currentMonday); d.setDate(d.getDate()+item.day);
-      const lab = `${d.getMonth()+1}/${d.getDate()} (${['月','火','水','木','金','土','日'][item.day]})  `+
-                  `${pad2(Math.floor(item.startMin/60))}:${pad2(item.startMin%60)} – ${pad2(Math.floor(item.endMin/60))}:${pad2(item.endMin%60)}`;
+      const lineTxt = `${(d.getMonth()+1)}/${pad2(d.getDate())} ${['日','月','火','水','木','金','土'][d.getDay()]}  `+
+                      `${pad2(Math.floor(item.startMin/60))}:${pad2(item.startMin%60)}–${pad2(Math.floor(item.endMin/60))}:${pad2(item.endMin%60)}（${Math.round(item.len)}分）`;
+
       const row = document.createElement('div'); row.className='result-item';
-      row.innerHTML = `<span>${lab}</span><span class="meta">${needMin}分</span>`;
-      const addBtn = document.createElement('button'); addBtn.textContent='ホールド作成';
-      addBtn.addEventListener('click', ()=>{
-        // 先頭の選択カレンダーに仮置き
+      row.innerHTML = `<span>${lineTxt}</span><span class="meta">この時間帯のどこでも ${needMin}分 以上確保可</span>`;
+
+      const copyBtn = document.createElement('button'); copyBtn.textContent='コピー';
+      copyBtn.addEventListener('click', ()=>{
+        navigator.clipboard.writeText(lineTxt).then(()=>alert('コピーしました'));
+      });
+
+      const holdBtn = document.createElement('button'); holdBtn.textContent='ホールド作成';
+      holdBtn.addEventListener('click', ()=>{
+        // 先頭に必要分だけホールド
         const cal = cals[0] || 'Mochitecture';
-        const s = new Date(currentMonday); s.setDate(s.getDate()+item.day); s.setHours(0,0,0,0);
-        const start = dateAt(s, item.startMin);
-        const end   = dateAt(s, item.endMin);
+        const base = new Date(currentMonday); base.setDate(base.getDate()+item.day); base.setHours(0,0,0,0);
+        const start = dateAt(base, item.startMin);
+        const end   = new Date(start.getTime() + needMin*60000);
         events.push({ id:`e_${Date.now()}`, title:'Hold', calendar:cal, start:start.toISOString(), end:end.toISOString() });
         save(); render();
       });
-      row.appendChild(addBtn);
+
+      row.appendChild(copyBtn);
+      row.appendChild(holdBtn);
       resultsEl.appendChild(row);
+      lines.push(lineTxt);
     });
+
+    if(copyAll){
+      copyAll.dataset.payload = lines.concat('— Generated by Mochitecture Schedule').join('\n');
+      copyAll.style.display = 'inline-block';
+    }
   }
 
   // ====== 初期データ（初回のみ） ======
@@ -544,6 +584,4 @@
   renderLegend();
   render();
 
-  // ====== おまけ：ユーティリティ ======
-  function toKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
 })();
