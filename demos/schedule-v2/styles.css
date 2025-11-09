@@ -107,3 +107,19 @@ fieldset.calpick{display:flex; gap:.6rem; flex-wrap:wrap; border:1px dashed var(
   .weekbar,.calendar{grid-template-columns:44px repeat(7,1fr)}
   .calendar-wrap{height: calc(100vh - 180px)}
 }
+
+/* === Today only now-line === */
+.now-line {
+  position:absolute; left:0; right:0; height:2px;
+  background: var(--accent); box-shadow:0 0 6px rgba(109,169,255,.8);
+  pointer-events:none; z-index:20;
+}
+
+/* Availability results */
+.avail-list {display:flex; flex-direction:column; gap:.5rem; margin-top:.75rem;}
+.avail-item {display:flex; justify-content:space-between; align-items:center;
+  padding:.6rem .8rem; border:1px solid var(--grid); border-radius:10px; background:#0f0f10;}
+.avail-item .meta{opacity:.8; font-size:.9rem}
+.avail-actions {display:flex; gap:.4rem}
+.avail-actions button{border:1px solid var(--grid); background:#151516; color:var(--text);
+  padding:.35rem .6rem; border-radius:8px; cursor:pointer}
