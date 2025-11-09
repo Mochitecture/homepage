@@ -18,48 +18,59 @@
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
-    <h1>Archive</h1>
-    <div class="grid">
-      <article class="card-works">
-        <h3>Mini Landing（本サイトの土台）</h3>
-        <p>
-          “最小の着地面”をつくる実験。<br>
-          設計〜公開まで <strong>3時間以内</strong>。<br>
-          ※エンジニアリング完全初心者が実装。
+    <!-- 01: Mini Landing -->
+    <article class="card-works" id="arch-20251109-mini-landing">
+      <header>
+        <h3>［Case Study］Mini Landing：このサイトの最小着地</h3>
+        <p class="meta">
+          <time datetime="2025-11-09">2025-11-09</time><span> / 所要: 3h</span><span> / 状態: 完了</span>
         </p>
-        <span class="tag">HTML/CSS</span>
-        <span class="tag">Vercel</span>
-      </article>
-      
-      <!-- ===== Archive: Schedule UI Prototype ===== -->
-      <article class="card-works" id="arch-20251110-schedule-week-proto">
-        <header>
-          <h3>［UI/Prototype］Outlook/iPhone風「週ビュー」スケジュール表（複数カレンダー重ね表示）</h3>
-          <p class="meta">
-            <time datetime="2025-11-10">2025-11-10</time>
-            <span> / 所要: 2.0h</span>
-            <span> / 状態: 試作 v0</span>
-          </p>
-        </header>
-        <p class="lead">“微増”：週グリッド上で複数用途の予定を色分け重ね表示。軽量JS＋ローカル保存で即試用。</p>
-        <ul class="bullets">
-          <li>before: 複数の用途（仕事/私用/制作など）を同時に見渡せる軽量ビューが未整備</li>
-          <li>how: 週×時間のグリッドにブロック配置。カレンダー名ごとに色分け・重ね表示。ローカルに保存</li>
-          <li>after: Outlook/Apple風の視覚密度で俯瞰しやすい。将来はドラッグ編集/同期に拡張予定</li>
-        </ul>
-        <p class="tags">
-          <span class="pill">#HTML</span><span class="pill">#CSS</span><span class="pill">#JS</span>
+      </header>
+      <p class="lead">“ゼロから3時間”。設計〜公開までの最短ルートを検証し、Mochitectureの土台を確立。</p>
+      <ul class="bullets">
+        <li>before：公開までの初動が重い／手が動かない</li>
+        <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイ</li>
+        <li>after：以後の更新が「カードを足すだけ」に。運用コストを極小化</li>
+      </ul>
+      <p class="tags"><span class="pill">#HTML/CSS</span><span class="pill">#Vercel</span></p>
+    </article>
+    
+    <!-- 02: Schedule UI Prototype -->
+    <article class="card-works" id="arch-20251110-schedule-week-proto">
+      <header>
+        <h3>［UI Prototype］週ビュー・スケジュール（複数カレンダー重ね）</h3>
+        <p class="meta">
+          <time datetime="2025-11-10">2025-11-10</time><span> / 所要: 2h</span><span> / 状態: 試作 v0</span>
         </p>
-        <footer class="links">
-          <a href="/demos/schedule-week.html" target="_blank" rel="noopener">デモを見る</a>
-        </footer>
-      </article>
-
-      <article class="card-works">
-        <h3>Energy UI Snippets</h3>
-        <p>エネルギー×SaaSで使い回せるUIコンポーネントの実験。</p>
-        <span class="tag">UI</span><span class="tag">Design</span>
-      </article>
+      </header>
+      <p class="lead">Outlook / iPhone 風の週グリッド。用途別に色分けし、予定を重ねて俯瞰できる軽量デモ。</p>
+      <ul class="bullets">
+        <li>before：仕事／私用／制作が別系統で見通しにくい</li>
+        <li>how：週×時間のグリッド上にブロック配置。用途名で色分け。localStorageで即保存</li>
+        <li>after：一画面で全体像を把握。次段はドラッグ編集／重なりレイアウト</li>
+      </ul>
+      <p class="tags"><span class="pill">#UI</span><span class="pill">#CSS</span><span class="pill">#JavaScript</span></p>
+      <footer class="links">
+        <a class="btn btn-primary" href="/demos/schedule-week.html" target="_blank" rel="noopener">デモを見る</a>
+      </footer>
+    </article>
+    
+    <!-- 03: Energy UI Snippets -->
+    <article class="card-works" id="arch-20251108-energy-ui-snippets">
+      <header>
+        <h3>［Component Lab］Energy UI Snippets</h3>
+        <p class="meta">
+          <time datetime="2025-11-08">2025-11-08</time><span> / 所要: 0.8h</span><span> / 状態: 継続</span>
+        </p>
+      </header>
+      <p class="lead">エネルギーSaaS向けの再利用コンポーネントを小さく検証し、良いパターンだけを残す箱。</p>
+      <ul class="bullets">
+        <li>before：画面ごとにUIがばらつき、実装の手戻りが発生</li>
+        <li>how：小粒なUI実験→命名・バリエーション・使用例を最小セットで記録</li>
+        <li>after：設計の再現性とスピードが向上。失敗も履歴化して学習に回す</li>
+      </ul>
+      <p class="tags"><span class="pill">#UI</span><span class="pill">#Design</span></p>
+    </article>
     </div>
   </main>
 
