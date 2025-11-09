@@ -2,12 +2,16 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Mochitecture – Schedule (Week View v2)</title>
-  <link rel="stylesheet" href="./styles.css">
-  <!-- スナップショット用（CDN） -->
-  <script defer src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mochitecture – Schedule (Week View)</title>
+
+  <!-- ここを絶対パスにする -->
+  <link rel="stylesheet" href="/demos/schedule-v2/styles.css?v=1">
+
+  <!-- defer で後読み、かつ絶対パス -->
+  <script src="/demos/schedule-v2/app.js?v=1" defer></script>
 </head>
+
 <body>
   <header class="appbar">
     <div class="left">
