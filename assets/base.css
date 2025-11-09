@@ -1,18 +1,29 @@
 /* ===== base.css ===== */
-:root{ --bg:#fafafa; --fg:#111; --card:#fff; --shadow:0 4px 28px rgba(0,0,0,.08) }
+:root{
+  --bg:#fafafa;
+  --fg:#111;
+  --card:#fff;
+  --shadow:0 4px 28px rgba(0,0,0,.08);
+}
 @media (prefers-color-scheme: dark){
-  :root{ --bg:#0f1115; --fg:#e8e8e8; --card:#151822; --shadow:0 6px 28px rgba(0,0,0,.45) }
+  :root{
+    --bg:#0f1115;
+    --fg:#e8e8e8;
+    --card:#151822;
+    --shadow:0 6px 28px rgba(0,0,0,.45);
+  }
 }
 
-*{ box-sizing: border-box }
+*{ box-sizing:border-box }
 
 /* ★ フッター常時最下部レイアウト：bodyを縦フレックス、mainを伸ばす */
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif;
-  background:var(--bg); color:var(--fg);
+  background:var(--bg);
+  color:var(--fg);
   min-height:100vh;
-  display:flex;               /* 縦フレックス */
+  display:flex;              /* 縦フレックス */
   flex-direction:column;
 }
 /* main があるページも、ないページ(Homeのcontent-wrapだけ等)も対応 */
@@ -20,58 +31,66 @@ main, .site-main, .content-wrap{ flex:1; }
 
 /* Header */
 .header{
-  height:64px; background:var(--card); display:flex; align-items:center; padding:0 24px;
-  box-shadow:0 2px 18px rgba(0,0,0,.12); position:sticky; top:0; z-index:10
+  height:64px;
+  background:var(--card);
+  display:flex;
+  align-items:center;
+  padding:0 24px;
+  box-shadow:0 2px 18px rgba(0,0,0,.12);
+  position:sticky; top:0; z-index:10;
 }
 .logo{ width:32px; height:32px; margin-right:12px }
 .site-title{ font-size:20px; font-weight:600 }
 .nav-wrap{ margin-left:auto; display:flex; gap:16px }
 .nav{ text-decoration:none; color:var(--fg); padding:6px 8px; border-radius:10px }
 .nav:hover{ background:rgba(0,0,0,.06) }
-@media (prefers-color-scheme: dark){ .nav:hover{ background:rgba(255,255,255,.06) } }
+@media (prefers-color-scheme: dark){
+  .nav:hover{ background:rgba(255,255,255,.06) }
+}
 
 /* Brand link (header/footer 共通) */
 .brand{
-  display:flex;
-  align-items:center;
-  gap:8px;
-  line-height:1;             /* ベースラインの揺れ防止 */
-  text-decoration:none;      /* 下線を消す */
-  color:var(--fg);           /* 訪問済みでも色を固定 */
+  display:flex; align-items:center; gap:8px; line-height:1;
+  text-decoration:none; color:var(--fg);
 }
 .brand:visited{ color:var(--fg); }
 .brand:hover{ text-decoration:none; opacity:.9; }
 
 /* Layout */
 .content-wrap{
-  display:flex;                /* 中央寄せ */
-  align-items:center; justify-content:center;
-  /* 以前の min-height は不要。flex:1 で高さを確保 */
+  display:flex; align-items:center; justify-content:center;
 }
 .wrap{ max-width:1000px; margin:0 auto; padding:32px 20px }
 
 /* Card / Text / Buttons */
 .card{
-  background:var(--card); padding:48px; border-radius:16px; box-shadow:var(--shadow);
-  max-width:600px; width:calc(100% - 40px)
+  background:var(--card);
+  padding:48px;
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  max-width:600px;
+  width:calc(100% - 40px);
 }
 h1{ margin:0 0 16px; font-size:32px }
 h2{ margin:24px 0 12px; font-size:22px }
 p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 
+/* 旧ボタン（トップの小さなリンク用） */
 .button{
   display:inline-block; padding:10px 14px; border-radius:12px; border:1px solid #ddd;
   text-decoration:none; color:var(--fg); background:var(--card);
-  transition: box-shadow .15s ease, transform .05s ease, border-color .15s ease
+  transition: box-shadow .15s ease, transform .05s ease, border-color .15s ease;
 }
 .button:hover{ border-color:#bbb; box-shadow:0 3px 12px rgba(0,0,0,.06) }
 .button:active{ transform: translateY(1px) }
 .button-primary{ background:#111; color:#fff; border-color:#111 }
 .button-primary:hover{ background:#000; border-color:#000; box-shadow:0 3px 12px rgba(0,0,0,.2) }
 
-/* Works grid */
+/* Works grid (基本カード) */
 .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:16px }
-.card-works{ background:var(--card); border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.08); padding:16px }
+.card-works{
+  background:var(--card); border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.08); padding:16px;
+}
 .card-works h3{ margin:0 0 8px }
 .tag{ display:inline-block; font-size:12px; border:1px solid #ddd; border-radius:999px; padding:2px 8px; margin-right:6px }
 
@@ -90,10 +109,14 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
   .nav.active{ background:rgba(255,255,255,.12) }
 }
 
-/* ===== 追記: Archiveカードのヒエラルキー整形 ===== */
+/* ===== 追加: Archiveカードのヒエラルキー整形 ===== */
 .card-works{ display:flex; flex-direction:column; gap:.5rem; }
-.card-works header h3{ font-size:1.06rem; line-height:1.25; margin:0 0 .1rem; letter-spacing:.01em; }
-.card-works .meta{ font-size:.9rem; color:var(--muted, #6b7280); display:flex; gap:.4rem; flex-wrap:wrap; }
+.card-works header h3{
+  font-size:1.06rem; line-height:1.25; margin:0 0 .1rem; letter-spacing:.01em;
+}
+.card-works .meta{
+  font-size:.9rem; color:var(--muted, #6b7280); display:flex; gap:.4rem; flex-wrap:wrap;
+}
 .card-works .meta span::before{ content:"／"; margin:0 .2rem; color:var(--muted,#6b7280); }
 .card-works .lead{ margin:.25rem 0 .25rem; font-weight:500; color:#111827; }
 @media (prefers-color-scheme: dark){
@@ -112,7 +135,7 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
 .card-works .links{ margin-top:.25rem; }
 .card-works .links a{ text-decoration:none; }
 
-/* ===== 追記: ボタン（リンクと区別する主ボタン） ===== */
+/* ===== 追加: 新ボタン（Archiveの「デモを見る」などに使用） ===== */
 .btn{
   display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
   padding:.5rem .9rem; border-radius:.7rem; border:1px solid transparent;
@@ -126,7 +149,7 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
   .btn-primary:hover{ background:#1d4ed8; }
 }
 
-/* ===== 追記: Archiveページ見出し ===== */
+/* ===== 追加: Archiveページ見出し ===== */
 .page-title{
   font-size:1.6rem;
   line-height:1.25;
