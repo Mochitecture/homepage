@@ -155,4 +155,59 @@
     form.id.value = e.id;
     form.title.value = e.title;
     form.calendar.value = e.calendar;
-    form.start.value = toLoc
+    form.start.value = toLocalInput(new Date(e.start));
+    form.end.value   = toLocalInput(new Date(e.end));
+    dialog.showModal();
+  }
+
+  form.addEventListener('submit', (ev)=>{
+    ev.preventDefault();
+    const id = form.id.value || `e_${Date.now()}`;
+    const start = new Date(form.start.value);
+    const end   = new Date(form.end.value);
+    if(end <= start){ alert('終了は開始より後にしてください'); return; }
+    const payload = {
+      id, title: (form.title.value || '(無題)').trim(),
+      start: start.toISOString(), end: end.toISOString(),
+      calendar: form.calendar.value
+    };
+    const idx = events.findIndex(x=>x.id===id);
+    if(idx>=0) events[idx]=payload; else events.push(payload);
+    save(); dialog.close(); render();
+  });
+
+  // ====== Toolbar ======
+  document.getElementById('newEventBtn').addEventListener('click', openNew);
+  document.getElementById('clearBtn').addEventListener('click', ()=>{
+    if(confirm('このデモで保存した予定を全て削除します。よろしいですか？')){
+      events = []; save(); render();
+    }
+  });
+  document.getElementById('prevBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()-7); render(); });
+  document.getElementById('nextBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()+7); render(); });
+  document.getElementById('todayBtn').addEventListener('click', ()=>{ currentMonday = startOfWeek(new Date()); render(); });
+
+  // ====== 初回データ（初回のみ投入） ======
+  if(!events.length){
+    const now = new Date();
+    const mon = startOfWeek(now);
+    const mk = (dow,h1,m1,h2,m2,title,cal)=>({
+      id:`seed_${title}_${dow}`, title, calendar:cal,
+      start:new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+dow,h1,m1).toISOString(),
+      end:new Date(mon.getFullYear(),mon.getMonth(),mon.getDate()+dow,h2,m2).toISOString()
+    });
+    events = [
+      mk(0, 9,0, 11,0, '企画レビュー', 'Work'),
+      mk(1, 13,0, 14,30, 'Mochitecture: アーカイブ整備', 'Mochitecture'),
+      mk(2, 19,0, 20,30, 'ランニング', 'Personal'),
+      mk(4, 10,0, 12,0, '調査: UIパターン', 'Research'),
+      mk(4, 13,0, 15,0, '顧客打合せ', 'Work'),
+      mk(6, 9,30, 10,30, '家族', 'Personal'),
+    ];
+    save();
+  }
+
+  // 起動
+  renderLegend();
+  render();
+})();
