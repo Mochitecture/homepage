@@ -22,16 +22,14 @@
         </p>
       </header>
 
-      <!-- メイン 2段レイアウト -->
       <section class="em-layout">
-        <!-- 上段：Now Snapshot（フル幅） -->
+        <!-- 上段：Now（スナップショット） -->
         <section class="em-card em-snapshot">
-          <header class="em-card-header">
-            <h2>Now Snapshot</h2>
+          <header class="em-card-header em-card-header--single">
             <p class="em-meta em-meta-snapshot" id="em-snapshot-meta">
-              <span class="em-meta-badge">Now</span>
+              <span class="em-meta-badge">NOW</span>
               <span class="em-meta-text">
-                北陸 / Hokuriku ｜ 2025-11-16 07:00 現在のスナップショット（ダミー値）
+                北陸 / Hokuriku ｜ 2025-11-16 07:00 現在（ダミー値）
               </span>
             </p>
           </header>
@@ -57,18 +55,16 @@
 
         <!-- 下段左：Area -->
         <section class="em-card em-area">
-          <header class="em-card-header">
-            <h2>Area</h2>
+          <header class="em-card-header em-card-header--single">
             <p class="em-meta em-meta-area">
-              <span class="em-meta-badge">Area</span>
-              <span class="em-meta-text">
-                <span id="em-area-label">北陸 / Hokuriku</span>
+              <span class="em-meta-badge">AREA</span>
+              <span class="em-meta-text" id="em-area-label">
+                北陸 / Hokuriku
               </span>
             </p>
           </header>
 
           <div class="em-map-wrap">
-            <!-- JS で SVG をインライン挿入 -->
             <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
           </div>
 
@@ -79,10 +75,9 @@
 
         <!-- 下段右：Market Panel -->
         <section class="em-card em-market">
-          <header class="em-card-header">
-            <h2>Market Panel</h2>
+          <header class="em-card-header em-card-header--single">
             <p class="em-meta em-meta-market" id="em-market-meta">
-              <span class="em-meta-badge">Market</span>
+              <span class="em-meta-badge">MARKET</span>
               <span class="em-meta-text">
                 北陸 / Hokuriku ｜ 2025-11-16 ｜ 需給調整市場（EPRX） - 一次調整力
               </span>
@@ -109,7 +104,7 @@
             </div>
 
             <div class="field view-toggle">
-              <span class="label">ビュー</span>
+              <label class="label">ビュー</label>
               <div class="segmented">
                 <button type="button" class="seg-btn is-active" data-view="graph">Graph</button>
                 <button type="button" class="seg-btn" data-view="table">Table</button>
