@@ -48,15 +48,8 @@
           </header>
 
           <div class="em-map-wrap">
-            <!-- ★ 外部SVGファイルを読み込む -->
-            <object
-              id="em-map-object"
-              class="jp-energy-map"
-              type="image/svg+xml"
-              data="/demos/energy-map/JP-EnergyAreas.svg"
-              role="img"
-              aria-label="Japan power grid areas"
-            ></object>
+            <!-- ★ JS で SVG ファイルを fetch してここにインライン挿入する -->
+            <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
           </div>
 
           <p class="em-note">
