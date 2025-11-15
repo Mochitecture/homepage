@@ -139,10 +139,12 @@
   padding:8px 0 4px;
 }
 
-.japan-map{
+/* 外部 SVG を埋め込む <object> / inline SVG 両対応 */
+.jp-energy-map{
   width:100%;
   max-width:360px;
   height:auto;
+  display:block;
 }
 
 /* エリアカラー（参考画像に近いトーン） */
@@ -158,7 +160,8 @@
   --area-kyushu:#e1354f;
 }
 
-.japan-area{
+/* SVG 内の各エリアパス/グループ用 */
+.jp-area{
   stroke:rgba(0,0,0,.08);
   stroke-width:2;
   fill:#e5e7eb;
@@ -167,22 +170,22 @@
 }
 
 /* デフォルト色をエリア別に上書き */
-.japan-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
-.japan-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
-.japan-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
-.japan-area[data-area="hokuriku"]{ fill:var(--area-hokuriku); }
-.japan-area[data-area="chubu"]{ fill:var(--area-chubu); }
-.japan-area[data-area="kansai"]{ fill:var(--area-kansai); }
-.japan-area[data-area="chugoku"]{ fill:var(--area-chugoku); }
-.japan-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
-.japan-area[data-area="kyushu"]{ fill:var(--area-kyushu); }
+.jp-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
+.jp-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
+.jp-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
+.jp-area[data-area="hokuriku"]{ fill:var(--area-hokuriku); }
+.jp-area[data-area="chubu"]{ fill:var(--area-chubu); }
+.jp-area[data-area="kansai"]{ fill:var(--area-kansai); }
+.jp-area[data-area="chugoku"]{ fill:var(--area-chugoku); }
+.jp-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
+.jp-area[data-area="kyusyu"]{ fill:var(--area-kyushu); }
 
-.japan-area:hover{
+.jp-area:hover{
   filter:brightness(1.05);
   transform:translateY(-2px);
 }
 
-.japan-area.is-active{
+.jp-area.is-active{
   stroke:#111827;
   stroke-width:2.5;
   filter:brightness(1.12);
@@ -299,7 +302,7 @@
   .market-placeholder p{
     color:#e5e7eb;
   }
-  .japan-area{
+  .jp-area{
     stroke:rgba(15,23,42,.9);
   }
 }
