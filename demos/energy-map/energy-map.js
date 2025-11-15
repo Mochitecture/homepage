@@ -9,8 +9,7 @@ const areas = [
   { id: 'kansai',   label: '関西 / Kansai' },
   { id: 'chugoku',  label: '中国 / Chugoku' },
   { id: 'shikoku',  label: '四国 / Shikoku' },
-  // SVG の data-area="kyusyu" に合わせる
-  { id: 'kyusyu',   label: '九州 / Kyushu' }
+  { id: 'kyushu',   label: '九州 / Kyushu' }
 ];
 
 const menusByMarket = {
