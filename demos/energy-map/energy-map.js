@@ -9,7 +9,7 @@ const areas = [
   { id: 'kansai',   label: '関西 / Kansai' },
   { id: 'chugoku',  label: '中国 / Chugoku' },
   { id: 'shikoku',  label: '四国 / Shikoku' },
-  // SVG の data-area="kyusyu" に合わせて id も kyusyu
+  // SVG の data-area="kyusyu" に合わせる
   { id: 'kyusyu',   label: '九州 / Kyushu' }
 ];
 
@@ -36,51 +36,13 @@ const state = {
   view: 'graph'
 };
 
-// ログ ON/OFF 用
-const EM_DEBUG = true;
-
-// 外部 SVG 用に中へ注入するスタイル（同一オリジン想定）
-const SVG_AREA_STYLE = `
-  .jp-area {
-    cursor: pointer;
-  }
-
-  .jp-area path,
-  .jp-area polygon {
-    stroke: rgba(0,0,0,.08);
-    stroke-width: 2;
-    transition: fill .15s ease, transform .12s ease, filter .12s ease;
-  }
-
-  .jp-area[data-area="hokkaido"] path { fill:#2f86d9; }
-  .jp-area[data-area="tohoku"]  path { fill:#5675c7; }
-  .jp-area[data-area="tokyo"]   path { fill:#3fb3d4; }
-  .jp-area[data-area="hokuriku"] path { fill:#a6c930; }
-  .jp-area[data-area="chubu"]   path { fill:#33a365; }
-  .jp-area[data-area="kansai"]  path { fill:#f3b222; }
-  .jp-area[data-area="chugoku"] path { fill:#f28a22; }
-  .jp-area[data-area="shikoku"] path { fill:#f25b3f; }
-  .jp-area[data-area="kyusyu"]  path { fill:#e1354f; }
-
-  .jp-area:hover path,
-  .jp-area:hover polygon {
-    filter: brightness(1.05);
-    transform: translateY(-2px);
-  }
-
-  .jp-area.is-active path,
-  .jp-area.is-active polygon {
-    stroke: #111827;
-    stroke-width: 2.5;
-    filter: brightness(1.12);
-  }
-`;
+const EM_DEBUG = false; // 必要なら true に
 
 document.addEventListener('DOMContentLoaded', () => {
-  const dateInput = document.getElementById('em-date');
-  const timeSlider = document.getElementById('em-time-slider');
-  const timeLabel  = document.getElementById('em-time-label');
-  const nowBtn     = document.getElementById('em-now-btn');
+  const dateInput    = document.getElementById('em-date');
+  const timeSlider   = document.getElementById('em-time-slider');
+  const timeLabel    = document.getElementById('em-time-label');
+  const nowBtn       = document.getElementById('em-now-btn');
 
   const areaLabel    = document.getElementById('em-area-label');
   const snapshotMeta = document.getElementById('em-snapshot-meta');
@@ -108,54 +70,39 @@ document.addEventListener('DOMContentLoaded', () => {
   state.slot = slot;
   timeLabel.textContent = slotToLabel(slot);
 
-  // ===== エリア SVG クリック（外部 SVG / インライン両対応） =====
-  const svgObject = document.getElementById('em-map-object');
+  // ===== SVG ファイルを fetch してインライン挿入 =====
+  const mapContainer = document.getElementById('em-map-inline');
+  if (mapContainer) {
+    fetch('/demos/energy-map/JP-EnergyAreas.svg')
+      .then(res => {
+        if (!res.ok) throw new Error('SVG fetch failed: ' + res.status);
+        return res.text();
+      })
+      .then(svgText => {
+        // 中身をそのまま挿入
+        mapContainer.innerHTML = svgText;
 
-  if (svgObject) {
-    if (EM_DEBUG) console.log('[EnergyMap] <object id="em-map-object"> found');
+        // ルート <svg> を取得してクラスを付加（サイズ指定用）
+        const svgEl = mapContainer.querySelector('svg');
+        if (svgEl) {
+          svgEl.classList.add('jp-energy-map');
+        }
 
-    const bindSvg = () => {
-      const svgDoc = svgObject.contentDocument;
-      if (!svgDoc) {
-        if (EM_DEBUG) console.warn('[EnergyMap] svgObject.contentDocument is null');
-        return;
-      }
+        const areaElems = mapContainer.querySelectorAll('.jp-area');
+        if (EM_DEBUG) console.log('[EnergyMap] .jp-area count:', areaElems.length);
 
-      if (EM_DEBUG) {
-        console.log('[EnergyMap] SVG loaded');
-        console.log('[EnergyMap] svgDoc URL:', svgDoc.URL);
-      }
-
-      // スタイル注入
-      const styleEl = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'style');
-      styleEl.textContent = SVG_AREA_STYLE;
-
-      const svgRoot = svgDoc.documentElement;
-      if (svgRoot.firstChild) {
-        svgRoot.insertBefore(styleEl, svgRoot.firstChild);
-      } else {
-        svgRoot.appendChild(styleEl);
-      }
-
-      const areaElems = svgDoc.querySelectorAll('.jp-area');
-      if (EM_DEBUG) console.log('[EnergyMap] .jp-area count in SVG:', areaElems.length);
-
-      wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
-    };
-
-    if (svgObject.contentDocument) {
-      // すでにロード済み
-      bindSvg();
-    } else {
-      svgObject.addEventListener('load', () => {
-        if (EM_DEBUG) console.log('[EnergyMap] <object> load event fired');
-        bindSvg();
+        wireAreaEvents(
+          areaElems,
+          areaLabel,
+          snapshotMeta,
+          marketMeta,
+          viewTitle,
+          viewBody
+        );
+      })
+      .catch(err => {
+        console.error('[EnergyMap] SVG load error:', err);
       });
-    }
-  } else {
-    if (EM_DEBUG) console.warn('[EnergyMap] em-map-object not found, fallback to inline SVG');
-    const areaElems = document.querySelectorAll('.jp-area');
-    wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
   }
 
   // 日付変更
@@ -316,7 +263,7 @@ function updateMarketPlaceholder(titleEl, bodyEl){
       + ` 将来的には ${viewText} で指標を切り替えながら眺められる構成を想定しています。`;
   } else {
     bodyEl.textContent =
-      `需給調整市場（EPRX）の「${menuText}」に関する指標を、${viewText} で眺めるためのビュー。`
+      `需給調整市場（EPRX）の「${menuText}」に関する指標を、${viewText}で眺めるためのビュー。`
       + ` いまはダミーの枠だけ実装し、後のフェーズで EPRX 公開データを読み込み、`
       + ` エリア別に比較できるインジケータ群を検討していきます。`;
   }
