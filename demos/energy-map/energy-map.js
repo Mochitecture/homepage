@@ -31,13 +31,13 @@ const state = {
   area: 'hokuriku',
   date: null,              // Market Panel用に選択された日付
   snapshotDate: null,      // ページ読込時の実際の日付
-  snapshotTimeLabel: null, // ページ読込時の実際の時刻
+  snapshotTimeLabel: null, // ページ読込時の実際の時刻（00:00 / 00:30 ...）
   market: 'eprx',
   menu: 'primary',
   view: 'graph'
 };
 
-const EM_DEBUG = false; // 必要なら true に
+const EM_DEBUG = false;
 
 document.addEventListener('DOMContentLoaded', () => {
   const dateInput    = document.getElementById('em-date');
@@ -50,12 +50,13 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuSelect   = document.getElementById('em-menu-select');
 
   const viewButtons  = document.querySelectorAll('.seg-btn');
+  const marketView   = document.getElementById('em-market-view');
   const viewTitle    = document.getElementById('em-market-view-title');
   const viewBody     = document.getElementById('em-market-view-body');
 
   if (EM_DEBUG) console.log('[EnergyMap] DOMContentLoaded');
 
-  // ★ 「現在時刻」のスナップショット情報を保持
+  // 「現在時刻」のスナップショット情報を保持
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -67,10 +68,18 @@ document.addEventListener('DOMContentLoaded', () => {
   state.snapshotTimeLabel = slotToLabel(snapshotSlot);
 
   // Market Panel 用の日付（初期値は「今日」）
-  dateInput.value = snapshotDate;
-  state.date = dateInput.value;
+  if (dateInput) {
+    dateInput.value = snapshotDate;
+    state.date = dateInput.value;
 
-  // ===== SVG ファイルを fetch してインライン挿入 =====
+    dateInput.addEventListener('change', () => {
+      state.date = dateInput.value;
+      updateMeta(areaLabel, snapshotMeta, marketMeta);
+      updateMarketPlaceholder(viewTitle, viewBody);
+    });
+  }
+
+  // ===== SVG を fetch してインライン挿入 =====
   const mapContainer = document.getElementById('em-map-inline');
   if (mapContainer) {
     fetch('/demos/energy-map/JP-EnergyAreas.svg')
@@ -79,23 +88,20 @@ document.addEventListener('DOMContentLoaded', () => {
         return res.text();
       })
       .then(svgText => {
-        // 中身をそのまま挿入
         mapContainer.innerHTML = svgText;
-  
-        // ルート <svg> を取得してクラスを付加（サイズ指定用）
+
         const svgEl = mapContainer.querySelector('svg');
         if (svgEl) {
           svgEl.classList.add('jp-energy-map');
-          // ★ SVG 内の <title> 要素をすべて削除（ブラウザのツールチップを消す）
+          // ブラウザのツールチップを消す
           svgEl.querySelectorAll('title').forEach(t => t.remove());
         }
-  
+
         const areaElems = mapContainer.querySelectorAll('.jp-area');
-        // 念のため title 属性も消す
         areaElems.forEach(el => el.removeAttribute('title'));
-  
+
         if (EM_DEBUG) console.log('[EnergyMap] .jp-area count:', areaElems.length);
-  
+
         wireAreaEvents(
           areaElems,
           areaLabel,
@@ -110,49 +116,26 @@ document.addEventListener('DOMContentLoaded', () => {
       });
   }
 
-
-  // 日付変更（Market Panel 用）
-  dateInput.addEventListener('change', () => {
-    state.date = dateInput.value;
-    updateMeta(areaLabel, snapshotMeta, marketMeta);
-    updateMarketPlaceholder(viewTitle, viewBody);
-  });
-
-  // 時刻変更
-  timeSlider.addEventListener('input', () => {
-    const slot = Number(timeSlider.value);
-    state.slot = slot;
-    timeLabel.textContent = slotToLabel(slot);
-    updateMeta(areaLabel, snapshotMeta, marketMeta);
-    updateMarketPlaceholder(viewTitle, viewBody);
-  });
-
-  nowBtn.addEventListener('click', () => {
-    const now = new Date();
-    const slot = Math.floor(now.getHours() * 2 + now.getMinutes() / 30);
-    timeSlider.value = String(slot);
-    state.slot = slot;
-    timeLabel.textContent = slotToLabel(slot);
-    updateMeta(areaLabel, snapshotMeta, marketMeta);
-    updateMarketPlaceholder(viewTitle, viewBody);
-  });
-
   // 市場 / メニュー
-  marketSelect.addEventListener('change', () => {
-    state.market = marketSelect.value;
-    populateMenu(menuSelect, state.market);
-    state.menu = menuSelect.value;
-    updateMeta(areaLabel, snapshotMeta, marketMeta);
-    updateMarketPlaceholder(viewTitle, viewBody);
-  });
+  if (marketSelect) {
+    marketSelect.addEventListener('change', () => {
+      state.market = marketSelect.value;
+      populateMenu(menuSelect, state.market);
+      state.menu = menuSelect.value;
+      updateMeta(areaLabel, snapshotMeta, marketMeta);
+      updateMarketPlaceholder(viewTitle, viewBody);
+    });
+  }
 
-  menuSelect.addEventListener('change', () => {
-    state.menu = menuSelect.value;
-    updateMeta(areaLabel, snapshotMeta, marketMeta);
-    updateMarketPlaceholder(viewTitle, viewBody);
-  });
+  if (menuSelect) {
+    menuSelect.addEventListener('change', () => {
+      state.menu = menuSelect.value;
+      updateMeta(areaLabel, snapshotMeta, marketMeta);
+      updateMarketPlaceholder(viewTitle, viewBody);
+    });
+  }
 
-  // ビュー切替
+  // ビュー切替（Graph / Table）
   viewButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view;
@@ -210,18 +193,6 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
   areaNodes.forEach(node => {
     const id = node.dataset.area || node.id;
 
-    // ★ ここで付けていた tabindex / role / aria-label / keypress を削除
-    //    → マウス（タップ）専用のインタラクションにする
-    // node.setAttribute('tabindex', '0');
-    // node.setAttribute('role', 'button');
-    // if (id) {
-    //   node.setAttribute('aria-label', getAreaLabel(id));
-    // }
-
-    node.addEventListener('mouseenter', () => {
-      if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
-    });
-
     const handleSelect = () => {
       if (!id) return;
       if (EM_DEBUG) console.log('[EnergyMap] select area:', id);
@@ -230,6 +201,10 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
       updateMeta(areaLabel, snapshotMeta, marketMeta);
       updateMarketPlaceholder(viewTitle, viewBody);
     };
+
+    node.addEventListener('mouseenter', () => {
+      if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
+    });
 
     node.addEventListener('click', handleSelect);
   });
@@ -245,6 +220,7 @@ function updateActiveArea(nodes, activeId){
 }
 
 function populateMenu(select, market){
+  if (!select) return;
   const options = menusByMarket[market] || [];
   select.innerHTML = '';
   options.forEach(opt => {
@@ -275,7 +251,7 @@ function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
     }
   }
 
-  // Market Panel メタ（時間表現は出さない）
+  // Market Panel メタ（時間表現は不要）
   if (marketMetaEl) {
     const textEl = marketMetaEl.querySelector('.em-meta-text') || marketMetaEl;
 
@@ -290,5 +266,29 @@ function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
 
     textEl.textContent =
       `${areaText} ｜ ${dateText} ｜ ${marketText} - ${menuText}`;
+  }
+}
+
+function updateMarketPlaceholder(titleEl, bodyEl){
+  if (!titleEl || !bodyEl) return;
+
+  const marketText = state.market === 'eprx' ? 'EPRX' : 'JEPX';
+  const menuText = (menusByMarket[state.market] || [])
+    .find(m => m.value === state.menu)?.label || '';
+
+  const viewText = state.view === 'graph' ? '時系列グラフ' : 'テーブル';
+
+  titleEl.textContent = `Frame only / ${marketText} - ${menuText}`;
+
+  if (state.market === 'jepx') {
+    bodyEl.textContent =
+      `卸電力市場（JEPX）の「${menuText}」に関するビューの枠組みだけを先に用意している段階です。` +
+      ` 実際の価格データは利用条件に従い、この画面では表示していません。` +
+      ` 将来的には ${viewText} で指標を切り替えながら眺められる構成を想定しています。`;
+  } else {
+    bodyEl.textContent =
+      `需給調整市場（EPRX）の「${menuText}」に関する指標を、${viewText}で眺めるためのビュー。` +
+      ` いまはダミーの枠だけ実装し、後のフェーズで EPRX 公開データを読み込み、` +
+      ` エリア別に比較できるインジケータ群を検討していきます。`;
   }
 }
