@@ -48,60 +48,22 @@
           </header>
 
           <div class="em-map-wrap">
-            <!-- ★ SVG 日本地図（9エリア） -->
-            <svg class="japan-map" viewBox="0 0 220 520" aria-label="Japan areas">
-              <!-- 北海道 -->
-              <path
-                class="japan-area"
-                data-area="hokkaido"
-                d="M60 20 L135 20 L160 55 L150 110 L110 135 L70 110 L50 70 Z" />
-              <!-- 東北 -->
-              <path
-                class="japan-area"
-                data-area="tohoku"
-                d="M90 150 L135 145 L155 190 L145 245 L115 260 L85 240 L75 195 Z" />
-              <!-- 東京（関東） -->
-              <path
-                class="japan-area"
-                data-area="tokyo"
-                d="M95 275 L130 270 L145 300 L135 335 L105 345 L85 325 Z" />
-              <!-- 中部 -->
-              <path
-                class="japan-area"
-                data-area="chubu"
-                d="M80 345 L120 340 L140 370 L130 410 L95 420 L70 395 Z" />
-              <!-- 北陸 -->
-              <path
-                class="japan-area"
-                data-area="hokuriku"
-                d="M55 310 L90 305 L105 335 L95 365 L70 370 L50 345 Z" />
-              <!-- 関西 -->
-              <path
-                class="japan-area"
-                data-area="kansai"
-                d="M60 400 L100 395 L120 425 L110 455 L80 465 L55 445 Z" />
-              <!-- 中国 -->
-              <path
-                class="japan-area"
-                data-area="chugoku"
-                d="M30 420 L65 415 L80 445 L70 475 L40 485 L20 460 Z" />
-              <!-- 四国 -->
-              <path
-                class="japan-area"
-                data-area="shikoku"
-                d="M40 485 L80 480 L95 505 L75 525 L45 520 L30 500 Z" />
-              <!-- 九州 -->
-              <path
-                class="japan-area"
-                data-area="kyushu"
-                d="M10 460 L35 455 L55 480 L45 515 L20 520 L5 495 Z" />
-            </svg>
+            <!-- ★ 外部SVGファイルを読み込む -->
+            <object
+              id="em-map-object"
+              class="jp-energy-map"
+              type="image/svg+xml"
+              data="/demos/energy-map/JP-EnergyAreas.svg"
+              role="img"
+              aria-label="Japan power grid areas"
+            ></object>
           </div>
 
           <p class="em-note">
             ※ いまはイラスト的な日本地図上でエリアを選択。後のフェーズで実データや指標と連携させていきます。
           </p>
         </section>
+
 
         <!-- 中央：Snapshot -->
         <section class="em-card em-snapshot">
