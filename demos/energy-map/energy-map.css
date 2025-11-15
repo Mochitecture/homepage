@@ -1,352 +1,370 @@
-/* ===== Energy Map page ===== */
+/* ===== energy-map.css ===== */
 
-.page-energy-map {
-  max-width: 1200px;          /* 横幅を広めに */
-  margin: 0 auto;
-  padding: 32px 20px 40px;
+/* ページ全体レイアウト（base.css の wrap より少しワイドに） */
+.energy-main {
+  padding: 24px 0 40px;
 }
 
-/* 上部ヘッダー：タイトル＋説明＋日付/時刻 */
+.energy-wrap {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
 
-.emap-head {
-  display: flex;
-  flex-direction: column;     /* タイトル → 説明 → 時間バーを縦に並べる */
-  gap: 0.75rem;
-  align-items: stretch;
+/* タイトル周り */
+.energy-header {
   margin-bottom: 20px;
 }
 
-.emap-head-text {
-  flex: 0 0 auto;
+.energy-header .page-title {
+  margin: 0 0 4px;
+  font-size: 1.8rem;
 }
 
-.page-title {
-  font-size: 1.6rem;
-  line-height: 1.25;
-  margin: 0 0 0.35rem;
-  letter-spacing: 0.01em;
-}
-
-.page-desc {
-  margin: 0;
-  font-size: 0.9rem;
+.energy-header .page-subtitle {
+  margin: 0 0 16px;
+  font-size: 0.95rem;
   line-height: 1.7;
-  opacity: 0.85;
-}
-
-/* time bar（説明文の下に配置） */
-
-.energy-map-timebar {
-  background: var(--card);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 10px 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.25rem;
-  align-items: center;
-}
-
-.timebar-group {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.8rem;
-}
-
-.timebar-group label {
   opacity: 0.9;
 }
 
-.timebar-group input[type="date"] {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.45rem;
-  border-radius: 7px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: var(--card);
+/* 日付・時間コントロール */
+.energy-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  align-items: flex-end;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.02);
 }
 
-.timebar-group input[type="range"] {
-  width: 220px;
-}
-
-.timebar-time-display {
-  font-size: 0.85rem;
-  opacity: 0.85;
-  min-width: 4ch;
-  text-align: right;
-}
-
-.btn-now {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: #f3f4f6;
-  cursor: pointer;
-}
-
-.btn-now:hover {
-  background: #e5e7eb;
-}
-
-@media (prefers-color-scheme: dark) {
-  .btn-now {
-    background: #111827;
-    border-color: #374151;
-    color: #e5e7eb;
-  }
-  .btn-now:hover {
-    background: #020617;
-  }
-}
-
-/* layout */
-
-.energy-map-layout {
-  display: grid;
-  grid-template-columns: minmax(260px, 2.1fr) minmax(320px, 3fr);
-  grid-template-rows: auto auto;
-  gap: 1.5rem;
-}
-
-/* 左：エリアマップ */
-
-.energy-map-map {
-  grid-row: 1 / 3;
-  background: var(--card);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 16px 16px 14px;
+.field-group {
   display: flex;
   flex-direction: column;
+  gap: 4px;
+  min-width: 220px;
 }
 
-.energy-map-map-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  gap: 8px;
-  margin-bottom: 8px;
+.field-group label {
+  font-size: 0.82rem;
+  opacity: 0.8;
 }
 
-.energy-map-map-title {
+.field-group input[type="date"],
+.field-group input[type="time"],
+.field-group select {
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: var(--card);
+  color: inherit;
   font-size: 0.9rem;
-  font-weight: 600;
 }
 
-.energy-map-map-selected {
-  font-size: 0.8rem;
-  opacity: 0.7;
+.time-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.energy-map-map-selected .label {
-  opacity: 0.65;
-  margin-right: 0.25rem;
-}
-
-.energy-map-grid {
-  margin-top: 4px;
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.5rem;
+#timeRange {
   flex: 1;
 }
 
-.energy-map-region {
-  border-radius: 10px;
-  padding: 0.6rem 0.5rem;
-  font-size: 0.85rem;
-  text-align: center;
+.time-label {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.9rem;
+  min-width: 48px;
+}
+
+/* 透過ボタン */
+.btn-ghost {
+  border-radius: 999px;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid #e5e7eb;
+  background: transparent;
+  font-size: 0.8rem;
   cursor: pointer;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: rgba(255, 255, 255, 0.9);
-  transition:
-    background 0.15s ease,
-    border-color 0.15s ease,
-    transform 0.05s ease;
 }
-
-.energy-map-region span {
-  display: block;
-  font-size: 0.75rem;
-  opacity: 0.65;
-}
-
-.energy-map-region.is-active {
-  background: rgba(0, 0, 0, 0.03);
-  border-color: rgba(0, 0, 0, 0.25);
-  transform: translateY(-1px);
-}
-
-.energy-map-region:hover {
+.btn-ghost:hover {
   background: rgba(0, 0, 0, 0.04);
 }
-
-.energy-map-note {
-  margin-top: 10px;
-  font-size: 0.75rem;
-  opacity: 0.65;
-  line-height: 1.5;
-}
-
 @media (prefers-color-scheme: dark) {
-  .energy-map-region {
-    background: #111217;
-    border-color: rgba(255, 255, 255, 0.06);
+  .btn-ghost {
+    border-color: #374151;
   }
-  .energy-map-region.is-active {
-    background: #1f2937;
-    border-color: rgba(255, 255, 255, 0.35);
-  }
-  .energy-map-region:hover {
-    background: #111827;
-  }
-}
-
-/* 右側カード共通 */
-
-.energy-map-panel-card {
-  background: var(--card);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 14px 16px 16px;
-}
-
-.energy-map-panel-card h2 {
-  margin: 0 0 2px;
-  font-size: 0.98rem;
-}
-
-.energy-map-panel-meta {
-  font-size: 0.8rem;
-  opacity: 0.75;
-  margin: 0 0 10px;
-}
-
-/* snapshot card */
-
-.snapshot-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.55rem 1rem;
-}
-
-.snapshot-item {
-  font-size: 0.85rem;
-}
-
-.snapshot-label {
-  display: block;
-  opacity: 0.7;
-  margin-bottom: 0.1rem;
-}
-
-.snapshot-value {
-  font-weight: 600;
-  font-size: 0.95rem;
-}
-
-.snapshot-value.is-empty {
-  opacity: 0.5;
-  font-weight: 400;
-}
-
-/* market detail */
-
-.market-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  align-items: flex-end;
-  margin-bottom: 0.75rem;
-}
-
-.market-controls label {
-  font-size: 0.8rem;
-  opacity: 0.9;
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-}
-
-.market-controls select {
-  min-width: 160px;
-  padding: 0.27rem 0.5rem;
-  font-size: 0.83rem;
-  border-radius: 7px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: var(--card);
-}
-
-.market-view-toggle {
-  margin-left: auto;
-  display: flex;
-  gap: 0.3rem;
-}
-
-.market-view-toggle button {
-  border-radius: 999px;
-  padding: 0.2rem 0.7rem;
-  font-size: 0.75rem;
-  border: 1px solid transparent;
-  background: transparent;
-  cursor: pointer;
-  opacity: 0.75;
-}
-
-.market-view-toggle button.is-active {
-  border-color: rgba(0, 0, 0, 0.18);
-  background: rgba(0, 0, 0, 0.03);
-  opacity: 1;
-}
-
-.market-placeholder {
-  border-radius: 12px;
-  border: 1px dashed rgba(0, 0, 0, 0.12);
-  padding: 0.9rem 0.9rem;
-  font-size: 0.85rem;
-  line-height: 1.7;
-  background: rgba(250, 250, 250, 0.95);
-}
-
-.market-placeholder strong {
-  font-size: 0.8rem;
-}
-
-.market-placeholder p {
-  margin: 0.1rem 0 0;
-}
-
-@media (prefers-color-scheme: dark) {
-  .market-placeholder {
-    background: #0b0c10;
-    border-color: rgba(255, 255, 255, 0.16);
-  }
-  .market-view-toggle button.is-active {
-    border-color: rgba(255, 255, 255, 0.28);
+  .btn-ghost:hover {
     background: rgba(255, 255, 255, 0.06);
   }
 }
 
-/* responsive */
+/* メイン 3 カラム */
+.energy-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  grid-template-rows: auto auto;
+  grid-template-areas:
+    "area snapshot"
+    "area market";
+  gap: 24px;
+}
 
-@media (max-width: 860px) {
-  .energy-map-layout {
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto auto auto;
+.area-card {
+  grid-area: area;
+}
+.snapshot-card {
+  grid-area: snapshot;
+}
+.market-card {
+  grid-area: market;
+}
+
+/* 共通カード */
+.card-panel {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 18px 18px 20px;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.panel-meta {
+  margin: 2px 0 0;
+  font-size: 0.78rem;
+  opacity: 0.75;
+}
+
+.panel-note {
+  margin-top: 10px;
+  font-size: 0.78rem;
+  opacity: 0.75;
+  line-height: 1.6;
+}
+
+/* ===== 日本地図エリア ===== */
+
+.japan-map-wrap {
+  margin-top: 4px;
+}
+
+.japan-map-svg {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+}
+
+.area-block {
+  cursor: pointer;
+}
+
+.area-shape {
+  stroke: #ffffff;
+  stroke-width: 2;
+  transition:
+    fill 0.15s ease,
+    transform 0.15s ease,
+    opacity 0.12s ease,
+    stroke-width 0.12s ease;
+}
+
+/* 県境っぽい線 */
+.area-border {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.72);
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 色（参考図に合わせたトーン） */
+.area-hokkaido {
+  fill: #3399ff;
+}
+.area-tohoku {
+  fill: #6ba7da;
+}
+.area-tokyo {
+  fill: #50c2c7;
+}
+.area-hokuriku {
+  fill: #afd850;
+}
+.area-chubu {
+  fill: #5bbe72;
+}
+.area-kansai {
+  fill: #f0b11a;
+}
+.area-chugoku {
+  fill: #ef9031;
+}
+.area-shikoku {
+  fill: #e85e3a;
+}
+.area-kyushu {
+  fill: #d9414e;
+}
+
+/* hover / active */
+.area-block:hover .area-shape {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+.area-block.is-active .area-shape {
+  stroke: #111827;
+  stroke-width: 3;
+}
+@media (prefers-color-scheme: dark) {
+  .area-block.is-active .area-shape {
+    stroke: #e5e7eb;
   }
-  .energy-map-map {
-    grid-row: auto;
+}
+
+/* ===== Snapshot ===== */
+
+.snapshot-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 18px;
+  margin: 4px 0 0;
+}
+
+.snapshot-item dt {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-bottom: 2px;
+}
+
+.snapshot-item dd {
+  margin: 0;
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ===== Market Panel ===== */
+
+.market-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.market-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.market-row label {
+  min-width: 40px;
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+.market-row select {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: var(--card);
+  color: inherit;
+  font-size: 0.9rem;
+}
+
+.market-view-toggle {
+  justify-content: space-between;
+}
+
+.market-view-label {
+  font-size: 0.8rem;
+  opacity: 0.75;
+}
+
+/* Graph / Table スイッチボタン */
+.btn-toggle-wrap {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.2);
+}
+
+.btn-switch {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 0.78rem;
+  border-radius: 999px;
+  cursor: pointer;
+}
+.btn-switch.is-active {
+  background: #111827;
+  color: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  .btn-toggle-wrap {
+    background: rgba(31, 41, 55, 0.8);
+  }
+  .btn-switch.is-active {
+    background: #2563eb;
+  }
+}
+
+/* プレースホルダー本文 */
+.market-body {
+  border-radius: 12px;
+  border: 1px dashed rgba(148, 163, 184, 0.6);
+  padding: 10px 12px;
+  font-size: 0.8rem;
+  line-height: 1.7;
+}
+
+.market-placeholder strong {
+  font-weight: 600;
+}
+
+/* ===== レスポンシブ ===== */
+
+@media (max-width: 1024px) {
+  .energy-wrap {
+    padding: 0 16px;
+  }
+
+  .energy-grid {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "area"
+      "snapshot"
+      "market";
+  }
+
+  .japan-map-svg {
+    max-height: 360px;
   }
 }
 
 @media (max-width: 640px) {
-  .energy-map-timebar {
-    flex-direction: column;
-    align-items: flex-start;
+  .energy-controls {
+    padding: 12px 10px;
   }
-  .timebar-group input[type="range"] {
-    width: 100%;
+
+  .field-group {
+    min-width: 100%;
+  }
+
+  .market-body {
+    font-size: 0.78rem;
   }
 }
