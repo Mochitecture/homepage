@@ -149,7 +149,7 @@
 /* 外部 SVG を埋め込む <object> / inline SVG 両対応 */
 .jp-energy-map{
   width:100%;
-  max-width:380px;
+  max-width:360px; /* 380 → 360 など、少しだけ下げる */
   height:auto;
   display:block;
 }
