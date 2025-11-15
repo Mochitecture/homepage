@@ -1,398 +1,305 @@
-/* ===== energy-map.css ===== */
+/* ===== Energy Map 専用スタイル ===== */
 
-/* ページ全体レイアウト（base.css の wrap より少しワイドに） */
-.energy-main {
-  padding: 24px 0 40px;
+.em-wrap{
+  max-width:1200px;
+  margin:0 auto;
+  padding:32px 20px 48px;
 }
 
-.energy-wrap {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 0 24px;
+.em-header{
+  margin-bottom:20px;
 }
 
-/* タイトル周り */
-.energy-header {
-  margin-bottom: 20px;
-}
-
-.energy-header .page-title {
-  margin: 0 0 4px;
-  font-size: 1.8rem;
-}
-
-.energy-header .page-subtitle {
-  margin: 0 0 16px;
-  font-size: 0.95rem;
-  line-height: 1.7;
-  opacity: 0.9;
+.page-lead{
+  margin:0 0 16px;
+  font-size:14px;
+  opacity:.9;
 }
 
 /* 日付・時間コントロール */
-.energy-controls {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 32px;
-  align-items: flex-end;
-  padding: 14px 18px;
-  border-radius: 12px;
-  background: rgba(0, 0, 0, 0.02);
+
+.em-time-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:16px;
+  padding:14px 18px;
+  border-radius:14px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+  margin-bottom:20px;
 }
 
-.field-group {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-  min-width: 220px;
+.em-time-controls .field{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:13px;
 }
 
-.field-group label {
-  font-size: 0.82rem;
-  opacity: 0.8;
+.em-time-controls label{
+  opacity:.8;
 }
 
-.field-group input[type="date"],
-.field-group input[type="time"],
-.field-group select {
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: var(--card);
-  color: inherit;
-  font-size: 0.9rem;
+.field-time{
+  min-width:260px;
 }
 
-.time-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.time-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
 }
 
-#timeRange {
-  flex: 1;
+#em-time-slider{
+  flex:1;
 }
 
-.time-label {
-  font-variant-numeric: tabular-nums;
-  font-size: 0.9rem;
-  min-width: 48px;
+.time-label{
+  width:52px;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
 }
 
-/* 透過ボタン */
-.btn-ghost {
-  border-radius: 999px;
-  padding: 0.35rem 0.8rem;
-  border: 1px solid #e5e7eb;
-  background: transparent;
-  font-size: 0.8rem;
-  cursor: pointer;
+.btn-ghost{
+  padding:.3rem .7rem;
+  border-radius:.7rem;
+  border:1px solid rgba(0,0,0,.08);
+  background:transparent;
+  font-size:13px;
+  cursor:pointer;
 }
-.btn-ghost:hover {
-  background: rgba(0, 0, 0, 0.04);
-}
-@media (prefers-color-scheme: dark) {
-  .btn-ghost {
-    border-color: #374151;
-  }
-  .btn-ghost:hover {
-    background: rgba(255, 255, 255, 0.06);
-  }
+.btn-ghost:hover{
+  background:rgba(0,0,0,.04);
 }
 
-/* メイン 3 カラム */
-.energy-grid {
-  display: grid;
-  grid-template-columns: 1.25fr 1fr;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "area snapshot"
-    "area market";
-  gap: 24px;
+/* メイン 2カラム + 地図カード */
+
+.em-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.3fr) minmax(0,1.1fr);
+  gap:20px;
 }
 
-.area-card {
-  grid-area: area;
-}
-.snapshot-card {
-  grid-area: snapshot;
-}
-.market-card {
-  grid-area: market;
-}
-
-/* 共通カード */
-.card-panel {
-  background: var(--card);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 18px 18px 20px;
-}
-
-.panel-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 12px;
-}
-
-.panel-header h2 {
-  margin: 0;
-  font-size: 1.02rem;
-}
-
-.panel-meta {
-  margin: 2px 0 0;
-  font-size: 0.78rem;
-  opacity: 0.75;
-}
-
-.panel-note {
-  margin-top: 10px;
-  font-size: 0.78rem;
-  opacity: 0.75;
-  line-height: 1.6;
-}
-
-/* ===== 日本地図エリア（画像＋透明ボタン） ===== */
-
-.japan-map-wrap {
-  position: relative;
-  margin-top: 4px;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #000;      /* 画像の上下左右が切れても違和感出ないように */
-}
-
-.japan-map-img {
-  display: block;
-  width: 100%;
-  height: auto;
-}
-
-/* クリック領域のベース */
-.area-hit {
-  position: absolute;
-  border: none;
-  padding: 0;
-  margin: 0;
-  background: transparent;
-  cursor: pointer;
-  /* デバッグ用に輪郭を見たいときはコメント解除
-  outline: 1px solid rgba(255,0,0,.3);
-  */
-}
-
-/* 選択中のエリアだけ、うっすら白フチを出す */
-.area-hit.is-active {
-  box-shadow: 0 0 0 2px rgba(255,255,255,.9);
-  border-radius: 999px;
-}
-
-/* 各エリアのざっくり位置（% 指定） */
-/* 画像の縦横比によってずれるので、ブラウザで調整してください */
-
-.area-hokkaido {
-  left: 56%;
-  top: 3%;
-  width: 28%;
-  height: 18%;
-}
-
-.area-tohoku {
-  left: 60%;
-  top: 21%;
-  width: 20%;
-  height: 17%;
-}
-
-.area-tokyo {
-  left: 63%;
-  top: 35%;
-  width: 19%;
-  height: 11%;
-}
-
-.area-hokuriku {
-  left: 52%;
-  top: 33%;
-  width: 16%;
-  height: 11%;
-}
-
-.area-chubu {
-  left: 53%;
-  top: 44%;
-  width: 21%;
-  height: 13%;
-}
-
-.area-kansai {
-  left: 46%;
-  top: 47%;
-  width: 16%;
-  height: 12%;
-}
-
-.area-chugoku {
-  left: 37%;
-  top: 51%;
-  width: 15%;
-  height: 12%;
-}
-
-.area-shikoku {
-  left: 43%;
-  top: 63%;
-  width: 18%;
-  height: 10%;
-}
-
-.area-kyushu {
-  left: 33%;
-  top: 66%;
-  width: 19%;
-  height: 13%;
-}
-
-@media (max-width: 1024px) {
-  .japan-map-wrap {
-    border-radius: 12px;
+@media (max-width:960px){
+  .em-layout{
+    grid-template-columns:1fr;
   }
 }
 
-/* ===== Snapshot ===== */
-
-.snapshot-grid {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px 18px;
-  margin: 4px 0 0;
+.em-card{
+  background:var(--card);
+  border-radius:16px;
+  box-shadow:var(--shadow);
+  padding:18px 20px 16px;
 }
 
-.snapshot-item dt {
-  font-size: 0.75rem;
-  opacity: 0.7;
-  margin-bottom: 2px;
+/* 左カードをさらに上下に分割（Area + Market） */
+
+.em-area{
+  grid-row:1 / span 2;
+  display:flex;
+  flex-direction:column;
 }
 
-.snapshot-item dd {
-  margin: 0;
-  font-size: 0.95rem;
-  font-variant-numeric: tabular-nums;
+.em-snapshot{
+  grid-row:1;
 }
 
-/* ===== Market Panel ===== */
-
-.market-form {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 12px;
+.em-market{
+  grid-row:2;
 }
 
-.market-row {
-  display: flex;
-  align-items: center;
-  gap: 10px;
+/* Card header */
+
+.em-card-header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:8px;
+  margin-bottom:10px;
 }
 
-.market-row label {
-  min-width: 40px;
-  font-size: 0.8rem;
-  opacity: 0.75;
+.em-card-header h2{
+  font-size:1.05rem;
+  margin:0;
 }
 
-.market-row select {
-  flex: 1;
-  padding: 6px 8px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-  background: var(--card);
-  color: inherit;
-  font-size: 0.9rem;
+.em-meta{
+  font-size:.8rem;
+  opacity:.7;
 }
 
-.market-view-toggle {
-  justify-content: space-between;
+/* ===== SVG 日本地図 ===== */
+
+.em-map-wrap{
+  flex:1;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:8px 0 4px;
 }
 
-.market-view-label {
-  font-size: 0.8rem;
-  opacity: 0.75;
+.japan-map{
+  width:100%;
+  max-width:360px;
+  height:auto;
 }
 
-/* Graph / Table スイッチボタン */
-.btn-toggle-wrap {
-  display: inline-flex;
-  padding: 3px;
-  border-radius: 999px;
-  background: rgba(148, 163, 184, 0.2);
+/* エリアカラー（参考画像に近いトーン） */
+:root{
+  --area-hokkaido:#2f86d9;
+  --area-tohoku:#5675c7;
+  --area-tokyo:#3fb3d4;
+  --area-hokuriku:#a6c930;
+  --area-chubu:#33a365;
+  --area-kansai:#f3b222;
+  --area-chugoku:#f28a22;
+  --area-shikoku:#f25b3f;
+  --area-kyushu:#e1354f;
 }
 
-.btn-switch {
-  border: none;
-  background: transparent;
-  padding: 4px 10px;
-  font-size: 0.78rem;
-  border-radius: 999px;
-  cursor: pointer;
+.japan-area{
+  stroke:rgba(0,0,0,.08);
+  stroke-width:2;
+  fill:#e5e7eb;
+  cursor:pointer;
+  transition:fill .15s ease, transform .12s ease, box-shadow .12s ease;
 }
-.btn-switch.is-active {
-  background: #111827;
-  color: #ffffff;
+
+/* デフォルト色をエリア別に上書き */
+.japan-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
+.japan-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
+.japan-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
+.japan-area[data-area="hokuriku"]{ fill:var(--area-hokuriku); }
+.japan-area[data-area="chubu"]{ fill:var(--area-chubu); }
+.japan-area[data-area="kansai"]{ fill:var(--area-kansai); }
+.japan-area[data-area="chugoku"]{ fill:var(--area-chugoku); }
+.japan-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
+.japan-area[data-area="kyushu"]{ fill:var(--area-kyushu); }
+
+.japan-area:hover{
+  filter:brightness(1.05);
+  transform:translateY(-2px);
 }
-@media (prefers-color-scheme: dark) {
-  .btn-toggle-wrap {
-    background: rgba(31, 41, 55, 0.8);
+
+.japan-area.is-active{
+  stroke:#111827;
+  stroke-width:2.5;
+  filter:brightness(1.12);
+}
+
+.em-note{
+  margin-top:6px;
+  font-size:.75rem;
+  opacity:.65;
+}
+
+/* Snapshot */
+
+.snapshot-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:8px 16px;
+  margin:4px 0 0;
+}
+
+.snapshot-grid dt{
+  font-size:.8rem;
+  opacity:.7;
+}
+
+.snapshot-grid dd{
+  margin:2px 0 0;
+  font-size:.95rem;
+}
+
+/* Market */
+
+.market-controls{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px 16px;
+  margin-bottom:10px;
+}
+
+.market-controls .field{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  font-size:.8rem;
+}
+
+.market-controls label{
+  opacity:.75;
+}
+
+.market-controls select{
+  padding:6px 9px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+  background:var(--card);
+  font-size:.86rem;
+}
+
+.view-toggle{
+  margin-left:auto;
+  min-width:160px;
+}
+
+.view-toggle .label{
+  font-size:.8rem;
+  opacity:.7;
+  margin-bottom:4px;
+}
+
+.segmented{
+  display:inline-flex;
+  border-radius:999px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+}
+
+.seg-btn{
+  border:none;
+  background:transparent;
+  padding:5px 12px;
+  font-size:.8rem;
+  cursor:pointer;
+}
+
+.seg-btn.is-active{
+  background:#111827;
+  color:#fff;
+}
+
+.market-view{
+  border-radius:12px;
+  border:1px dashed #d1d5db;
+  padding:12px 14px;
+  background:rgba(249,250,251,.85);
+  font-size:.85rem;
+}
+
+.market-placeholder h3{
+  margin:0 0 4px;
+  font-size:.9rem;
+}
+
+.market-placeholder p{
+  margin:0;
+  line-height:1.6;
+}
+
+/* ダークモード微調整 */
+@media (prefers-color-scheme: dark){
+  .market-view{
+    background:rgba(15,23,42,.6);
+    border-color:#374151;
   }
-  .btn-switch.is-active {
-    background: #2563eb;
+  .market-placeholder p{
+    color:#e5e7eb;
   }
-}
-
-/* プレースホルダー本文 */
-.market-body {
-  border-radius: 12px;
-  border: 1px dashed rgba(148, 163, 184, 0.6);
-  padding: 10px 12px;
-  font-size: 0.8rem;
-  line-height: 1.7;
-}
-
-.market-placeholder strong {
-  font-weight: 600;
-}
-
-/* ===== レスポンシブ ===== */
-
-@media (max-width: 1024px) {
-  .energy-wrap {
-    padding: 0 16px;
-  }
-
-  .energy-grid {
-    grid-template-columns: 1fr;
-    grid-template-areas:
-      "area"
-      "snapshot"
-      "market";
-  }
-
-  .japan-map-svg {
-    max-height: 360px;
-  }
-}
-
-@media (max-width: 640px) {
-  .energy-controls {
-    padding: 12px 10px;
-  }
-
-  .field-group {
-    min-width: 100%;
-  }
-
-  .market-body {
-    font-size: 0.78rem;
+  .japan-area{
+    stroke:rgba(15,23,42,.9);
   }
 }
