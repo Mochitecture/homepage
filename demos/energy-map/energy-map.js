@@ -93,35 +93,36 @@
 
   // ===== Area Map =====
   function setupAreaMap() {
-    const svg = document.getElementById('japanMap');
-    if (!svg) return;
-
-    const blocks = Array.from(svg.querySelectorAll('.area-block'));
+    const hits = Array.from(document.querySelectorAll('.area-hit'));
+    if (hits.length === 0) return;
+  
     const labelEl = document.getElementById('selectedAreaLabel');
-
-    blocks.forEach((g) => {
-      g.addEventListener('click', () => {
-        const area = g.getAttribute('data-area');
-        const label = g.getAttribute('data-label');
-
+  
+    hits.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const area = btn.dataset.area;
+        const label = btn.dataset.label;
+  
         state.area = area;
         state.areaLabel = label;
-
-        blocks.forEach((b) => b.classList.remove('is-active'));
-        g.classList.add('is-active');
-
+  
+        hits.forEach((b) => b.classList.remove('is-active'));
+        btn.classList.add('is-active');
+  
         if (labelEl) labelEl.textContent = label;
+  
         refreshSnapshot();
         refreshMarketMeta();
       });
     });
-
-    // デフォルトで東北を選択
-    const defaultBlock = svg.querySelector('[data-area="tohoku"]');
-    if (defaultBlock) {
-      defaultBlock.dispatchEvent(new Event('click'));
+  
+    // デフォルト選択（例：北陸）
+    const defaultBtn = document.querySelector('.area-hit.area-hokuriku');
+    if (defaultBtn) {
+      defaultBtn.click();
     }
   }
+
 
   // ===== Market Panel =====
   function setupMarketPanel() {
