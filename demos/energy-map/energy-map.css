@@ -6,18 +6,18 @@
   padding: 32px 20px 40px;
 }
 
-/* 上部ヘッダー */
+/* 上部ヘッダー：タイトル＋説明＋日付/時刻 */
 
 .emap-head {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.25rem 2rem;
-  align-items: flex-end;
+  flex-direction: column;     /* タイトル → 説明 → 時間バーを縦に並べる */
+  gap: 0.75rem;
+  align-items: stretch;
   margin-bottom: 20px;
 }
 
 .emap-head-text {
-  flex: 1 1 260px;
+  flex: 0 0 auto;
 }
 
 .page-title {
@@ -34,10 +34,9 @@
   opacity: 0.85;
 }
 
-/* time bar（上に移動） */
+/* time bar（説明文の下に配置） */
 
 .energy-map-timebar {
-  flex: 0 0 auto;
   background: var(--card);
   border-radius: 16px;
   box-shadow: var(--shadow);
@@ -46,7 +45,6 @@
   flex-wrap: wrap;
   gap: 0.75rem 1.25rem;
   align-items: center;
-  min-width: min(360px, 100%);
 }
 
 .timebar-group {
@@ -333,31 +331,9 @@
 
 /* responsive */
 
-@media (max-width: 960px) {
-  .emap-head {
-    align-items: stretch;
-  }
-  .energy-map-timebar {
-    width: 100%;
-  }
-}
-
 @media (max-width: 860px) {
   .energy-map-layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto auto;
   }
-  .energy-map-map {
-    grid-row: auto;
-  }
-}
-
-@media (max-width: 640px) {
-  .energy-map-timebar {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-  .timebar-group input[type="range"] {
-    width: 100%;
-  }
-}
+  .energy-map-m
