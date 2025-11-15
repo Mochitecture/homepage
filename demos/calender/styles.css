@@ -1,97 +1,102 @@
-/* ===== Calendar styles (Mochitecture調) ===== */
+/* カレンダー固有。Mochitectureのトーンに合わせた薄いカード＋グリッド */
 :root{
-  --panel: var(--card);
-  --grid: rgba(0,0,0,.07);
+  --grid:#e5e7eb;
+  --grid-dark:#2a2f3a;
+  --panel:var(--card);
   --muted:#6b7280;
-  --accent:#2563eb;
+
   --event-a:#60a5fa; /* Work */
-  --event-b:#f472b6; /* Personal */
-  --event-c:#7ad1a8; /* Mochitecture */
-  --event-d:#f6c85f; /* Research */
+  --event-b:#fb7185; /* Personal */
+  --event-c:#34d399; /* Mochitecture */
+  --event-d:#f59e0b; /* Research */
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --grid:#2a2f3a;
+    --muted:#a8acb4;
+  }
 }
 
 /* レイアウト */
-.wrap{ max-width:1100px; margin:0 auto; padding:24px 20px }
-.page-header{ display:flex; align-items:flex-end; gap:16px; justify-content:space-between; margin-bottom:12px; }
-.legend{ display:flex; gap:.6rem; flex-wrap:wrap; }
-.legend .item{ display:flex; align-items:center; gap:.35rem; color:var(--muted); font-size:.95rem }
+.wrap{ max-width:1100px; margin:0 auto; padding:24px 20px; width:100%; }
+.page-title{ margin-bottom:12px; }
+
+.cal-toolbar{
+  display:flex; justify-content:space-between; align-items:center;
+  gap:12px; margin-bottom:10px;
+}
+.cal-toolbar .btn{ border:1px solid rgba(0,0,0,.08); }
+@media (prefers-color-scheme: dark){
+  .cal-toolbar .btn{ border-color: rgba(255,255,255,.12); }
+}
+
+/* カード */
+.card{
+  background:var(--panel);
+  border-radius:14px;
+  box-shadow:var(--shadow);
+  padding:14px;
+}
+
+/* レジェンド */
+.legend{ display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:10px; }
+.legend .item{ display:inline-flex; align-items:center; gap:.35rem; color:var(--muted); }
 .legend .sw{ width:12px; height:12px; border-radius:3px; display:inline-block }
 
-.toolbar{ display:flex; align-items:center; justify-content:space-between; margin:8px 0 14px }
-.hint{ color:var(--muted); font-size:.9rem }
-
-.btn{
-  display:inline-flex; align-items:center; gap:.4rem;
-  padding:.45rem .8rem; border-radius:.6rem; border:1px solid rgba(0,0,0,.12);
-  background:var(--panel); color:var(--fg); cursor:pointer;
-}
-.btn:hover{ transform:translateY(-1px); transition:transform .12s ease; }
-.btn-primary{ background:#111827; color:#fff; border-color:#111827; }
-@media (prefers-color-scheme: dark){
-  .btn{ border-color:rgba(255,255,255,.16); }
-  .btn-primary{ background:#2563eb; border-color:#2563eb; }
-}
-
-.calendar-card{ padding:0; overflow:hidden }
-
-/* Week bar + grid */
+/* カレンダー */
+.calendar-wrap{ position:relative; }
 .weekbar{
-  display:grid; grid-template-columns:80px repeat(7, 1fr); gap:0;
-  align-items:end; padding:.65rem .8rem; border-bottom:1px solid var(--grid); background:var(--panel);
+  display:grid; grid-template-columns:80px repeat(7,1fr); align-items:end;
+  gap:0; padding:.2rem 0 .4rem; color:var(--muted);
 }
-.weekbar .dow{ padding:.25rem; color:var(--muted); }
-.weekbar .date{ display:block; font-size:1.25rem; color:var(--fg) }
+.weekbar .dow .date{ display:block; font-size:18px; color:var(--fg); }
 
-.calendar-wrap{ height: calc(100vh - 220px); min-height:540px; overflow:auto; background:var(--panel); }
 .calendar{
-  position:relative; display:grid; grid-template-columns:80px repeat(7,1fr);
-  border-bottom:1px solid var(--grid);
+  display:grid; grid-template-columns:80px repeat(7,1fr);
+  position:relative; border-top:1px solid var(--grid); border-bottom:1px solid var(--grid);
+  min-height:680px;
 }
+.times{ display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid); }
+.timecell{ padding:2px 6px; color:var(--muted); font-size:12px; border-top:1px solid var(--grid); }
+.timecell:first-child{ border-top:none; }
 
-/* time gutter */
-.times{ display:grid; grid-auto-rows:36px; border-right:1px solid var(--grid); }
-.timecell{ padding:.2rem .5rem; color:var(--muted); font-size:.85rem; border-top:1px solid var(--grid); }
-.timecell:first-child{ border-top:none }
-
-/* day columns */
-.day{ position:relative; display:grid; grid-auto-rows:36px; border-right:1px solid var(--grid) }
-.day:last-child{ border-right:none }
-.slot{ border-top:1px solid var(--grid); position:relative }
+.day{ position:relative; display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid); }
+.day:last-child{ border-right:none; }
+.slot{ border-top:1px solid var(--grid); }
 .slot:nth-child(odd){ background:rgba(0,0,0,.01) }
 @media (prefers-color-scheme: dark){
   .slot:nth-child(odd){ background:rgba(255,255,255,.02) }
 }
 
-/* events */
+/* イベント */
 .event{
-  position:absolute; left:6px; right:6px; border-radius:10px; padding:.25rem .4rem .3rem; overflow:hidden;
-  color:#0b0b0c; font-weight:600; box-shadow:0 2px 6px rgba(0,0,0,.25); user-select:none;
+  position:absolute; left:6px; right:6px; border-radius:10px;
+  padding:.28rem .45rem .34rem; color:#0b0b0c; font-weight:600;
+  box-shadow:0 2px 6px rgba(0,0,0,.22); cursor:grab; user-select:none;
 }
-.event small{ display:block; font-weight:500; opacity:.9 }
-.event .handle{ position:absolute; left:4px; right:4px; height:6px; cursor:ns-resize; }
-.event .h-top{ top:0 } .event .h-btm{ bottom:0 }
+.event small{ display:block; font-weight:500; opacity:.85; }
+.event .handle{ position:absolute; left:0; right:0; height:6px; cursor:n-resize; opacity:.6; }
+.event .h-top{ top:-3px; } .event .h-btm{ bottom:-3px; }
 
-/* current line（今日の列だけ） */
-.nowline{ position:absolute; left:0; right:0; height:2px; background:var(--accent);
-  box-shadow:0 0 6px rgba(37,99,235,.85); pointer-events:none; z-index:20; }
-
-/* dialogs */
-.dialog{
-  border:1px solid rgba(0,0,0,.12); background:var(--panel); color:var(--fg);
-  border-radius:14px; padding:1rem; width:min(520px, 92vw);
+/* 現在時刻ライン（今日の列にのみ表示） */
+.nowline{
+  position:absolute; left:80px; right:0; height:2px; background: #22d3ee;
+  box-shadow:0 0 0 1px rgba(34,211,238,.25);
 }
-.dialog form{ display:grid; gap:.65rem }
-.dialog input, .dialog select{
-  background:var(--panel); color:var(--fg); border:1px solid rgba(0,0,0,.14); border-radius:.6rem; padding:.5rem .6rem;
-}
-.dialog .row{ display:grid; grid-template-columns:1fr 1fr; gap:.5rem }
-.dialog .actions{ display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem }
 
-/* finder */
-.cal-pick{ display:flex; gap:10px; flex-wrap:wrap }
-.results{ margin-top:.75rem; display:grid; gap:.5rem; max-height:45vh; overflow:auto }
+/* ダイアログ */
+.dialog{ border:1px solid var(--grid); background:var(--panel); border-radius:14px; width:min(520px, 92vw); }
+.form{ display:grid; gap:.6rem; padding:12px; }
+.form input, .form select{ width:100%; padding:.5rem .6rem; border:1px solid var(--grid); border-radius:10px; background:transparent; color:var(--fg); }
+.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
+.actions{ display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem; }
+
+.hint{ margin:.5rem 0 0; color:var(--muted); font-size:.9rem }
+
+/* 検索結果 */
+.results{ margin-top:.4rem; display:grid; gap:.5rem; max-height:50vh; overflow:auto; }
 .result-item{
-  display:flex; align-items:center; justify-content:space-between; gap:8px;
-  padding:.6rem .75rem; border:1px solid rgba(0,0,0,.08); border-radius:.75rem; background:var(--panel);
+  display:flex; justify-content:space-between; align-items:center;
+  gap:.8rem; padding:.6rem .8rem; border:1px solid var(--grid); border-radius:12px;
 }
-.result-item .meta{ color:var(--muted); font-size:.9rem }
+.pick label{ display:inline-flex; gap:.4rem; align-items:center; margin-right:.6rem; }
