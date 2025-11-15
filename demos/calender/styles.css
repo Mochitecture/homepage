@@ -1,9 +1,9 @@
 /* カレンダー固有。Mochitectureのトーンに合わせた薄いカード＋グリッド */
 :root{
-  --grid:#e5e7eb;
+  --grid:#e5e7eb;        /* グリッド線の明るさ */
   --grid-dark:#2a2f3a;
-  --panel:var(--card);
-  --muted:#6b7280;
+  --panel:var(--card);   /* カード背景 */
+  --muted:#6b7280;       /* 補助テキスト色 */
 
   --event-a:#60a5fa; /* Work */
   --event-b:#fb7185; /* Personal */
