@@ -76,11 +76,13 @@
   background:rgba(0,0,0,.04);
 }
 
-/* メイン：上段 Area + Snapshot / 下段 Market */
-
+/* メインレイアウト：
+   上段 Snapshot（2カラムぶち抜き）
+   下段 左 Area / 右 Market
+*/
 .em-layout{
   display:grid;
-  grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);
+  grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr);
   grid-template-rows:auto auto;
   gap:20px;
 }
@@ -99,21 +101,53 @@
   padding:18px 20px 16px;
 }
 
+/* 位置指定 */
+.em-snapshot{
+  grid-column:1 / span 2;
+  grid-row:1;
+}
+
 .em-area{
   grid-column:1;
-  grid-row:1;
+  grid-row:2;
   display:flex;
   flex-direction:column;
 }
 
-.em-snapshot{
+.em-market{
   grid-column:2;
-  grid-row:1;
+  grid-row:2;
 }
 
-.em-market{
-  grid-column:1 / span 2;
-  grid-row:2;
+/* Snapshot：各項目を1行に収める */
+.snapshot-grid{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin:4px 0 0;
+}
+
+.snapshot-grid > div{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  padding:4px 0;
+  border-bottom:1px solid #e5e7eb;
+}
+
+.snapshot-grid > div:last-child{
+  border-bottom:none;
+}
+
+.snapshot-grid dt{
+  font-size:.8rem;
+  opacity:.7;
+}
+
+.snapshot-grid dd{
+  margin:0;
+  font-size:.95rem;
+  font-variant-numeric:tabular-nums;
 }
 
 /* Card header */
@@ -221,34 +255,6 @@
   margin-top:6px;
   font-size:.75rem;
   opacity:.65;
-}
-
-/* Snapshot：縦並び寄り */
-
-.snapshot-grid{
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  margin:4px 0 0;
-}
-
-.snapshot-grid > div{
-  padding:4px 0;
-  border-bottom:1px solid #e5e7eb;
-}
-
-.snapshot-grid > div:last-child{
-  border-bottom:none;
-}
-
-.snapshot-grid dt{
-  font-size:.78rem;
-  opacity:.7;
-}
-
-.snapshot-grid dd{
-  margin:2px 0 0;
-  font-size:.95rem;
 }
 
 /* Market */
