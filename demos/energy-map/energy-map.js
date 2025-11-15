@@ -14,7 +14,7 @@ const areas = [
 
 const menusByMarket = {
   eprx: [
-    { value: 'primary',  label: '一次調整力' },
+    { value: 'primary',    label: '一次調整力' },
     { value: 'secondary1', label: '二次調整力①' },
     { value: 'secondary2', label: '二次調整力②' },
     { value: 'tertiary1',  label: '三次調整力①' },
@@ -35,13 +35,42 @@ const state = {
   view: 'graph'
 };
 
+// 外部 SVG 用に中へ注入するスタイル（同一オリジン想定）
+const SVG_AREA_STYLE = `
+  .jp-area{
+    stroke:rgba(0,0,0,.08);
+    stroke-width:2;
+    fill:#e5e7eb;
+    cursor:pointer;
+    transition:fill .15s ease, transform .12s ease, box-shadow .12s ease;
+  }
+  .jp-area[data-area="hokkaido"]{ fill:#2f86d9; }
+  .jp-area[data-area="tohoku"]{ fill:#5675c7; }
+  .jp-area[data-area="tokyo"]{ fill:#3fb3d4; }
+  .jp-area[data-area="hokuriku"]{ fill:#a6c930; }
+  .jp-area[data-area="chubu"]{ fill:#33a365; }
+  .jp-area[data-area="kansai"]{ fill:#f3b222; }
+  .jp-area[data-area="chugoku"]{ fill:#f28a22; }
+  .jp-area[data-area="shikoku"]{ fill:#f25b3f; }
+  .jp-area[data-area="kyusyu"]{ fill:#e1354f; }
+  .jp-area:hover{
+    filter:brightness(1.05);
+    transform:translateY(-2px);
+  }
+  .jp-area.is-active{
+    stroke:#111827;
+    stroke-width:2.5;
+    filter:brightness(1.12);
+  }
+`;
+
 document.addEventListener('DOMContentLoaded', () => {
   const dateInput = document.getElementById('em-date');
   const timeSlider = document.getElementById('em-time-slider');
   const timeLabel  = document.getElementById('em-time-label');
   const nowBtn     = document.getElementById('em-now-btn');
 
-  const areaLabel  = document.getElementById('em-area-label');
+  const areaLabel    = document.getElementById('em-area-label');
   const snapshotMeta = document.getElementById('em-snapshot-meta');
   const marketMeta   = document.getElementById('em-market-meta');
 
@@ -65,19 +94,36 @@ document.addEventListener('DOMContentLoaded', () => {
   state.slot = slot;
   timeLabel.textContent = slotToLabel(slot);
 
-  // エリア SVG クリック
-  const areaPaths = document.querySelectorAll('.japan-area');
-  areaPaths.forEach(path => {
-    path.addEventListener('click', () => {
-      const id = path.dataset.area;
-      state.area = id;
-      updateActiveArea(areaPaths, id);
-      updateMeta(areaLabel, snapshotMeta, marketMeta);
-      updateMarketPlaceholder(viewTitle, viewBody);
-    });
-  });
-  updateActiveArea(areaPaths, state.area);
-  areaLabel.textContent = getAreaLabel(state.area);
+  // ===== エリア SVG クリック（外部 SVG / インライン両対応） =====
+  const svgObject = document.getElementById('em-svg-map');
+
+  if (svgObject) {
+    // <object> で読み込んでいるケース
+    const bindSvg = () => {
+      const svgDoc = svgObject.contentDocument;
+      if (!svgDoc) return;
+
+      // スタイル注入（外部 SVG 内だけで完結）
+      const styleEl = svgDoc.createElement('style');
+      styleEl.textContent = SVG_AREA_STYLE;
+      svgDoc.head
+        ? svgDoc.head.appendChild(styleEl)
+        : svgDoc.documentElement.prepend(styleEl);
+
+      const areaElems = svgDoc.querySelectorAll('.jp-area');
+      wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
+    };
+
+    if (svgObject.contentDocument) {
+      bindSvg();
+    } else {
+      svgObject.addEventListener('load', bindSvg);
+    }
+  } else {
+    // インライン SVG（<svg class="jp-energy-map"> ...）の fallback
+    const areaElems = document.querySelectorAll('.jp-area');
+    wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
+  }
 
   // 日付変更
   dateInput.addEventListener('change', () => {
@@ -151,8 +197,28 @@ function getAreaLabel(id){
   return found ? found.label : id;
 }
 
-function updateActiveArea(paths, activeId){
-  paths.forEach(p => {
+// SVG 内のエリア要素に click ハンドラをバインド
+function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody){
+  if (!areaNodes || areaNodes.length === 0) return;
+
+  // 初期状態の active を反映
+  updateActiveArea(areaNodes, state.area);
+  if (areaLabel) areaLabel.textContent = getAreaLabel(state.area);
+
+  areaNodes.forEach(node => {
+    node.addEventListener('click', () => {
+      const id = node.dataset.area;
+      if (!id) return;
+      state.area = id;
+      updateActiveArea(areaNodes, id);
+      updateMeta(areaLabel, snapshotMeta, marketMeta);
+      updateMarketPlaceholder(viewTitle, viewBody);
+    });
+  });
+}
+
+function updateActiveArea(nodes, activeId){
+  nodes.forEach(p => {
     p.classList.toggle('is-active', p.dataset.area === activeId);
   });
   const labelEl = document.getElementById('em-area-label');
