@@ -124,8 +124,128 @@
                 需給調整市場（EPRX）の一次調整力に関する指標を、時系列グラフで眺めるためのビュー。今はまだダミーの枠のみを実装し、データの差し込み方や指標セットを検討する段階。
               </p>
             </div>
+
+            <!-- Graph ビュー用のダミー・フレーム -->
+            <div class="market-graph-skeleton" id="em-market-graph">
+              <div class="graph-grid">
+                <div class="graph-y">
+                  <span>High</span>
+                  <span>Mid</span>
+                  <span>Low</span>
+                </div>
+                <div class="graph-body">
+                  <div class="graph-bar bar-1"></div>
+                  <div class="graph-bar bar-2"></div>
+                  <div class="graph-bar bar-3"></div>
+                  <div class="graph-bar bar-4"></div>
+                  <div class="graph-bar bar-5"></div>
+                  <div class="graph-bar bar-6"></div>
+                </div>
+              </div>
+              <p class="graph-caption">
+                ※ 実データを接続する前のレイアウト確認用ダミー。将来的には 48 コマの価格・量などをここに重ねる想定。
+              </p>
+            </div>
+
+            <!-- Table ビュー用のダミー・フレーム -->
+            <div class="market-table-skeleton" id="em-market-table">
+              <div class="table-head">
+                <span>時刻</span>
+                <span>指標A</span>
+                <span>指標B</span>
+                <span>指標C</span>
+              </div>
+              <div class="table-body">
+                <div class="table-row">
+                  <span>00:00</span><span>--</span><span>--</span><span>--</span>
+                </div>
+                <div class="table-row">
+                  <span>03:00</span><span>--</span><span>--</span><span>--</span>
+                </div>
+                <div class="table-row">
+                  <span>06:00</span><span>--</span><span>--</span><span>--</span>
+                </div>
+                <div class="table-row">
+                  <span>09:00</span><span>--</span><span>--</span><span>--</span>
+                </div>
+                <div class="table-row">
+                  <span>12:00</span><span>--</span><span>--</span><span>--</span>
+                </div>
+              </div>
+              <p class="table-caption">
+                ※ テーブルビューでは 30 分単位の行を並べ、後のフェーズで EPRX / JEPX の指標を埋め込むイメージ。
+              </p>
+            </div>
           </div>
         </section>
+      </section>
+
+      <!-- Data & License セクション -->
+      <section class="em-card em-data-license">
+        <header class="em-card-header">
+          <h2>Data &amp; License</h2>
+          <p class="em-meta">
+            Energy Map で扱う予定のデータソースと、現時点での利用条件メモ。
+          </p>
+        </header>
+
+        <div class="dl-note">
+          <p>
+            ※ 現段階ではどの外部データソースとも接続しておらず、このページでは UI の枠組みのみ提供しています。
+            実データ接続の前に、各ソースの利用規約や二次利用条件を必ず確認します。
+          </p>
+        </div>
+
+        <div class="dl-table-wrap">
+          <table class="dl-table">
+            <thead>
+              <tr>
+                <th>データ種別</th>
+                <th>予定している取得元</th>
+                <th>ライセンス / 利用条件メモ</th>
+                <th>現状</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>電力需給（実績・予測）</td>
+                <td>OCCTO / 電力広域運営推進機関</td>
+                <td>一般向け利用不可。要契約・要審査。画面上の公開には別途合意が必要。</td>
+                <td>まだ接続しない</td>
+              </tr>
+              <tr>
+                <td>卸電力市場（JEPX）価格</td>
+                <td>JEPX 公開情報</td>
+                <td>二次利用・商用利用に制限あり。グラフ表示や履歴保存には転載条件を厳密に確認する。</td>
+                <td>UI のみ用意</td>
+              </tr>
+              <tr>
+                <td>需給調整市場（EPRX）</td>
+                <td>経産省 EPRX 公開データ</td>
+                <td>実データの扱いに注意。引用範囲や再配布に関する利用規定の確認が必須。</td>
+                <td>UI のみ用意</td>
+              </tr>
+              <tr>
+                <td>天気・気温</td>
+                <td>Open-Meteo / 気象庁</td>
+                <td>気象庁は出典明記が条件。Open-Meteo は商用利用可だが利用規約に従う。</td>
+                <td>未接続</td>
+              </tr>
+              <tr>
+                <td>アイコン / 図版</td>
+                <td>Mochitecture 自作素材</td>
+                <td>自作素材のため自由利用可能。</td>
+                <td>OK</td>
+              </tr>
+              <tr>
+                <td>日本地図ベース</td>
+                <td>自作 SVG（Mochitecture）</td>
+                <td>Mochitecture 著作の自作 SVG。Energy Map 内で自由に再利用可。</td>
+                <td>完成済み</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </div>
   </main>
