@@ -12,22 +12,44 @@
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main">
-    <div class="wrap page-energy-map">
-      <header class="page-head">
-        <h1 class="page-title">Energy Map</h1>
-        <p class="page-desc">
-          日本の電力エリアごとの「市場シグナル × 需給 × 天気」を一枚で眺めるための実験ページ。
-          現時点では UI の枠組みのみ実装し、データ連携は今後段階的に追加予定。
-        </p>
+    <div class="page-energy-map">
+      <!-- 上部：タイトル＋日付/時刻 -->
+      <header class="emap-head">
+        <div class="emap-head-text">
+          <h1 class="page-title">Energy Map</h1>
+          <p class="page-desc">
+            日本の電力エリアを「市場 × 需給 × 天気」で眺めるためのミニマップ。
+            いまは UI の骨組みだけ実装している状態。
+          </p>
+        </div>
+
+        <section class="energy-map-timebar" aria-label="時間・日付の選択">
+          <div class="timebar-group">
+            <label for="dateInput">日付</label>
+            <input type="date" id="dateInput">
+          </div>
+
+          <div class="timebar-group">
+            <label for="timeSlider">時間</label>
+            <input type="range" id="timeSlider" min="0" max="47" step="1">
+            <span class="timebar-time-display" id="timeLabel">00:00</span>
+          </div>
+
+          <div class="timebar-group">
+            <button type="button" class="btn-now" id="btnNow">Now</button>
+          </div>
+        </section>
       </header>
 
+      <!-- 本体：左マップ＋右パネル -->
       <section class="energy-map-layout" aria-label="Energy Map layout">
         <!-- Left: area map -->
         <section class="energy-map-map" aria-label="エリア選択マップ">
           <header class="energy-map-map-header">
-            <p class="energy-map-map-title">エリアマップ</p>
+            <p class="energy-map-map-title">Area</p>
             <p class="energy-map-map-selected">
-              選択中：<span id="selectedAreaLabel">東京エリア</span>
+              <span class="label">選択中</span>
+              <span id="selectedAreaLabel">東京</span>
             </p>
           </header>
 
@@ -62,24 +84,24 @@
           </div>
 
           <p class="energy-map-note">
-            ※ 現時点では概念的なエリアブロックのみ表示しています。
-            後続フェーズで、日本地図や広域系統エリア形状に差し替える前提のスケッチです。
+            ※ いまは概念的なエリアブロックだけを配置。
+            後のフェーズで日本地図や広域エリアの形状に差し替える前提のスケッチ。
           </p>
         </section>
 
         <!-- Right: snapshot card -->
-        <section class="energy-map-panel-card" aria-label="現在の代表データ">
-          <h2>現在の代表データ</h2>
+        <section class="energy-map-panel-card" aria-label="エリア概況">
+          <h2>Now Snapshot</h2>
           <p class="energy-map-panel-meta" id="snapshotMeta">
-            東京エリア・選択時刻の代表値（ダミー表示中）
+            東京 / 日付・時間未選択（ダミー表示）
           </p>
           <div class="snapshot-grid">
             <div class="snapshot-item">
-              <span class="snapshot-label">広域予備率</span>
+              <span class="snapshot-label">予備率</span>
               <span class="snapshot-value is-empty" id="snapshotReserve">-- %</span>
             </div>
             <div class="snapshot-item">
-              <span class="snapshot-label">需要実績</span>
+              <span class="snapshot-label">需要</span>
               <span class="snapshot-value is-empty" id="snapshotDemand">-- MW</span>
             </div>
             <div class="snapshot-item">
@@ -94,63 +116,44 @@
         </section>
 
         <!-- Right: market detail card -->
-        <section class="energy-map-panel-card" aria-label="市場・メニュー詳細">
-          <h2>市場・メニュー詳細</h2>
+        <section class="energy-map-panel-card" aria-label="市場パネル">
+          <h2>Market Panel</h2>
           <p class="energy-map-panel-meta" id="marketMeta">
-            表示する市場とメニューを選ぶと、この枠にグラフ／テーブルを配置予定。
+            市場とメニューを選ぶと、この枠にグラフ／テーブルを置く想定。
           </p>
 
           <div class="market-controls">
             <label>
               市場
               <select id="marketSelect">
-                <option value="none">（市場を選択）</option>
+                <option value="none">選択なし</option>
                 <option value="eprx">需給調整市場（EPRX）</option>
-                <option value="jepx-spot" disabled>JEPXスポット（契約前のため表示のみ）</option>
-                <option value="jepx-intraday" disabled>JEPX時間前（契約前のため表示のみ）</option>
+                <option value="jepx-spot" disabled>JEPXスポット（リンクのみ）</option>
+                <option value="jepx-intraday" disabled>JEPX時間前（リンクのみ）</option>
               </select>
             </label>
 
             <label>
               メニュー
               <select id="menuSelect" disabled>
-                <option value="none">（市場を先に選択）</option>
+                <option value="none">市場を先に選択</option>
               </select>
             </label>
 
-            <div class="market-view-toggle" aria-label="表示モード選択">
+            <div class="market-view-toggle" aria-label="表示モード">
               <button type="button" class="is-active" data-view="graph">Graph</button>
               <button type="button" data-view="table">Table</button>
             </div>
           </div>
 
           <div class="market-placeholder" id="marketPlaceholder">
-            <strong>まだデータは接続していません。</strong>
+            <strong>まだデータはつながっていません。</strong>
             <p>
-              ここには、選択した市場・メニューの時系列グラフやテーブルを表示します。
-              現段階では UI の骨組みのみを実装しておき、
-              後続フェーズで EPRX や OCCTO のオープンデータを安全な範囲で接続します。
+              ここには、選んだ市場・メニューの時系列グラフやテーブルを配置します。
+              まずは EPRX／OCCTO／気象庁のオープンデータから順番に接続する計画。
             </p>
           </div>
         </section>
-      </section>
-
-      <!-- time controls -->
-      <section class="energy-map-timebar" aria-label="時間・日付の選択">
-        <div class="timebar-group">
-          <label for="dateInput">日付</label>
-          <input type="date" id="dateInput">
-        </div>
-
-        <div class="timebar-group">
-          <label for="timeSlider">時刻</label>
-          <input type="range" id="timeSlider" min="0" max="47" step="1">
-          <span class="timebar-time-display" id="timeLabel">00:00</span>
-        </div>
-
-        <div class="timebar-group">
-          <button type="button" class="btn-now" id="btnNow">現在時刻へ</button>
-        </div>
       </section>
     </div>
   </main>
