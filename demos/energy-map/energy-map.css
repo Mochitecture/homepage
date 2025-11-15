@@ -119,24 +119,27 @@
   grid-row:2;
 }
 
-/* Snapshot：各項目を1行に収める */
+/* Now Snapshot：1行に4項目を「｜」区切りで並べる */
+
 .snapshot-grid{
   display:flex;
-  flex-direction:column;
-  gap:4px;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:0;            /* 余白は各ブロック側で調整 */
   margin:4px 0 0;
 }
 
 .snapshot-grid > div{
   display:flex;
   align-items:baseline;
-  justify-content:space-between;
-  padding:4px 0;
-  border-bottom:1px solid #e5e7eb;
+  gap:4px;          /* 「ラベル」と「値」の間 */
+  padding:0 12px;
+  border-left:1px solid #e5e7eb;  /* ｜の代わり */
 }
 
-.snapshot-grid > div:last-child{
-  border-bottom:none;
+.snapshot-grid > div:first-child{
+  padding-left:0;
+  border-left:none; /* 先頭だけ線なし */
 }
 
 .snapshot-grid dt{
@@ -148,6 +151,22 @@
   margin:0;
   font-size:.95rem;
   font-variant-numeric:tabular-nums;
+}
+
+/* モバイルでは縦並びに戻す（任意） */
+@media (max-width:640px){
+  .snapshot-grid{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .snapshot-grid > div{
+    padding:4px 0;
+    border-left:none;
+    border-bottom:1px solid #e5e7eb;
+  }
+  .snapshot-grid > div:last-child{
+    border-bottom:none;
+  }
 }
 
 /* Card header */
