@@ -60,34 +60,30 @@
     <!-- 03: Energy Map #00 -->
     <article class="card-works" id="arch-20251116-energy-map-00">
       <header>
-        <h3>［Data Prototype］Energy Map #00：オープンデータの地図を構想する</h3>
+        <h3>［Data Prototype］Energy Map #00</h3>
         <p class="meta">
-          <time datetime="2025-11-16">2025-11-16</time><span>所要: 1h</span><span>状態: 枠組み設計中 v0</span>
+          <time datetime="2025-11-16">2025-11-16</time><span>所要: 2h</span><span>状態: UIフレーム試作 v0.1</span>
         </p>
       </header>
     
       <p class="lead">
-        日本の電力システムを「一枚の地図」として観測するためのプロトタイプ。
-        オープンデータだけで「市場シグナル × 需給 × 天気」の関係を静かに可視化することを目指す。
+        日本の電力エリアを「市場 × 需給 × 天気」でながめるためのミニマップ。
+        まずはオープンデータ前提で、地図とカードだけを並べたフレーム版。
       </p>
     
       <ul class="bullets">
-        <li>before：JEPX／EPRX／OCCTO／気象庁など、電力関連データがサイトごと・CSVごとに散在していた</li>
-        <li>how：Energy Map というコンセプトを定義し、日本地図＋右側の詳細カード＋下部タイムスライダーの三分割レイアウトで「枠」だけ先に設計</li>
-        <li>after：オープンデータとライセンス条件を整理しつつ、EPRX など安全に使えるレイヤーから順番に積み上げていける土台を用意</li>
+        <li>before：JEPX / EPRX / OCCTO / 気象庁など、電力系データがサイトごと・CSVごとに散在していた</li>
+        <li>how：上段に「現在」、下段に「Area（日本地図）」と「Market Panel（市場 × メニュー × 日付）」を置く3ブロック構成で UI を設計し、SVG地図はエリアをホバー／クリックすると反応するが指標はすべてダミー値にとどめる</li>
+        <li>after：Data &amp; License セクションで各ソースの利用条件を整理しつつ、条件クリアな指標から順番に実データを接続していく（オープンデータ層 → 契約データ層 → 自社ログ層へ拡張）</li>
       </ul>
     
       <p class="tags">
-        <span class="pill">#OpenData</span>
-        <span class="pill">#Energy</span>
-        <span class="pill">#UI</span>
-        <span class="pill">#Prototype</span>
+        <span class="pill">#OpenData</span><span class="pill">#Energy</span>
+        <span class="pill">#UI</span><span class="pill">#Prototype</span>
       </p>
     
       <footer class="links">
-        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">
-          Energy Map を開く
-        </a>
+        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">Energy Map を開く</a>
       </footer>
     </article>
 
