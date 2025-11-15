@@ -147,6 +147,13 @@
   display:block;
 }
 
+/* スマホ時は少し大きめにマップを見せる */
+@media (max-width:600px){
+  .jp-energy-map{
+    max-width:420px;
+  }
+}
+
 /* エリアカラー（参考画像に近いトーン） */
 :root{
   --area-hokkaido:#2f86d9;
@@ -164,9 +171,12 @@
 .jp-area{
   stroke:rgba(0,0,0,.08);
   stroke-width:2;
+  stroke-linejoin:round;
+  stroke-linecap:round;
   fill:#e5e7eb;
   cursor:pointer;
-  transition:fill .15s ease, transform .12s ease, box-shadow .12s ease;
+  transition:fill .15s ease, transform .12s ease, filter .12s ease;
+  touch-action:manipulation;
 }
 
 /* デフォルト色をエリア別に上書き（インライン用） */
@@ -183,6 +193,11 @@
 .jp-area:hover{
   filter:brightness(1.05);
   transform:translateY(-2px);
+}
+
+.jp-area:focus-visible{
+  outline:2px solid #111827;
+  outline-offset:2px;
 }
 
 .jp-area.is-active{
@@ -283,6 +298,131 @@
   font-size:.85rem;
 }
 
+/* Graph / Table ビュー用フレーム */
+
+.market-graph-skeleton,
+.market-table-skeleton{
+  margin-top:10px;
+}
+
+.graph-grid{
+  display:grid;
+  grid-template-columns:auto 1fr;
+  gap:0 8px;
+  align-items:stretch;
+}
+
+.graph-y{
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  font-size:.7rem;
+  opacity:.7;
+}
+
+.graph-body{
+  position:relative;
+  min-height:120px;
+  border-radius:10px;
+  border:1px solid #e5e7eb;
+  padding:6px 8px;
+  overflow:hidden;
+}
+
+.graph-body::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:repeating-linear-gradient(
+    to right,
+    rgba(156,163,175,.2),
+    rgba(156,163,175,.2) 1px,
+    transparent 1px,
+    transparent 24px
+  );
+  opacity:.35;
+  pointer-events:none;
+}
+
+.graph-bar{
+  position:relative;
+  width:14px;
+  border-radius:999px;
+  background:rgba(31,41,55,.8);
+}
+
+.graph-bar::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  opacity:.12;
+}
+
+.graph-bar.bar-1{ height:60%; bottom:0; left:6%; }
+.graph-bar.bar-2{ height:40%; bottom:0; left:22%; }
+.graph-bar.bar-3{ height:75%; bottom:0; left:38%; }
+.graph-bar.bar-4{ height:50%; bottom:0; left:54%; }
+.graph-bar.bar-5{ height:30%; bottom:0; left:70%; }
+.graph-bar.bar-6{ height:65%; bottom:0; left:86%; }
+
+.graph-caption,
+.table-caption{
+  margin-top:6px;
+  font-size:.72rem;
+  opacity:.7;
+}
+
+.table-head{
+  display:grid;
+  grid-template-columns:80px repeat(3, minmax(0,1fr));
+  gap:4px;
+  padding:6px 8px;
+  border-radius:8px;
+  background:rgba(243,244,246,.9);
+  font-size:.75rem;
+  font-weight:500;
+}
+
+.table-body{
+  margin-top:4px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+  overflow:hidden;
+}
+
+.table-row{
+  display:grid;
+  grid-template-columns:80px repeat(3, minmax(0,1fr));
+  gap:4px;
+  padding:6px 8px;
+  font-size:.75rem;
+}
+
+.table-row:nth-child(odd){
+  background:rgba(249,250,251,.9);
+}
+
+.table-row:nth-child(even){
+  background:#fff;
+}
+
+/* view クラスで Graph / Table を切り替え */
+
+.market-view.is-graph #em-market-graph{
+  display:block;
+}
+.market-view.is-graph #em-market-table{
+  display:none;
+}
+
+.market-view.is-table #em-market-graph{
+  display:none;
+}
+.market-view.is-table #em-market-table{
+  display:block;
+}
+
 .market-placeholder h3{
   margin:0 0 4px;
   font-size:.9rem;
@@ -293,6 +433,46 @@
   line-height:1.6;
 }
 
+/* Data & License セクション */
+
+.em-data-license{
+  margin-top:24px;
+}
+
+.dl-note{
+  font-size:.78rem;
+  opacity:.8;
+}
+
+.dl-note p{
+  margin:0 0 8px;
+}
+
+.dl-table-wrap{
+  margin-top:6px;
+  overflow-x:auto;
+}
+
+.dl-table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:.78rem;
+}
+
+.dl-table th,
+.dl-table td{
+  padding:6px 8px;
+  border-bottom:1px solid #e5e7eb;
+  text-align:left;
+  vertical-align:top;
+}
+
+.dl-table th{
+  white-space:nowrap;
+  font-weight:600;
+  opacity:.8;
+}
+
 /* ダークモード微調整 */
 @media (prefers-color-scheme: dark){
   .market-view{
@@ -301,6 +481,22 @@
   }
   .market-placeholder p{
     color:#e5e7eb;
+  }
+  .graph-body{
+    border-color:#4b5563;
+  }
+  .table-body{
+    border-color:#4b5563;
+  }
+  .table-row:nth-child(odd){
+    background:rgba(31,41,55,.6);
+  }
+  .table-row:nth-child(even){
+    background:rgba(17,24,39,.9);
+  }
+  .dl-table th,
+  .dl-table td{
+    border-color:#374151;
   }
   .jp-area{
     stroke:rgba(15,23,42,.9);
