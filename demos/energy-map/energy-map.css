@@ -48,6 +48,17 @@
   min-width:260px;
 }
 
+.field-date-inline{
+  min-width:160px;
+}
+.field-date-inline input[type="date"]{
+  padding:6px 9px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+  background:var(--card);
+  font-size:.86rem;
+}
+
 .time-row{
   display:flex;
   align-items:center;
@@ -186,7 +197,27 @@
 
 .em-meta{
   font-size:.8rem;
-  opacity:.7;
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+.em-meta-badge{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:2px 8px;
+  border-radius:999px;
+  background:rgba(15,23,42,.06);
+  font-size:.7rem;
+  font-weight:500;
+  letter-spacing:.03em;
+  text-transform:uppercase;
+}
+
+.em-meta-text{
+  opacity:.78;
+  font-size:.8rem;
 }
 
 /* ===== SVG 日本地図 ===== */
@@ -306,7 +337,7 @@
 
 .view-toggle{
   margin-left:auto;
-  min-width:160px;
+  min-width:180px;
 }
 
 .view-toggle .label{
@@ -320,14 +351,16 @@
   border-radius:999px;
   border:1px solid #e5e7eb;
   overflow:hidden;
+  background:#fff;
 }
 
 .seg-btn{
   border:none;
   background:transparent;
-  padding:5px 12px;
+  padding:5px 14px;
   font-size:.8rem;
   cursor:pointer;
+  white-space:nowrap;
 }
 
 .seg-btn.is-active{
