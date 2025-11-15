@@ -23,26 +23,7 @@
       </header>
 
       <section class="em-layout">
-        <!-- 左：エリア地図 -->
-        <section class="em-card em-area">
-          <header class="em-card-header">
-            <h2>Area</h2>
-            <p class="em-meta">
-              選択中：<span id="em-area-label">北陸 / Hokuriku</span>
-            </p>
-          </header>
-
-          <div class="em-map-wrap">
-            <!-- ★ JS で SVG ファイルを fetch してここにインライン挿入する -->
-            <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
-          </div>
-
-          <p class="em-note">
-            ※ いまはイラスト的な日本地図上でエリアを選択。後のフェーズで実データや指標と連携させていきます。
-          </p>
-        </section>
-
-        <!-- 右：Snapshot -->
+        <!-- 上段：Now Snapshot（フル幅） -->
         <section class="em-card em-snapshot">
           <header class="em-card-header">
             <h2>Now Snapshot</h2>
@@ -69,8 +50,26 @@
             </div>
           </dl>
         </section>
-
-        <!-- 下段フル幅：Market Panel -->
+      
+        <!-- 下段左：Area -->
+        <section class="em-card em-area">
+          <header class="em-card-header">
+            <h2>Area</h2>
+            <p class="em-meta">
+              選択中：<span id="em-area-label">北陸 / Hokuriku</span>
+            </p>
+          </header>
+      
+          <div class="em-map-wrap">
+            <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
+          </div>
+      
+          <p class="em-note">
+            ※ いまはイラスト的な日本地図上でエリアを選択。後のフェーズで実データや指標と連携させていきます。
+          </p>
+        </section>
+      
+        <!-- 下段右：Market Panel -->
         <section class="em-card em-market">
           <header class="em-card-header">
             <h2>Market Panel</h2>
@@ -78,8 +77,7 @@
               北陸 / Hokuriku / 2025-11-16 00:00｜需給調整市場（EPRX） - 一次調整力
             </p>
           </header>
-
-          <!-- ★ 日付・時間は Market 側に寄せる -->
+      
           <div class="em-time-controls em-time-controls--market">
             <div class="field">
               <label for="em-date">日付</label>
@@ -94,7 +92,7 @@
               </div>
             </div>
           </div>
-
+      
           <div class="market-controls">
             <div class="field">
               <label for="em-market-select">市場</label>
@@ -105,9 +103,7 @@
             </div>
             <div class="field">
               <label for="em-menu-select">メニュー</label>
-              <select id="em-menu-select">
-                <!-- JS で動的に差し替え -->
-              </select>
+              <select id="em-menu-select"></select>
             </div>
             <div class="field view-toggle">
               <span class="label">ビュー</span>
@@ -117,7 +113,7 @@
               </div>
             </div>
           </div>
-
+      
           <div class="market-view" id="em-market-view">
             <div class="market-placeholder">
               <h3 id="em-market-view-title">Frame only / EPRX - 一次調整力</h3>
