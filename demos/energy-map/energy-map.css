@@ -16,77 +16,6 @@
   opacity:.9;
 }
 
-/* 日付・時間コントロール（Market 内で使用） */
-
-.em-time-controls{
-  display:flex;
-  flex-wrap:wrap;
-  gap:16px;
-  padding:10px 12px;
-  border-radius:12px;
-  background:var(--card);
-  border:1px solid #e5e7eb;
-  margin-bottom:12px;
-}
-
-.em-time-controls--market{
-  margin-top:4px;
-}
-
-.em-time-controls .field{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  font-size:13px;
-}
-
-.em-time-controls label{
-  opacity:.8;
-}
-
-.field-time{
-  min-width:260px;
-}
-
-.field-date-inline{
-  min-width:160px;
-}
-.field-date-inline input[type="date"]{
-  padding:6px 9px;
-  border-radius:8px;
-  border:1px solid #e5e7eb;
-  background:var(--card);
-  font-size:.86rem;
-}
-
-.time-row{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-#em-time-slider{
-  flex:1;
-}
-
-.time-label{
-  width:52px;
-  font-variant-numeric:tabular-nums;
-  text-align:right;
-}
-
-.btn-ghost{
-  padding:.3rem .7rem;
-  border-radius:.7rem;
-  border:1px solid rgba(0,0,0,.08);
-  background:transparent;
-  font-size:13px;
-  cursor:pointer;
-}
-.btn-ghost:hover{
-  background:rgba(0,0,0,.04);
-}
-
 /* メインレイアウト：
    上段 Snapshot（2カラムぶち抜き）
    下段 左 Area / 右 Market
@@ -130,56 +59,6 @@
   grid-row:2;
 }
 
-/* Now Snapshot：1行に4項目を「｜」区切りで並べる */
-
-.snapshot-grid{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:0;            /* 余白は各ブロック側で調整 */
-  margin:4px 0 0;
-}
-
-.snapshot-grid > div{
-  display:flex;
-  align-items:baseline;
-  gap:4px;          /* 「ラベル」と「値」の間 */
-  padding:0 12px;
-  border-left:1px solid #e5e7eb;  /* ｜の代わり */
-}
-
-.snapshot-grid > div:first-child{
-  padding-left:0;
-  border-left:none; /* 先頭だけ線なし */
-}
-
-.snapshot-grid dt{
-  font-size:.8rem;
-  opacity:.7;
-}
-
-.snapshot-grid dd{
-  margin:0;
-  font-size:.95rem;
-  font-variant-numeric:tabular-nums;
-}
-
-/* モバイルでは縦並びに戻す（任意） */
-@media (max-width:640px){
-  .snapshot-grid{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .snapshot-grid > div{
-    padding:4px 0;
-    border-left:none;
-    border-bottom:1px solid #e5e7eb;
-  }
-  .snapshot-grid > div:last-child{
-    border-bottom:none;
-  }
-}
-
 /* Card header */
 
 .em-card-header{
@@ -220,6 +99,55 @@
   font-size:.8rem;
 }
 
+/* Now Snapshot：1行に4項目を「｜」区切りで並べる */
+
+.snapshot-grid{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:0;
+  margin:4px 0 0;
+}
+
+.snapshot-grid > div{
+  display:flex;
+  align-items:baseline;
+  gap:4px;
+  padding:0 12px;
+  border-left:1px solid #e5e7eb;
+}
+
+.snapshot-grid > div:first-child{
+  padding-left:0;
+  border-left:none;
+}
+
+.snapshot-grid dt{
+  font-size:.8rem;
+  opacity:.7;
+}
+
+.snapshot-grid dd{
+  margin:0;
+  font-size:.95rem;
+  font-variant-numeric:tabular-nums;
+}
+
+@media (max-width:640px){
+  .snapshot-grid{
+    flex-direction:column;
+    align-items:flex-start;
+  }
+  .snapshot-grid > div{
+    padding:4px 0;
+    border-left:none;
+    border-bottom:1px solid #e5e7eb;
+  }
+  .snapshot-grid > div:last-child{
+    border-bottom:none;
+  }
+}
+
 /* ===== SVG 日本地図 ===== */
 
 .em-map-wrap{
@@ -230,10 +158,10 @@
   padding:8px 0 4px;
 }
 
-/* 外部 SVG を埋め込む <object> / inline SVG 両対応 */
+/* 外部 SVG を埋め込む inline */
 .jp-energy-map{
   width:100%;
-  max-width:360px; /* 380 → 360 など、少しだけ下げる */
+  max-width:360px;
   height:auto;
   display:block;
 }
@@ -245,7 +173,8 @@
   }
 }
 
-/* エリアカラー（参考画像に近いトーン） */
+/* エリアカラー */
+
 :root{
   --area-hokkaido:#2f86d9;
   --area-tohoku:#5675c7;
@@ -258,7 +187,6 @@
   --area-kyushu:#e1354f;
 }
 
-/* インライン SVG で使う場合のスタイル */
 .jp-area{
   stroke:rgba(0,0,0,.08);
   stroke-width:2;
@@ -271,7 +199,6 @@
   touch-action:manipulation;
 }
 
-/* エリアごとの色 */
 .jp-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
 .jp-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
 .jp-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
@@ -282,19 +209,13 @@
 .jp-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
 .jp-area[data-area="kyusyu"]{ fill:var(--area-kyushu); }
 
-/* ★ ホバー時に「少し大きく」 */
+/* ホバー時に少し浮かせる */
 .jp-area:hover{
   filter:brightness(1.05);
   transform:translateY(-1px) scale(1.04);
 }
 
-/* ★ クリック時の長方形枠を消しつつ、線だけ強調 */
-.jp-area:focus-visible{
-  outline:none;
-  stroke:#111827;
-  stroke-width:2.8;
-}
-
+/* アクティブエリアの強調 */
 .jp-area.is-active{
   stroke:#111827;
   stroke-width:2.8;
@@ -328,6 +249,18 @@
 }
 
 .market-controls select{
+  padding:6px 9px;
+  border-radius:8px;
+  border:1px solid #e5e7eb;
+  background:var(--card);
+  font-size:.86rem;
+}
+
+.field-date-inline{
+  min-width:160px;
+}
+
+.field-date-inline input[type="date"]{
   padding:6px 9px;
   border-radius:8px;
   border:1px solid #e5e7eb;
@@ -422,7 +355,6 @@
   pointer-events:none;
 }
 
-/* バーを絶対配置して雰囲気だけ表現 */
 .graph-bar{
   position:absolute;
   width:14px;
