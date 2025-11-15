@@ -1,294 +1,214 @@
-// ===== energy-map.js =====
+// ===== Energy Map JS =====
 
-(function () {
-  const state = {
-    date: null,
-    timeIndex: 0, // 0-47 (30min 刻み)
-    area: null, // 'hokkaido' 等
-    areaLabel: null,
-    market: 'eprx', // 'eprx' | 'jepx'
-    menu: null,
-    view: 'graph', // 'graph' | 'table'
-  };
+const areas = [
+  { id: 'hokkaido', label: '北海道 / Hokkaido' },
+  { id: 'tohoku',   label: '東北 / Tohoku' },
+  { id: 'tokyo',    label: '東京 / Tokyo' },
+  { id: 'hokuriku', label: '北陸 / Hokuriku' },
+  { id: 'chubu',    label: '中部 / Chubu' },
+  { id: 'kansai',   label: '関西 / Kansai' },
+  { id: 'chugoku',  label: '中国 / Chugoku' },
+  { id: 'shikoku',  label: '四国 / Shikoku' },
+  { id: 'kyushu',   label: '九州 / Kyushu' }
+];
 
-  const MARKET_MENUS = {
-    eprx: [
-      { value: 'primary', label: '一次調整力' },
-      { value: 'secondary1', label: '二次調整力①' },
-      { value: 'secondary2', label: '二次調整力②' },
-      { value: 'tertiary1', label: '三次調整力①' },
-      { value: 'tertiary2', label: '三次調整力②' },
-    ],
-    jepx: [
-      { value: 'spot', label: 'スポット市場' },
-      { value: 'intraday', label: '時間前市場' },
-    ],
-  };
+const menusByMarket = {
+  eprx: [
+    { value: 'primary',  label: '一次調整力' },
+    { value: 'secondary1', label: '二次調整力①' },
+    { value: 'secondary2', label: '二次調整力②' },
+    { value: 'tertiary1',  label: '三次調整力①' },
+    { value: 'tertiary2',  label: '三次調整力②' }
+  ],
+  jepx: [
+    { value: 'spot',     label: 'スポット市場' },
+    { value: 'intraday', label: '時間前市場' }
+  ]
+};
 
-  document.addEventListener('DOMContentLoaded', () => {
-    setupDateTimeControls();
-    setupAreaMap();
-    setupMarketPanel();
-    refreshAll();
+const state = {
+  area: 'hokuriku',
+  date: null,
+  slot: 0,
+  market: 'eprx',
+  menu: 'primary',
+  view: 'graph'
+};
+
+document.addEventListener('DOMContentLoaded', () => {
+  const dateInput = document.getElementById('em-date');
+  const timeSlider = document.getElementById('em-time-slider');
+  const timeLabel  = document.getElementById('em-time-label');
+  const nowBtn     = document.getElementById('em-now-btn');
+
+  const areaLabel  = document.getElementById('em-area-label');
+  const snapshotMeta = document.getElementById('em-snapshot-meta');
+  const marketMeta   = document.getElementById('em-market-meta');
+
+  const marketSelect = document.getElementById('em-market-select');
+  const menuSelect   = document.getElementById('em-menu-select');
+
+  const viewButtons  = document.querySelectorAll('.seg-btn');
+  const viewTitle    = document.getElementById('em-market-view-title');
+  const viewBody     = document.getElementById('em-market-view-body');
+
+  // 初期日付＆時間をセット
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, '0');
+  const dd = String(now.getDate()).padStart(2, '0');
+  dateInput.value = `${yyyy}-${mm}-${dd}`;
+  state.date = dateInput.value;
+
+  const slot = Math.floor(now.getHours() * 2 + now.getMinutes() / 30);
+  timeSlider.value = String(slot);
+  state.slot = slot;
+  timeLabel.textContent = slotToLabel(slot);
+
+  // エリア SVG クリック
+  const areaPaths = document.querySelectorAll('.japan-area');
+  areaPaths.forEach(path => {
+    path.addEventListener('click', () => {
+      const id = path.dataset.area;
+      state.area = id;
+      updateActiveArea(areaPaths, id);
+      updateMeta(areaLabel, snapshotMeta, marketMeta);
+      updateMarketPlaceholder(viewTitle, viewBody);
+    });
+  });
+  updateActiveArea(areaPaths, state.area);
+  areaLabel.textContent = getAreaLabel(state.area);
+
+  // 日付変更
+  dateInput.addEventListener('change', () => {
+    state.date = dateInput.value;
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
   });
 
-  // ===== Date / Time =====
-  function setupDateTimeControls() {
-    const dateInput = document.getElementById('dateInput');
-    const range = document.getElementById('timeRange');
-    const label = document.getElementById('timeLabel');
-    const nowBtn = document.getElementById('timeNowBtn');
+  // 時刻変更
+  timeSlider.addEventListener('input', () => {
+    const slot = Number(timeSlider.value);
+    state.slot = slot;
+    timeLabel.textContent = slotToLabel(slot);
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, '0');
-    const dd = String(today.getDate()).padStart(2, '0');
-    const todayStr = `${yyyy}-${mm}-${dd}`;
+  nowBtn.addEventListener('click', () => {
+    const now = new Date();
+    const slot = Math.floor(now.getHours() * 2 + now.getMinutes() / 30);
+    timeSlider.value = String(slot);
+    state.slot = slot;
+    timeLabel.textContent = slotToLabel(slot);
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-    state.date = todayStr;
-    dateInput.value = todayStr;
+  // 市場 / メニュー
+  marketSelect.addEventListener('change', () => {
+    state.market = marketSelect.value;
+    // 市場変更時にメニュー候補を差し替え
+    populateMenu(menuSelect, state.market);
+    state.menu = menuSelect.value;
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-    // デフォルトは 0:00
-    state.timeIndex = 0;
-    range.value = '0';
-    updateTimeLabel(label, state.timeIndex);
+  menuSelect.addEventListener('change', () => {
+    state.menu = menuSelect.value;
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-    dateInput.addEventListener('change', () => {
-      state.date = dateInput.value || todayStr;
-      refreshSnapshot();
-      refreshMarketMeta();
+  // ビュー切替
+  viewButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const view = btn.dataset.view;
+      state.view = view;
+      viewButtons.forEach(b => b.classList.toggle('is-active', b === btn));
+      updateMarketPlaceholder(viewTitle, viewBody);
     });
+  });
 
-    range.addEventListener('input', () => {
-      state.timeIndex = Number(range.value);
-      updateTimeLabel(label, state.timeIndex);
-      refreshSnapshot();
-      refreshMarketMeta();
-    });
+  // 初期メニューセット
+  populateMenu(menuSelect, state.market);
+  state.menu = menuSelect.value;
+  updateMeta(areaLabel, snapshotMeta, marketMeta);
+  updateMarketPlaceholder(viewTitle, viewBody);
+});
 
-    nowBtn.addEventListener('click', () => {
-      const now = new Date();
-      const idx = now.getHours() * 2 + (now.getMinutes() >= 30 ? 1 : 0);
-      state.timeIndex = idx;
-      range.value = String(idx);
-      updateTimeLabel(label, idx);
+/* ===== helpers ===== */
 
-      const y = now.getFullYear();
-      const m = String(now.getMonth() + 1).padStart(2, '0');
-      const d = String(now.getDate()).padStart(2, '0');
-      const nowStr = `${y}-${m}-${d}`;
-      state.date = nowStr;
-      dateInput.value = nowStr;
+function slotToLabel(slot){
+  const h = Math.floor(slot / 2);
+  const m = (slot % 2) === 0 ? '00' : '30';
+  return `${String(h).padStart(2,'0')}:${m}`;
+}
 
-      refreshSnapshot();
-      refreshMarketMeta();
-    });
+function getAreaLabel(id){
+  const found = areas.find(a => a.id === id);
+  return found ? found.label : id;
+}
+
+function updateActiveArea(paths, activeId){
+  paths.forEach(p => {
+    p.classList.toggle('is-active', p.dataset.area === activeId);
+  });
+  const labelEl = document.getElementById('em-area-label');
+  if (labelEl) labelEl.textContent = getAreaLabel(activeId);
+}
+
+function populateMenu(select, market){
+  const options = menusByMarket[market] || [];
+  select.innerHTML = '';
+  options.forEach(opt => {
+    const o = document.createElement('option');
+    o.value = opt.value;
+    o.textContent = opt.label;
+    select.appendChild(o);
+  });
+}
+
+function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
+  const areaText = getAreaLabel(state.area);
+  const timeText = `${state.date} ${slotToLabel(state.slot)}`;
+
+  areaLabelEl.textContent = areaText;
+  snapshotMetaEl.textContent = `${areaText} / ${timeText}（ダミー値）`;
+
+  const marketText = state.market === 'eprx'
+    ? '需給調整市場（EPRX）'
+    : '卸電力市場（JEPX）';
+
+  const menuText = (menusByMarket[state.market] || [])
+    .find(m => m.value === state.menu)?.label || '';
+
+  marketMetaEl.textContent =
+    `${areaText} / ${timeText}｜${marketText} - ${menuText}`;
+}
+
+function updateMarketPlaceholder(titleEl, bodyEl){
+  const marketText = state.market === 'eprx'
+    ? 'EPRX'
+    : 'JEPX';
+
+  const menuText = (menusByMarket[state.market] || [])
+    .find(m => m.value === state.menu)?.label || '';
+
+  const viewText = state.view === 'graph' ? '時系列グラフ' : 'テーブル';
+
+  titleEl.textContent = `Frame only / ${marketText} - ${menuText}`;
+
+  if (state.market === 'jepx') {
+    bodyEl.textContent =
+      `卸電力市場（JEPX）の「${menuText}」に関するビューの枠組みだけを先に用意している段階です。`
+      + ` 実際の価格データは利用条件に従い、この画面では表示していません。`
+      + ` 将来的には ${viewText} で指標を切り替えながら眺められる構成を想定しています。`;
+  } else {
+    bodyEl.textContent =
+      `需給調整市場（EPRX）の「${menuText}」に関する指標を、${viewText} で眺めるためのビュー。`
+      + ` いまはダミーの枠だけ実装し、後のフェーズで EPRX 公開データを読み込み、`
+      + ` エリア別に比較できるインジケータ群を検討していきます。`;
   }
-
-  function updateTimeLabel(el, idx) {
-    const h = Math.floor(idx / 2);
-    const m = idx % 2 === 0 ? '00' : '30';
-    el.textContent = `${String(h).padStart(2, '0')}:${m}`;
-  }
-
-  // ===== Area Map =====
-  function setupAreaMap() {
-    const hits = Array.from(document.querySelectorAll('.area-hit'));
-    if (hits.length === 0) return;
-  
-    const labelEl = document.getElementById('selectedAreaLabel');
-  
-    hits.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const area = btn.dataset.area;
-        const label = btn.dataset.label;
-  
-        state.area = area;
-        state.areaLabel = label;
-  
-        hits.forEach((b) => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-  
-        if (labelEl) labelEl.textContent = label;
-  
-        refreshSnapshot();
-        refreshMarketMeta();
-      });
-    });
-  
-    // デフォルト選択（例：北陸）
-    const defaultBtn = document.querySelector('.area-hit.area-hokuriku');
-    if (defaultBtn) {
-      defaultBtn.click();
-    }
-  }
-
-
-  // ===== Market Panel =====
-  function setupMarketPanel() {
-    const marketSelect = document.getElementById('marketSelect');
-    const menuSelect = document.getElementById('menuSelect');
-    const viewButtons = document.querySelectorAll('.market-view-toggle .btn-switch');
-
-    if (!marketSelect || !menuSelect) return;
-
-    // 初期メニュー
-    state.market = marketSelect.value || 'eprx';
-    populateMenuOptions(state.market);
-
-    marketSelect.addEventListener('change', () => {
-      state.market = marketSelect.value;
-      populateMenuOptions(state.market);
-      refreshMarketMeta();
-      refreshMarketPlaceholder();
-    });
-
-    menuSelect.addEventListener('change', () => {
-      state.menu = menuSelect.value;
-      refreshMarketMeta();
-      refreshMarketPlaceholder();
-    });
-
-    viewButtons.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        const view = btn.dataset.view;
-        if (!view) return;
-
-        state.view = view;
-        viewButtons.forEach((b) => b.classList.remove('is-active'));
-        btn.classList.add('is-active');
-        refreshMarketPlaceholder();
-      });
-    });
-  }
-
-  function populateMenuOptions(market) {
-    const menuSelect = document.getElementById('menuSelect');
-    if (!menuSelect) return;
-
-    const menus = MARKET_MENUS[market] || [];
-    menuSelect.innerHTML = '';
-
-    menus.forEach((m) => {
-      const opt = document.createElement('option');
-      opt.value = m.value;
-      opt.textContent = m.label;
-      menuSelect.appendChild(opt);
-    });
-
-    if (menus.length > 0) {
-      state.menu = menus[0].value;
-    } else {
-      state.menu = null;
-    }
-  }
-
-  function refreshMarketMeta() {
-    const metaEl = document.getElementById('marketMeta');
-    if (!metaEl) return;
-
-    const areaLabel = state.areaLabel || '--エリア';
-    const timeStr = timeIndexToLabel(state.timeIndex);
-    const dateStr = state.date || '--/--/--';
-
-    const marketLabel =
-      state.market === 'jepx' ? '卸電力市場（JEPX）' : '需給調整市場（EPRX）';
-
-    const menuObj = (MARKET_MENUS[state.market] || []).find(
-      (m) => m.value === state.menu,
-    );
-    const menuLabel = menuObj ? menuObj.label : 'メニュー未選択';
-
-    metaEl.textContent = `${areaLabel} / ${dateStr} ${timeStr}  ｜  ${marketLabel}・${menuLabel}`;
-  }
-
-  function refreshMarketPlaceholder() {
-    const el = document.getElementById('marketPlaceholder');
-    if (!el) return;
-
-    const menuObj = (MARKET_MENUS[state.market] || []).find(
-      (m) => m.value === state.menu,
-    );
-    const menuLabel = menuObj ? menuObj.label : 'メニュー未選択';
-
-    if (state.market === 'jepx') {
-      // JEPX は枠だけ（データは使わない）
-      const isGraph = state.view === 'graph';
-      el.innerHTML = [
-        'Frame only / JEPX',
-        '<br>',
-        '卸電力市場（JEPX）の価格などの実データは、利用条件に従いこのビューでは表示しません。',
-        'ここでは、<strong>',
-        menuLabel,
-        '</strong> に対してグラフ／テーブルの構成だけを検討するステップとしています。',
-        isGraph
-          ? '<br>ビューモード：Graph（架空データを後から差し替える想定）'
-          : '<br>ビューモード：Table（列構成のみ先に設計）',
-      ].join('');
-    } else {
-      // EPRX：実データを将来的に入れる前提
-      const isGraph = state.view === 'graph';
-      el.innerHTML = [
-        'Frame only / EPRX',
-        '<br>',
-        '需給調整市場（EPRX）の <strong>',
-        menuLabel,
-        '</strong> に関する指標を、',
-        isGraph ? '時系列グラフ' : 'テーブル',
-        'で眺めるためのビュー。',
-        '今はまだダミーの枠のみを実装し、データの差し込み方や指標セットを検討する段階。',
-      ].join('');
-    }
-  }
-
-  // ===== Snapshot（ダミー） =====
-  function refreshSnapshot() {
-    const metaEl = document.getElementById('snapshotMeta');
-    const reserveEl = document.getElementById('snapshotReserve');
-    const demandEl = document.getElementById('snapshotDemand');
-    const weatherEl = document.getElementById('snapshotWeather');
-    const tempEl = document.getElementById('snapshotTemp');
-
-    const areaLabel = state.areaLabel || '--エリア';
-    const date = state.date || '--/--/--';
-    const time = timeIndexToLabel(state.timeIndex);
-
-    if (metaEl) {
-      metaEl.textContent = `${areaLabel} / ${date} ${time}（ダミー値）`;
-    }
-
-    // ざっくりしたダミー計算：エリアと時間から少しだけ変化させる
-    const hash = hashString(`${state.area || 'x'}-${state.timeIndex}`);
-    const reserve = 5 + (hash % 20); // 5〜24%
-    const demand = 1000 + (hash % 8000); // 1,000〜8,999 MW
-    const temp = 5 + (hash % 25); // 5〜29 ℃
-    const weatherList = ['晴れ', 'くもり', '雨', '雪'];
-    const weather = weatherList[hash % weatherList.length];
-
-    if (reserveEl) reserveEl.textContent = `${reserve.toFixed(0)} %`;
-    if (demandEl) demandEl.textContent = `${demand.toLocaleString()} MW`;
-    if (tempEl) tempEl.textContent = `${temp.toFixed(1)} ℃`;
-    if (weatherEl) weatherEl.textContent = weather;
-  }
-
-  function timeIndexToLabel(idx) {
-    const h = Math.floor(idx / 2);
-    const m = idx % 2 === 0 ? '00' : '30';
-    return `${String(h).padStart(2, '0')}:${m}`;
-  }
-
-  function hashString(str) {
-    let h = 0;
-    for (let i = 0; i < str.length; i++) {
-      h = (h << 5) - h + str.charCodeAt(i);
-      h |= 0;
-    }
-    return Math.abs(h);
-  }
-
-  function refreshAll() {
-    refreshSnapshot();
-    refreshMarketMeta();
-    refreshMarketPlaceholder();
-  }
-})();
+}
