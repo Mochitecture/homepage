@@ -9,7 +9,7 @@ const areas = [
   { id: 'kansai',   label: '関西 / Kansai' },
   { id: 'chugoku',  label: '中国 / Chugoku' },
   { id: 'shikoku',  label: '四国 / Shikoku' },
-  // SVG 側の data-area="kyusyu" に合わせて id も kyusyu に統一
+  // SVG の data-area="kyusyu" に合わせて id も kyusyu
   { id: 'kyusyu',   label: '九州 / Kyushu' }
 ];
 
@@ -35,6 +35,9 @@ const state = {
   menu: 'primary',
   view: 'graph'
 };
+
+// ログ ON/OFF 用
+const EM_DEBUG = true;
 
 // 外部 SVG 用に中へ注入するスタイル（同一オリジン想定）
 const SVG_AREA_STYLE = `
@@ -90,6 +93,8 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewTitle    = document.getElementById('em-market-view-title');
   const viewBody     = document.getElementById('em-market-view-body');
 
+  if (EM_DEBUG) console.log('[EnergyMap] DOMContentLoaded');
+
   // 初期日付＆時間をセット
   const now = new Date();
   const yyyy = now.getFullYear();
@@ -107,15 +112,21 @@ document.addEventListener('DOMContentLoaded', () => {
   const svgObject = document.getElementById('em-map-object');
 
   if (svgObject) {
-    // <object> で読み込んでいるケース
+    if (EM_DEBUG) console.log('[EnergyMap] <object id="em-map-object"> found');
+
     const bindSvg = () => {
       const svgDoc = svgObject.contentDocument;
       if (!svgDoc) {
-        console.warn('SVG contentDocument is not available yet');
+        if (EM_DEBUG) console.warn('[EnergyMap] svgObject.contentDocument is null');
         return;
       }
 
-      // スタイル注入（外部 SVG 内だけで完結）
+      if (EM_DEBUG) {
+        console.log('[EnergyMap] SVG loaded');
+        console.log('[EnergyMap] svgDoc URL:', svgDoc.URL);
+      }
+
+      // スタイル注入
       const styleEl = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'style');
       styleEl.textContent = SVG_AREA_STYLE;
 
@@ -127,6 +138,8 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const areaElems = svgDoc.querySelectorAll('.jp-area');
+      if (EM_DEBUG) console.log('[EnergyMap] .jp-area count in SVG:', areaElems.length);
+
       wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
     };
 
@@ -134,10 +147,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // すでにロード済み
       bindSvg();
     } else {
-      svgObject.addEventListener('load', bindSvg);
+      svgObject.addEventListener('load', () => {
+        if (EM_DEBUG) console.log('[EnergyMap] <object> load event fired');
+        bindSvg();
+      });
     }
   } else {
-    // インライン SVG（<svg class="jp-energy-map"> ...）の fallback
+    if (EM_DEBUG) console.warn('[EnergyMap] em-map-object not found, fallback to inline SVG');
     const areaElems = document.querySelectorAll('.jp-area');
     wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
   }
@@ -171,7 +187,6 @@ document.addEventListener('DOMContentLoaded', () => {
   // 市場 / メニュー
   marketSelect.addEventListener('change', () => {
     state.market = marketSelect.value;
-    // 市場変更時にメニュー候補を差し替え
     populateMenu(menuSelect, state.market);
     state.menu = menuSelect.value;
     updateMeta(areaLabel, snapshotMeta, marketMeta);
@@ -214,21 +229,29 @@ function getAreaLabel(id){
   return found ? found.label : id;
 }
 
-// SVG 内のエリア要素に click ハンドラをバインド
+// SVG 内のエリア要素に click / hover ハンドラをバインド
 function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody){
   if (!areaNodes || areaNodes.length === 0) {
-    console.warn('No .jp-area elements found inside SVG');
+    if (EM_DEBUG) console.warn('[EnergyMap] No .jp-area elements found');
     return;
   }
+
+  if (EM_DEBUG) console.log('[EnergyMap] bind events to', areaNodes.length, 'jp-area nodes');
 
   // 初期状態の active を反映
   updateActiveArea(areaNodes, state.area);
   if (areaLabel) areaLabel.textContent = getAreaLabel(state.area);
 
   areaNodes.forEach(node => {
+    const id = node.dataset.area || node.id;
+
+    node.addEventListener('mouseenter', () => {
+      if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
+    });
+
     node.addEventListener('click', () => {
-      const id = node.dataset.area;
       if (!id) return;
+      if (EM_DEBUG) console.log('[EnergyMap] click area:', id);
       state.area = id;
       updateActiveArea(areaNodes, id);
       updateMeta(areaLabel, snapshotMeta, marketMeta);
