@@ -1,12 +1,30 @@
 /* ===== Energy Map page ===== */
 
 .page-energy-map {
-  padding-top: 32px;
-  padding-bottom: 40px;
+  max-width: 1200px;          /* 横幅を広めに */
+  margin: 0 auto;
+  padding: 32px 20px 40px;
 }
 
-.page-head {
+/* 上部ヘッダー */
+
+.emap-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem 2rem;
+  align-items: flex-end;
   margin-bottom: 20px;
+}
+
+.emap-head-text {
+  flex: 1 1 260px;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  margin: 0 0 0.35rem;
+  letter-spacing: 0.01em;
 }
 
 .page-desc {
@@ -14,6 +32,75 @@
   font-size: 0.9rem;
   line-height: 1.7;
   opacity: 0.85;
+}
+
+/* time bar（上に移動） */
+
+.energy-map-timebar {
+  flex: 0 0 auto;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 10px 14px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 1.25rem;
+  align-items: center;
+  min-width: min(360px, 100%);
+}
+
+.timebar-group {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.8rem;
+}
+
+.timebar-group label {
+  opacity: 0.9;
+}
+
+.timebar-group input[type="date"] {
+  font-size: 0.8rem;
+  padding: 0.25rem 0.45rem;
+  border-radius: 7px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: var(--card);
+}
+
+.timebar-group input[type="range"] {
+  width: 220px;
+}
+
+.timebar-time-display {
+  font-size: 0.85rem;
+  opacity: 0.85;
+  min-width: 4ch;
+  text-align: right;
+}
+
+.btn-now {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  background: #f3f4f6;
+  cursor: pointer;
+}
+
+.btn-now:hover {
+  background: #e5e7eb;
+}
+
+@media (prefers-color-scheme: dark) {
+  .btn-now {
+    background: #111827;
+    border-color: #374151;
+    color: #e5e7eb;
+  }
+  .btn-now:hover {
+    background: #020617;
+  }
 }
 
 /* layout */
@@ -53,6 +140,11 @@
 .energy-map-map-selected {
   font-size: 0.8rem;
   opacity: 0.7;
+}
+
+.energy-map-map-selected .label {
+  opacity: 0.65;
+  margin-right: 0.25rem;
 }
 
 .energy-map-grid {
@@ -239,82 +331,22 @@
   }
 }
 
-/* time bar */
-
-.energy-map-timebar {
-  margin-top: 20px;
-  background: var(--card);
-  border-radius: 16px;
-  box-shadow: var(--shadow);
-  padding: 10px 14px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem 1.25rem;
-  align-items: center;
-}
-
-.timebar-group {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  font-size: 0.8rem;
-}
-
-.timebar-group label {
-  opacity: 0.9;
-}
-
-.timebar-group input[type="date"] {
-  font-size: 0.8rem;
-  padding: 0.25rem 0.45rem;
-  border-radius: 7px;
-  border: 1px solid rgba(0, 0, 0, 0.12);
-  background: var(--card);
-}
-
-.timebar-group input[type="range"] {
-  width: 220px;
-}
-
-.timebar-time-display {
-  font-size: 0.85rem;
-  opacity: 0.85;
-  min-width: 4ch;
-  text-align: right;
-}
-
-.btn-now {
-  font-size: 0.75rem;
-  padding: 0.25rem 0.8rem;
-  border-radius: 999px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: #f3f4f6;
-  cursor: pointer;
-}
-
-.btn-now:hover {
-  background: #e5e7eb;
-}
-
-@media (prefers-color-scheme: dark) {
-  .btn-now {
-    background: #111827;
-    border-color: #374151;
-    color: #e5e7eb;
-  }
-  .btn-now:hover {
-    background: #020617;
-  }
-}
-
 /* responsive */
+
+@media (max-width: 960px) {
+  .emap-head {
+    align-items: stretch;
+  }
+  .energy-map-timebar {
+    width: 100%;
+  }
+}
 
 @media (max-width: 860px) {
   .energy-map-layout {
     grid-template-columns: minmax(0, 1fr);
     grid-template-rows: auto auto auto;
   }
-
   .energy-map-map {
     grid-row: auto;
   }
