@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewButtons  = document.querySelectorAll('.seg-btn');
   const viewTitle    = document.getElementById('em-market-view-title');
   const viewBody     = document.getElementById('em-market-view-body');
+  const marketView   = document.getElementById('em-market-view');
 
   if (EM_DEBUG) console.log('[EnergyMap] DOMContentLoaded');
 
@@ -152,6 +153,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const view = btn.dataset.view;
       state.view = view;
       viewButtons.forEach(b => b.classList.toggle('is-active', b === btn));
+
+      if (marketView) {
+        marketView.classList.toggle('is-graph', view === 'graph');
+        marketView.classList.toggle('is-table', view === 'table');
+      }
+
       updateMarketPlaceholder(viewTitle, viewBody);
     });
   });
@@ -159,6 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
   // 初期メニューセット
   populateMenu(menuSelect, state.market);
   state.menu = menuSelect.value;
+
+  // 初期ビュー状態
+  if (marketView) {
+    marketView.classList.add('is-graph');
+  }
+
   updateMeta(areaLabel, snapshotMeta, marketMeta);
   updateMarketPlaceholder(viewTitle, viewBody);
 });
@@ -192,24 +205,41 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
   areaNodes.forEach(node => {
     const id = node.dataset.area || node.id;
 
+    // キーボード操作に対応させる
+    node.setAttribute('tabindex', '0');
+    node.setAttribute('role', 'button');
+    if (id) {
+      node.setAttribute('aria-label', getAreaLabel(id));
+    }
+
     node.addEventListener('mouseenter', () => {
       if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
     });
 
-    node.addEventListener('click', () => {
+    const handleSelect = () => {
       if (!id) return;
-      if (EM_DEBUG) console.log('[EnergyMap] click area:', id);
+      if (EM_DEBUG) console.log('[EnergyMap] select area:', id);
       state.area = id;
       updateActiveArea(areaNodes, id);
       updateMeta(areaLabel, snapshotMeta, marketMeta);
       updateMarketPlaceholder(viewTitle, viewBody);
+    };
+
+    node.addEventListener('click', handleSelect);
+
+    node.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        handleSelect();
+      }
     });
   });
 }
 
 function updateActiveArea(nodes, activeId){
   nodes.forEach(p => {
-    p.classList.toggle('is-active', p.dataset.area === activeId);
+    const id = p.dataset.area || p.id;
+    p.classList.toggle('is-active', id === activeId);
   });
   const labelEl = document.getElementById('em-area-label');
   if (labelEl) labelEl.textContent = getAreaLabel(activeId);
