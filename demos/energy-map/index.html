@@ -20,21 +20,6 @@
         <p class="page-lead">
           日本の電力エリアを「市場 × 需給 × 天気」で眺めるためのミニマップ。いまは UI の骨組みだけ実装している状態。
         </p>
-
-        <div class="em-time-controls">
-          <div class="field">
-            <label for="em-date">日付</label>
-            <input type="date" id="em-date">
-          </div>
-          <div class="field field-time">
-            <label for="em-time-slider">時間</label>
-            <div class="time-row">
-              <input type="range" id="em-time-slider" min="0" max="47" step="1">
-              <span class="time-label" id="em-time-label">00:00</span>
-              <button type="button" id="em-now-btn" class="btn btn-ghost">Now</button>
-            </div>
-          </div>
-        </div>
       </header>
 
       <section class="em-layout">
@@ -57,7 +42,7 @@
           </p>
         </section>
 
-        <!-- 中央：Snapshot -->
+        <!-- 右：Snapshot -->
         <section class="em-card em-snapshot">
           <header class="em-card-header">
             <h2>Now Snapshot</h2>
@@ -85,7 +70,7 @@
           </dl>
         </section>
 
-        <!-- 右：Market Panel -->
+        <!-- 下段フル幅：Market Panel -->
         <section class="em-card em-market">
           <header class="em-card-header">
             <h2>Market Panel</h2>
@@ -93,6 +78,22 @@
               北陸 / Hokuriku / 2025-11-16 00:00｜需給調整市場（EPRX） - 一次調整力
             </p>
           </header>
+
+          <!-- ★ 日付・時間は Market 側に寄せる -->
+          <div class="em-time-controls em-time-controls--market">
+            <div class="field">
+              <label for="em-date">日付</label>
+              <input type="date" id="em-date">
+            </div>
+            <div class="field field-time">
+              <label for="em-time-slider">時間スロット</label>
+              <div class="time-row">
+                <input type="range" id="em-time-slider" min="0" max="47" step="1">
+                <span class="time-label" id="em-time-label">00:00</span>
+                <button type="button" id="em-now-btn" class="btn btn-ghost">Now</button>
+              </div>
+            </div>
+          </div>
 
           <div class="market-controls">
             <div class="field">
@@ -180,7 +181,7 @@
         </section>
       </section>
 
-      <!-- Data & License セクション -->
+      <!-- Data & License セクション（前回と同じ） -->
       <section class="em-card em-data-license">
         <header class="em-card-header">
           <h2>Data &amp; License</h2>
