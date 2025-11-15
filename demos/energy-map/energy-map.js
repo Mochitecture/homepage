@@ -66,7 +66,7 @@ function updateMarketPlaceholder() {
   if (state.market === 'none') {
     placeholder.innerHTML =
       '<strong>市場が未選択です。</strong>' +
-      '<p>まずは「市場」プルダウンから EPRX などを選んでください。</p>';
+      '<p>まずは「市場」プルダウンから 需給調整市場（EPRX）か 卸電力市場（JEPX）を選んでください。</p>';
     return;
   }
 
@@ -89,7 +89,7 @@ function updateMarketPlaceholder() {
       '<p>卸電力市場（JEPX）の価格などの実データは、利用条件に従いこのビューでは表示しません。' +
       'ここでは、構造やインジケータ案を検討するための枠だけを先に用意しておきます。</p>';
   }
-
+}
 
 function populateMenuOptions() {
   const select = document.getElementById('menuSelect');
@@ -114,11 +114,10 @@ function populateMenuOptions() {
       { value: 'tertiary2', label: '三次調整力②' }
     ],
     jepx: [
-      { value: 'spot',      label: 'スポット市場' },
-      { value: 'intraday',  label: '時間前市場' }
+      { value: 'spot',     label: 'スポット市場' },
+      { value: 'intraday', label: '時間前市場' }
     ]
   };
-
 
   const list = menusByMarket[state.market] || [];
   if (list.length === 0) {
