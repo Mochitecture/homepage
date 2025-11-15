@@ -160,7 +160,7 @@
   --area-kyushu:#e1354f;
 }
 
-/* SVG 内の各エリアパス/グループ用 */
+/* インライン SVG で使う場合のスタイル（<object> 内は JS から注入） */
 .jp-area{
   stroke:rgba(0,0,0,.08);
   stroke-width:2;
@@ -169,7 +169,7 @@
   transition:fill .15s ease, transform .12s ease, box-shadow .12s ease;
 }
 
-/* デフォルト色をエリア別に上書き */
+/* デフォルト色をエリア別に上書き（インライン用） */
 .jp-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
 .jp-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
 .jp-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
