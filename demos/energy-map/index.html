@@ -22,8 +22,10 @@
         </p>
       </header>
 
+      <!-- メイン 2段レイアウト -->
       <section class="em-layout">
         <!-- 上段：Now Snapshot（フル幅） -->
+        <section class="em-card em-snapshot">
           <header class="em-card-header">
             <h2>Now Snapshot</h2>
             <p class="em-meta em-meta-snapshot" id="em-snapshot-meta">
@@ -52,7 +54,7 @@
             </div>
           </dl>
         </section>
-      
+
         <!-- 下段左：Area -->
         <section class="em-card em-area">
           <header class="em-card-header">
@@ -64,16 +66,17 @@
               </span>
             </p>
           </header>
-      
+
           <div class="em-map-wrap">
+            <!-- JS で SVG をインライン挿入 -->
             <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
           </div>
-      
+
           <p class="em-note">
             ※ いまはイラスト的な日本地図上でエリアを選択。後のフェーズで実データや指標と連携させていきます。
           </p>
         </section>
-      
+
         <!-- 下段右：Market Panel -->
         <section class="em-card em-market">
           <header class="em-card-header">
@@ -85,7 +88,7 @@
               </span>
             </p>
           </header>
-      
+
           <div class="market-controls">
             <div class="field">
               <label for="em-market-select">市場</label>
@@ -94,18 +97,17 @@
                 <option value="jepx">卸電力市場（JEPX）</option>
               </select>
             </div>
-          
+
             <div class="field">
               <label for="em-menu-select">メニュー</label>
               <select id="em-menu-select"></select>
             </div>
-          
-            <!-- ★ ここに日付 -->
+
             <div class="field field-date-inline">
               <label for="em-date">日付</label>
               <input type="date" id="em-date">
             </div>
-          
+
             <div class="field view-toggle">
               <span class="label">ビュー</span>
               <div class="segmented">
@@ -114,8 +116,8 @@
               </div>
             </div>
           </div>
-      
-          <div class="market-view" id="em-market-view">
+
+          <div class="market-view is-graph" id="em-market-view">
             <div class="market-placeholder">
               <h3 id="em-market-view-title">Frame only / EPRX - 一次調整力</h3>
               <p id="em-market-view-body">
@@ -178,7 +180,7 @@
         </section>
       </section>
 
-      <!-- Data & License セクション（前回と同じ） -->
+      <!-- Data & License セクション -->
       <section class="em-card em-data-license">
         <header class="em-card-header">
           <h2>Data &amp; License</h2>
