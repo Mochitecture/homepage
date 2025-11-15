@@ -205,12 +205,13 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
   areaNodes.forEach(node => {
     const id = node.dataset.area || node.id;
 
-    // キーボード操作に対応させる
-    node.setAttribute('tabindex', '0');
-    node.setAttribute('role', 'button');
-    if (id) {
-      node.setAttribute('aria-label', getAreaLabel(id));
-    }
+    // ★ ここで付けていた tabindex / role / aria-label / keypress を削除
+    //    → マウス（タップ）専用のインタラクションにする
+    // node.setAttribute('tabindex', '0');
+    // node.setAttribute('role', 'button');
+    // if (id) {
+    //   node.setAttribute('aria-label', getAreaLabel(id));
+    // }
 
     node.addEventListener('mouseenter', () => {
       if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
@@ -226,13 +227,6 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
     };
 
     node.addEventListener('click', handleSelect);
-
-    node.addEventListener('keypress', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') {
-        e.preventDefault();
-        handleSelect();
-      }
-    });
   });
 }
 
