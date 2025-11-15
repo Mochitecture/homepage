@@ -9,7 +9,8 @@ const areas = [
   { id: 'kansai',   label: '関西 / Kansai' },
   { id: 'chugoku',  label: '中国 / Chugoku' },
   { id: 'shikoku',  label: '四国 / Shikoku' },
-  { id: 'kyushu',   label: '九州 / Kyushu' }
+  // SVG 側の data-area="kyusyu" に合わせて id も kyusyu に統一
+  { id: 'kyusyu',   label: '九州 / Kyushu' }
 ];
 
 const menusByMarket = {
@@ -38,18 +39,16 @@ const state = {
 // 外部 SVG 用に中へ注入するスタイル（同一オリジン想定）
 const SVG_AREA_STYLE = `
   .jp-area {
-    cursor:pointer;
+    cursor: pointer;
   }
 
-  /* 各エリアの見た目（fill は既存 SVG の色を活かしたいなら外してOK） */
   .jp-area path,
   .jp-area polygon {
-    stroke:rgba(0,0,0,.08);
-    stroke-width:2;
-    transition:fill .15s ease, transform .12s ease, filter .12s ease;
+    stroke: rgba(0,0,0,.08);
+    stroke-width: 2;
+    transition: fill .15s ease, transform .12s ease, filter .12s ease;
   }
 
-  /* もし JS 側でエリア別カラーをつけたい場合はこんな感じで */
   .jp-area[data-area="hokkaido"] path { fill:#2f86d9; }
   .jp-area[data-area="tohoku"]  path { fill:#5675c7; }
   .jp-area[data-area="tokyo"]   path { fill:#3fb3d4; }
@@ -62,18 +61,17 @@ const SVG_AREA_STYLE = `
 
   .jp-area:hover path,
   .jp-area:hover polygon {
-    filter:brightness(1.05);
-    transform:translateY(-2px);
+    filter: brightness(1.05);
+    transform: translateY(-2px);
   }
 
   .jp-area.is-active path,
   .jp-area.is-active polygon {
-    stroke:#111827;
-    stroke-width:2.5;
-    filter:brightness(1.12);
+    stroke: #111827;
+    stroke-width: 2.5;
+    filter: brightness(1.12);
   }
 `;
-
 
 document.addEventListener('DOMContentLoaded', () => {
   const dateInput = document.getElementById('em-date');
@@ -106,26 +104,34 @@ document.addEventListener('DOMContentLoaded', () => {
   timeLabel.textContent = slotToLabel(slot);
 
   // ===== エリア SVG クリック（外部 SVG / インライン両対応） =====
-  const svgObject = document.getElementById('em-svg-map');
+  const svgObject = document.getElementById('em-map-object');
 
   if (svgObject) {
     // <object> で読み込んでいるケース
     const bindSvg = () => {
       const svgDoc = svgObject.contentDocument;
-      if (!svgDoc) return;
+      if (!svgDoc) {
+        console.warn('SVG contentDocument is not available yet');
+        return;
+      }
 
       // スタイル注入（外部 SVG 内だけで完結）
-      const styleEl = svgDoc.createElement('style');
+      const styleEl = svgDoc.createElementNS('http://www.w3.org/2000/svg', 'style');
       styleEl.textContent = SVG_AREA_STYLE;
-      svgDoc.head
-        ? svgDoc.head.appendChild(styleEl)
-        : svgDoc.documentElement.prepend(styleEl);
+
+      const svgRoot = svgDoc.documentElement;
+      if (svgRoot.firstChild) {
+        svgRoot.insertBefore(styleEl, svgRoot.firstChild);
+      } else {
+        svgRoot.appendChild(styleEl);
+      }
 
       const areaElems = svgDoc.querySelectorAll('.jp-area');
       wireAreaEvents(areaElems, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody);
     };
 
     if (svgObject.contentDocument) {
+      // すでにロード済み
       bindSvg();
     } else {
       svgObject.addEventListener('load', bindSvg);
@@ -210,7 +216,10 @@ function getAreaLabel(id){
 
 // SVG 内のエリア要素に click ハンドラをバインド
 function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitle, viewBody){
-  if (!areaNodes || areaNodes.length === 0) return;
+  if (!areaNodes || areaNodes.length === 0) {
+    console.warn('No .jp-area elements found inside SVG');
+    return;
+  }
 
   // 初期状態の active を反映
   updateActiveArea(areaNodes, state.area);
