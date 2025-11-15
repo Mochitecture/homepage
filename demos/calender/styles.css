@@ -100,3 +100,41 @@
   gap:.8rem; padding:.6rem .8rem; border:1px solid var(--grid); border-radius:12px;
 }
 .pick label{ display:inline-flex; gap:.4rem; align-items:center; margin-right:.6rem; }
+
+/* ===== カレンダーページ固有のレイアウト調整 ===== */
+
+/* ページ全体の余白と幅 */
+body.calendar-page .wrap{
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 32px 20px 40px;
+}
+
+/* カレンダーを載せるカードをフル幅にする（base.css の max-width:600px を上書き） */
+body.calendar-page .calendar-wrap.card{
+  max-width: none;
+  width: 100%;
+  padding: 16px 16px 12px;
+}
+
+/* タイトルとツールバーの間隔を少しだけ詰める */
+body.calendar-page .page-title{
+  margin-bottom: 8px;
+}
+
+/* ツールバーを画面幅いっぱいに気持ちよく広げる */
+body.calendar-page .cal-toolbar{
+  margin-bottom: 12px;
+}
+
+/* カレンダー自体もカードの中で左右いっぱいに広げる */
+body.calendar-page .calendar{
+  width: 100%;
+}
+
+/* PC では少し背の高いカードにして「Energy Map」と同じくらいのボリューム感に */
+@media (min-width: 960px){
+  body.calendar-page .calendar-wrap.card{
+    min-height: 680px;
+  }
+}
