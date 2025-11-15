@@ -57,56 +57,40 @@
       </footer>
     </article>
 
-    <!-- 03: Energy Map -->
-    <article class="card-works">
-      <header class="card-works-header">
-        <h2 class="card-works-title">
-          [Data Prototype] Energy Map #00：オープンデータの地図を構想する
-        </h2>
-        <p class="card-works-meta">
-          2025-11-16　／ 所要: 1h（構想整理）　／ 状態: 枠組み設計中 v0
+    <!-- 03: Energy Map #00 -->
+    <article class="card-works" id="arch-20251116-energy-map-00">
+      <header>
+        <h3>［Data Prototype］Energy Map #00：オープンデータの地図を構想する</h3>
+        <p class="meta">
+          <time datetime="2025-11-16">2025-11-16</time><span> / 所要: 1h</span><span> / 状態: 枠組み設計中 v0</span>
         </p>
       </header>
     
-      <div class="card-works-body">
-        <p>
-          日本の電力システムを「一枚の地図」として観測できる場所をつくる計画。
-          JEPX・EPRX・OCCTO・気象庁などに散らばった情報を、電力エリアごとの
-          レイヤーとして整理し、「市場シグナル × 需給 × 天気」の関係を
-          直感的に眺められるプロダクトを目指す。
-        </p>
+      <p class="lead">
+        日本の電力システムを「一枚の地図」として観測するためのプロトタイプ。
+        オープンデータだけで「市場シグナル × 需給 × 天気」の関係を静かに可視化することを目指す。
+      </p>
     
-        <p>
-          ただしデータの扱いは慎重に。まずはオープンデータの利用規約を整理しつつ、
-          日本地図／右側の詳細カード／下部のタイムスライダーという三分割レイアウトだけを
-          先に実装する方針にした。市場やメニューの選択 UI だけ先に用意しておき、
-          後から安全に使えるデータレイヤーを一つずつ積み上げていく。
-        </p>
+      <ul class="bullets">
+        <li>before：JEPX／EPRX／OCCTO／気象庁など、電力関連データがサイトごと・CSVごとに散在していた</li>
+        <li>how：Energy Map というコンセプトを定義し、日本地図＋右側の詳細カード＋下部タイムスライダーの三分割レイアウトで「枠」だけ先に設計</li>
+        <li>after：オープンデータとライセンス条件を整理しつつ、EPRX など安全に使えるレイヤーから順番に積み上げていける土台を用意</li>
+      </ul>
     
-        <ul>
-          <li>
-            before：電力関連データは各サイト・CSV・PDFに散在しており、
-            関係性は頭の中だけで整理していた
-          </li>
-          <li>
-            how：Energy Map というコンセプトのもとで、
-            「日本地図＋詳細カード＋タイムスライダー」の枠組みと
-            Phase0〜2 の進め方を定義
-          </li>
-          <li>
-            after：まずはオープンデータのライセンス調査と「枠だけ実装」から着手できる状態に整理。
-            今後はレイヤーを少しずつ追加していく前提が固まった
-          </li>
-        </ul>
+      <p class="tags">
+        <span class="pill">#OpenData</span>
+        <span class="pill">#Energy</span>
+        <span class="pill">#UI</span>
+        <span class="pill">#Prototype</span>
+      </p>
     
-        <ul class="card-works-tags">
-          <li><span>#OpenData</span></li>
-          <li><span>#Energy</span></li>
-          <li><span>#UI Prototype</span></li>
-          <li><span>#Concept</span></li>
-        </ul>
-      </div>
+      <footer class="links">
+        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">
+          Energy Map を開く
+        </a>
+      </footer>
     </article>
+
   </main>
 
   <div data-include="/partials/footer.html"></div>
