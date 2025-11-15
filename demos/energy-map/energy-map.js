@@ -29,9 +29,9 @@ const menusByMarket = {
 
 const state = {
   area: 'hokuriku',
-  date: null,              // Market Panel用に選択された日付
-  snapshotDate: null,      // ページ読込時の実際の日付
-  snapshotTimeLabel: null, // ページ読込時の実際の時刻（00:00 / 00:30 ...）
+  date: null,              // Market Panel 用に選択された日付
+  snapshotDate: null,      // ページ読込時の日付
+  snapshotTimeLabel: null, // ページ読込時の時刻
   market: 'eprx',
   menu: 'primary',
   view: 'graph'
@@ -51,12 +51,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const viewButtons  = document.querySelectorAll('.seg-btn');
   const marketView   = document.getElementById('em-market-view');
+
   const viewTitle    = document.getElementById('em-market-view-title');
   const viewBody     = document.getElementById('em-market-view-body');
 
   if (EM_DEBUG) console.log('[EnergyMap] DOMContentLoaded');
 
-  // 「現在時刻」のスナップショット情報を保持
+  // 「現在」のスナップショット情報
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -79,7 +80,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // ===== SVG を fetch してインライン挿入 =====
+  // ===== SVG ファイルを fetch してインライン挿入 =====
   const mapContainer = document.getElementById('em-map-inline');
   if (mapContainer) {
     fetch('/demos/energy-map/JP-EnergyAreas.svg')
@@ -93,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const svgEl = mapContainer.querySelector('svg');
         if (svgEl) {
           svgEl.classList.add('jp-energy-map');
-          // ブラウザのツールチップを消す
+          // ブラウザの title ツールチップは消しておく
           svgEl.querySelectorAll('title').forEach(t => t.remove());
         }
 
@@ -117,25 +118,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // 市場 / メニュー
-  if (marketSelect) {
-    marketSelect.addEventListener('change', () => {
-      state.market = marketSelect.value;
-      populateMenu(menuSelect, state.market);
-      state.menu = menuSelect.value;
-      updateMeta(areaLabel, snapshotMeta, marketMeta);
-      updateMarketPlaceholder(viewTitle, viewBody);
-    });
-  }
+  marketSelect.addEventListener('change', () => {
+    state.market = marketSelect.value;
+    populateMenu(menuSelect, state.market);
+    state.menu = menuSelect.value;
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-  if (menuSelect) {
-    menuSelect.addEventListener('change', () => {
-      state.menu = menuSelect.value;
-      updateMeta(areaLabel, snapshotMeta, marketMeta);
-      updateMarketPlaceholder(viewTitle, viewBody);
-    });
-  }
+  menuSelect.addEventListener('change', () => {
+    state.menu = menuSelect.value;
+    updateMeta(areaLabel, snapshotMeta, marketMeta);
+    updateMarketPlaceholder(viewTitle, viewBody);
+  });
 
-  // ビュー切替（Graph / Table）
+  // ビュー切替
   viewButtons.forEach(btn => {
     btn.addEventListener('click', () => {
       const view = btn.dataset.view;
@@ -151,11 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // 初期メニューセット
+  // 初期メニューセット & ビュー状態
   populateMenu(menuSelect, state.market);
   state.menu = menuSelect.value;
 
-  // 初期ビュー状態
   if (marketView) {
     marketView.classList.add('is-graph');
   }
@@ -202,10 +198,6 @@ function wireAreaEvents(areaNodes, areaLabel, snapshotMeta, marketMeta, viewTitl
       updateMarketPlaceholder(viewTitle, viewBody);
     };
 
-    node.addEventListener('mouseenter', () => {
-      if (EM_DEBUG) console.log('[EnergyMap] mouseenter:', id);
-    });
-
     node.addEventListener('click', handleSelect);
   });
 }
@@ -220,7 +212,6 @@ function updateActiveArea(nodes, activeId){
 }
 
 function populateMenu(select, market){
-  if (!select) return;
   const options = menusByMarket[market] || [];
   select.innerHTML = '';
   options.forEach(opt => {
@@ -234,24 +225,23 @@ function populateMenu(select, market){
 function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
   const areaText = getAreaLabel(state.area);
 
-  // Area ラベル（カード右上）
+  // Area ラベル
   if (areaLabelEl) {
     areaLabelEl.textContent = areaText;
   }
 
-  // Now Snapshot メタ
+  // Now（Snapshot）メタ：短く「現在」だけ
   if (snapshotMetaEl) {
     const textEl = snapshotMetaEl.querySelector('.em-meta-text') || snapshotMetaEl;
     if (state.snapshotDate && state.snapshotTimeLabel) {
       textEl.textContent =
-        `${areaText} ｜ ${state.snapshotDate} ${state.snapshotTimeLabel} 現在のスナップショット（ダミー値）`;
+        `${areaText} ｜ ${state.snapshotDate} ${state.snapshotTimeLabel} 現在（ダミー値）`;
     } else {
-      textEl.textContent =
-        `${areaText} ｜ 現在時刻のスナップショット（ダミー値）`;
+      textEl.textContent = `${areaText} ｜ 現在（ダミー値）`;
     }
   }
 
-  // Market Panel メタ（時間表現は不要）
+  // Market Panel メタ（エリア + 日付 + 市場・メニュー）
   if (marketMetaEl) {
     const textEl = marketMetaEl.querySelector('.em-meta-text') || marketMetaEl;
 
@@ -270,15 +260,20 @@ function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
 }
 
 function updateMarketPlaceholder(titleEl, bodyEl){
-  if (!titleEl || !bodyEl) return;
+  const marketText = state.market === 'eprx'
+    ? 'EPRX'
+    : 'JEPX';
 
-  const marketText = state.market === 'eprx' ? 'EPRX' : 'JEPX';
   const menuText = (menusByMarket[state.market] || [])
     .find(m => m.value === state.menu)?.label || '';
 
   const viewText = state.view === 'graph' ? '時系列グラフ' : 'テーブル';
 
-  titleEl.textContent = `Frame only / ${marketText} - ${menuText}`;
+  if (titleEl) {
+    titleEl.textContent = `Frame only / ${marketText} - ${menuText}`;
+  }
+
+  if (!bodyEl) return;
 
   if (state.market === 'jepx') {
     bodyEl.textContent =
