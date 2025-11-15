@@ -206,7 +206,7 @@
 .jp-area[data-area="kansai"]{ fill:var(--area-kansai); }
 .jp-area[data-area="chugoku"]{ fill:var(--area-chugoku); }
 .jp-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
-.jp-area[data-area="kyusyu"]{ fill:var(--area-kyushu); }
+.jp-area[data-area="kyushu"]{ fill:var(--area-kyushu); }
 
 .jp-area:hover{
   filter:brightness(1.05);
