@@ -39,16 +39,16 @@ function setTodayAndNow() {
 function updateSnapshotMeta() {
   const label = document.getElementById('selectedAreaLabel').textContent;
   const timeStr = formatSlotToTime(state.slot);
-  const dateStr = state.date || '(日付未選択)';
+  const dateStr = state.date || '日付未選択';
   const meta = document.getElementById('snapshotMeta');
-  meta.textContent = `${label}・${dateStr} ${timeStr} 時点の代表値（ダミー表示中）`;
+  meta.textContent = `${label} / ${dateStr} ${timeStr} （ダミー値）`;
 }
 
 function updateMarketMeta() {
   const marketMeta = document.getElementById('marketMeta');
   if (state.market === 'none') {
     marketMeta.textContent =
-      '表示する市場とメニューを選ぶと、この枠にグラフ／テーブルを配置予定。';
+      '市場とメニューを選ぶと、この枠にグラフ／テーブルを置く想定。';
     return;
   }
   const marketName =
@@ -57,7 +57,7 @@ function updateMarketMeta() {
     document.querySelector('#menuSelect option:checked')?.textContent || '';
   marketMeta.textContent = `${marketName} / ${
     menuName || 'メニュー未選択'
-  } の可視化枠（UIのみ実装中）`;
+  } のビュー（UIのみ実装中）`;
 }
 
 function updateMarketPlaceholder() {
@@ -65,8 +65,8 @@ function updateMarketPlaceholder() {
 
   if (state.market === 'none') {
     placeholder.innerHTML =
-      '<strong>まだ市場が選択されていません。</strong>' +
-      '<p>まずは「市場」プルダウンから EPRX などの市場を選択してください。</p>';
+      '<strong>市場が未選択です。</strong>' +
+      '<p>まずは「市場」プルダウンから EPRX などを選んでください。</p>';
     return;
   }
 
@@ -74,16 +74,16 @@ function updateMarketPlaceholder() {
     const menuLabel =
       document.querySelector('#menuSelect option:checked')?.textContent || '';
     placeholder.innerHTML =
-      `<strong>ビュー: ${
-        state.view === 'graph' ? 'Graph' : 'Table'
-      }（EPRX / ${menuLabel || 'メニュー未選択'}）</strong>` +
-      '<p>ここには EPRX 公開データ（一次〜三次②）の時系列グラフや表を配置予定です。' +
-      '現段階では、出典・ライセンス条件の整理が完了し次第、段階的にデータ連携を追加します。</p>';
+      `<strong>${state.view === 'graph' ? 'Graph' : 'Table'} view / EPRX ${
+        menuLabel ? ' - ' + menuLabel : ''
+      }</strong>` +
+      '<p>EPRX 公開データ（一次〜三次②）を、ここに時系列グラフや一覧として配置する予定です。' +
+      'ライセンスと出典表記を整理したうえで段階的に接続します。</p>';
   } else if (state.market.startsWith('jepx')) {
     placeholder.innerHTML =
-      '<strong>JEPX データは枠のみ先に用意しています。</strong>' +
-      '<p>価格・出来高などの数値は、JEPX の利用条件上ここでは表示しません。' +
-      '必要に応じて公式サイトへのリンクやテキスト解説のみを配置する予定です。</p>';
+      '<strong>JEPX は枠だけ先に用意。</strong>' +
+      '<p>価格などの実データは JEPX の利用条件に従い、このビューでは扱わない方針。' +
+      '必要であれば公式サイトへのリンクやテキスト解説のみを置く想定です。</p>';
   }
 }
 
@@ -95,7 +95,7 @@ function populateMenuOptions() {
   if (state.market === 'none') {
     const opt = document.createElement('option');
     opt.value = 'none';
-    opt.textContent = '（市場を先に選択）';
+    opt.textContent = '市場を先に選択';
     select.appendChild(opt);
     state.menu = 'none';
     return;
@@ -123,7 +123,7 @@ function populateMenuOptions() {
   if (list.length === 0) {
     const opt = document.createElement('option');
     opt.value = 'none';
-    opt.textContent = '（この市場のメニューは後日追加）';
+    opt.textContent = 'メニューは後で追加';
     select.appendChild(opt);
     state.menu = 'none';
     return;
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.classList.add('is-active');
     state.area = btn.dataset.area;
     const jp = btn.firstChild.textContent.trim();
-    areaLabel.textContent = jp + 'エリア';
+    areaLabel.textContent = jp;
     updateSnapshotMeta();
   });
 
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
     updateSnapshotMeta();
   });
 
-  // 現在時刻へ
+  // Now ボタン
   document.getElementById('btnNow').addEventListener('click', () => {
     setTodayAndNow();
     updateSnapshotMeta();
