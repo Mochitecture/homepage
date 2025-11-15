@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mochitecture – Calendar (Week)</title>
+  <link rel="icon" type="image/png" href="/mochitecture_icon.png">
+  <!-- 既存の共通スタイル -->
+  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+  <!-- カレンダー専用スタイル -->
+  <link rel="stylesheet" href="/calendar/styles.css?v=1">
+</head>
+<body>
+  <div data-include="/partials/header.html"></div>
+
+  <main class="wrap">
+    <div class="page-header">
+      <h1 class="page-title">Schedule – Week View</h1>
+      <div class="legend" id="legend"></div>
+    </div>
+
+    <div class="toolbar">
+      <div class="btns">
+        <button id="prevBtn" class="btn">←</button>
+        <button id="todayBtn" class="btn">今日</button>
+        <button id="nextBtn" class="btn">→</button>
+        <button id="snapBtn" class="btn">🖼 Snapshot</button>
+        <button id="clearBtn" class="btn">Clear</button>
+        <button id="finderBtn" class="btn btn-primary">🔎 Availability</button>
+      </div>
+      <div class="hint">ドラッグで新規 / 端をドラッグでリサイズ / ダブルクリックで編集</div>
+    </div>
+
+    <section class="calendar-card card">
+      <div class="weekbar" id="weekbar"></div>
+      <div class="calendar-wrap" id="calendarWrap">
+        <div class="calendar" id="calendar"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 予定ダイアログ -->
+  <dialog id="eventDialog" class="dialog">
+    <form method="dialog" id="eventForm">
+      <h3>予定</h3>
+      <input type="hidden" name="id" />
+      <label>タイトル
+        <input name="title" placeholder="タイトル" />
+      </label>
+      <div class="row">
+        <label>開始日<input type="date" name="startDate" required></label>
+        <label>開始時刻<select name="startTime"></select></label>
+      </div>
+      <div class="row">
+        <label>終了日<input type="date" name="endDate" required></label>
+        <label>終了時刻<select name="endTime"></select></label>
+      </div>
+      <label>カレンダー（用途）
+        <select name="calendar">
+          <option>Work</option>
+          <option>Personal</option>
+          <option selected>Mochitecture</option>
+          <option>Research</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button value="cancel" class="btn">閉じる</button>
+        <button id="deleteBtn" type="button" class="btn">削除</button>
+        <button id="saveBtn" value="default" class="btn btn-primary">保存</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- 空き時間ファインダ -->
+  <dialog id="finderDialog" class="dialog">
+    <form id="finderForm">
+      <h3>空き時間検索（選択カレンダーの重なりなし）</h3>
+      <div id="calPick" class="cal-pick"></div>
+      <div class="row">
+        <label>必要時間
+          <select id="needMin">
+            <option value="30">30分</option>
+            <option value="45">45分</option>
+            <option value="60" selected>60分</option>
+            <option value="90">90分</option>
+            <option value="120">120分</option>
+          </select>
+        </label>
+        <label>候補時間帯
+          <select id="window">
+            <option value="9-19" selected>09:00–19:00</option>
+            <option value="8-22">08:00–22:00</option>
+            <option value="0-24">00:00–24:00</option>
+          </select>
+        </label>
+      </div>
+      <div class="actions">
+        <button type="button" class="btn" onclick="document.getElementById('finderDialog').close()">閉じる</button>
+        <button id="runFinder" class="btn btn-primary">検索</button>
+      </div>
+      <div id="finderResults" class="results"></div>
+    </form>
+  </dialog>
+
+  <!-- html2canvas（スナップショット用CDN） -->
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+  <!-- 共通：パーシャル読み込み -->
+  <script src="/assets/include.js"></script>
+  <!-- カレンダー本体 -->
+  <script src="/calendar/app.js?v=1"></script>
+</body>
+</html>
