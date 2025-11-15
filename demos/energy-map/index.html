@@ -60,104 +60,64 @@
               </p>
             </div>
           </header>
-
+        
           <div class="japan-map-wrap">
-            <!-- シンプルな 9 エリア日本地図（イラスト的） -->
-            <svg
-              id="japanMap"
-              class="japan-map-svg"
-              viewBox="0 0 320 520"
-              role="img"
-              aria-label="Japan power system areas"
+            <!-- 背景のきれいな日本地図画像（九電〜北電エリア色分け済み） -->
+            <img
+              src="/demos/energy-map/japan-areas.png"
+              alt="日本の電力エリアマップ"
+              class="japan-map-img"
             >
-              <!-- 北海道 -->
-              <g class="area-block" data-area="hokkaido" data-label="北海道 / Hokkaido">
-                <path
-                  class="area-shape area-hokkaido"
-                  d="M40 20 L140 20 L160 80 L120 120 L80 110 L40 70 Z"
-                />
-                <!-- 県境っぽい線 -->
-                <path d="M80 25 L120 75 L110 105" class="area-border" />
-              </g>
-
-              <!-- 東北 -->
-              <g class="area-block" data-area="tohoku" data-label="東北 / Tohoku">
-                <path
-                  class="area-shape area-tohoku"
-                  d="M120 130 L190 130 L210 250 L150 260 L110 230 L100 170 Z"
-                />
-                <path d="M140 135 L155 220" class="area-border" />
-                <path d="M170 135 L185 230" class="area-border" />
-              </g>
-
-              <!-- 東京 -->
-              <g class="area-block" data-area="tokyo" data-label="東京 / Tokyo">
-                <path
-                  class="area-shape area-tokyo"
-                  d="M145 265 L215 260 L225 315 L185 340 L145 325 Z"
-                />
-                <path d="M170 265 L185 330" class="area-border" />
-              </g>
-
-              <!-- 北陸 -->
-              <g class="area-block" data-area="hokuriku" data-label="北陸 / Hokuriku">
-                <path
-                  class="area-shape area-hokuriku"
-                  d="M90 245 L140 245 L150 320 L110 330 L80 305 Z"
-                />
-                <path d="M115 247 L125 320" class="area-border" />
-              </g>
-
-              <!-- 中部 -->
-              <g class="area-block" data-area="chubu" data-label="中部 / Chubu">
-                <path
-                  class="area-shape area-chubu"
-                  d="M80 315 L170 345 L180 415 L120 430 L70 395 Z"
-                />
-                <path d="M105 322 L135 420" class="area-border" />
-                <path d="M140 332 L160 420" class="area-border" />
-              </g>
-
-              <!-- 関西 -->
-              <g class="area-block" data-area="kansai" data-label="関西 / Kansai">
-                <path
-                  class="area-shape area-kansai"
-                  d="M50 330 L95 350 L105 410 L60 420 L30 395 Z"
-                />
-                <path d="M72 335 L83 410" class="area-border" />
-              </g>
-
-              <!-- 中国 -->
-              <g class="area-block" data-area="chugoku" data-label="中国 / Chugoku">
-                <path
-                  class="area-shape area-chugoku"
-                  d="M15 355 L70 380 L75 440 L25 455 L5 420 Z"
-                />
-                <path d="M35 362 L50 445" class="area-border" />
-              </g>
-
-              <!-- 四国 -->
-              <g class="area-block" data-area="shikoku" data-label="四国 / Shikoku">
-                <path
-                  class="area-shape area-shikoku"
-                  d="M40 445 L110 460 L105 495 L45 500 Z"
-                />
-                <path d="M70 448 L75 494" class="area-border" />
-              </g>
-
-              <!-- 九州 -->
-              <g class="area-block" data-area="kyushu" data-label="九州 / Kyushu">
-                <path
-                  class="area-shape area-kyushu"
-                  d="M5 465 L55 480 L60 535 L25 540 L0 515 Z"
-                />
-                <path d="M30 470 L40 535" class="area-border" />
-              </g>
-            </svg>
+        
+            <!-- 透明クリック領域（ざっくり位置。ブラウザで微調整してOK） -->
+            <button class="area-hit area-hokkaido"
+              data-area="hokkaido"
+              data-label="北海道 / Hokkaido"
+              type="button"></button>
+        
+            <button class="area-hit area-tohoku"
+              data-area="tohoku"
+              data-label="東北 / Tohoku"
+              type="button"></button>
+        
+            <button class="area-hit area-tokyo"
+              data-area="tokyo"
+              data-label="東京 / Tokyo"
+              type="button"></button>
+        
+            <button class="area-hit area-hokuriku"
+              data-area="hokuriku"
+              data-label="北陸 / Hokuriku"
+              type="button"></button>
+        
+            <button class="area-hit area-chubu"
+              data-area="chubu"
+              data-label="中部 / Chubu"
+              type="button"></button>
+        
+            <button class="area-hit area-kansai"
+              data-area="kansai"
+              data-label="関西 / Kansai"
+              type="button"></button>
+        
+            <button class="area-hit area-chugoku"
+              data-area="chugoku"
+              data-label="中国 / Chugoku"
+              type="button"></button>
+        
+            <button class="area-hit area-shikoku"
+              data-area="shikoku"
+              data-label="四国 / Shikoku"
+              type="button"></button>
+        
+            <button class="area-hit area-kyushu"
+              data-area="kyushu"
+              data-label="九州 / Kyushu"
+              type="button"></button>
           </div>
-
+        
           <p class="panel-note">
-            ※ イラスト的な日本地図上でエリアを選択。後のフェーズで、各エリアの実データと連携させていきます。
+            ※ 背景の日本地図上でエリアをクリック。後のフェーズで、各エリアの実データと連携させていきます。
           </p>
         </section>
 
