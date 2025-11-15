@@ -37,32 +37,43 @@ const state = {
 
 // 外部 SVG 用に中へ注入するスタイル（同一オリジン想定）
 const SVG_AREA_STYLE = `
-  .jp-area{
+  .jp-area {
+    cursor:pointer;
+  }
+
+  /* 各エリアの見た目（fill は既存 SVG の色を活かしたいなら外してOK） */
+  .jp-area path,
+  .jp-area polygon {
     stroke:rgba(0,0,0,.08);
     stroke-width:2;
-    fill:#e5e7eb;
-    cursor:pointer;
-    transition:fill .15s ease, transform .12s ease, box-shadow .12s ease;
+    transition:fill .15s ease, transform .12s ease, filter .12s ease;
   }
-  .jp-area[data-area="hokkaido"]{ fill:#2f86d9; }
-  .jp-area[data-area="tohoku"]{ fill:#5675c7; }
-  .jp-area[data-area="tokyo"]{ fill:#3fb3d4; }
-  .jp-area[data-area="hokuriku"]{ fill:#a6c930; }
-  .jp-area[data-area="chubu"]{ fill:#33a365; }
-  .jp-area[data-area="kansai"]{ fill:#f3b222; }
-  .jp-area[data-area="chugoku"]{ fill:#f28a22; }
-  .jp-area[data-area="shikoku"]{ fill:#f25b3f; }
-  .jp-area[data-area="kyusyu"]{ fill:#e1354f; }
-  .jp-area:hover{
+
+  /* もし JS 側でエリア別カラーをつけたい場合はこんな感じで */
+  .jp-area[data-area="hokkaido"] path { fill:#2f86d9; }
+  .jp-area[data-area="tohoku"]  path { fill:#5675c7; }
+  .jp-area[data-area="tokyo"]   path { fill:#3fb3d4; }
+  .jp-area[data-area="hokuriku"] path { fill:#a6c930; }
+  .jp-area[data-area="chubu"]   path { fill:#33a365; }
+  .jp-area[data-area="kansai"]  path { fill:#f3b222; }
+  .jp-area[data-area="chugoku"] path { fill:#f28a22; }
+  .jp-area[data-area="shikoku"] path { fill:#f25b3f; }
+  .jp-area[data-area="kyusyu"]  path { fill:#e1354f; }
+
+  .jp-area:hover path,
+  .jp-area:hover polygon {
     filter:brightness(1.05);
     transform:translateY(-2px);
   }
-  .jp-area.is-active{
+
+  .jp-area.is-active path,
+  .jp-area.is-active polygon {
     stroke:#111827;
     stroke-width:2.5;
     filter:brightness(1.12);
   }
 `;
+
 
 document.addEventListener('DOMContentLoaded', () => {
   const dateInput = document.getElementById('em-date');
