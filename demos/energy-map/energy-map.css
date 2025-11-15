@@ -153,82 +153,110 @@
   line-height: 1.6;
 }
 
-/* ===== 日本地図エリア ===== */
+/* ===== 日本地図エリア（画像＋透明ボタン） ===== */
 
 .japan-map-wrap {
+  position: relative;
   margin-top: 4px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #000;      /* 画像の上下左右が切れても違和感出ないように */
 }
 
-.japan-map-svg {
+.japan-map-img {
+  display: block;
   width: 100%;
   height: auto;
-  max-height: 420px;
 }
 
-.area-block {
+/* クリック領域のベース */
+.area-hit {
+  position: absolute;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: transparent;
   cursor: pointer;
+  /* デバッグ用に輪郭を見たいときはコメント解除
+  outline: 1px solid rgba(255,0,0,.3);
+  */
 }
 
-.area-shape {
-  stroke: #ffffff;
-  stroke-width: 2;
-  transition:
-    fill 0.15s ease,
-    transform 0.15s ease,
-    opacity 0.12s ease,
-    stroke-width 0.12s ease;
+/* 選択中のエリアだけ、うっすら白フチを出す */
+.area-hit.is-active {
+  box-shadow: 0 0 0 2px rgba(255,255,255,.9);
+  border-radius: 999px;
 }
 
-/* 県境っぽい線 */
-.area-border {
-  fill: none;
-  stroke: rgba(255, 255, 255, 0.72);
-  stroke-width: 1.4;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
+/* 各エリアのざっくり位置（% 指定） */
+/* 画像の縦横比によってずれるので、ブラウザで調整してください */
 
-/* 色（参考図に合わせたトーン） */
 .area-hokkaido {
-  fill: #3399ff;
-}
-.area-tohoku {
-  fill: #6ba7da;
-}
-.area-tokyo {
-  fill: #50c2c7;
-}
-.area-hokuriku {
-  fill: #afd850;
-}
-.area-chubu {
-  fill: #5bbe72;
-}
-.area-kansai {
-  fill: #f0b11a;
-}
-.area-chugoku {
-  fill: #ef9031;
-}
-.area-shikoku {
-  fill: #e85e3a;
-}
-.area-kyushu {
-  fill: #d9414e;
+  left: 56%;
+  top: 3%;
+  width: 28%;
+  height: 18%;
 }
 
-/* hover / active */
-.area-block:hover .area-shape {
-  opacity: 0.9;
-  transform: translateY(-1px);
+.area-tohoku {
+  left: 60%;
+  top: 21%;
+  width: 20%;
+  height: 17%;
 }
-.area-block.is-active .area-shape {
-  stroke: #111827;
-  stroke-width: 3;
+
+.area-tokyo {
+  left: 63%;
+  top: 35%;
+  width: 19%;
+  height: 11%;
 }
-@media (prefers-color-scheme: dark) {
-  .area-block.is-active .area-shape {
-    stroke: #e5e7eb;
+
+.area-hokuriku {
+  left: 52%;
+  top: 33%;
+  width: 16%;
+  height: 11%;
+}
+
+.area-chubu {
+  left: 53%;
+  top: 44%;
+  width: 21%;
+  height: 13%;
+}
+
+.area-kansai {
+  left: 46%;
+  top: 47%;
+  width: 16%;
+  height: 12%;
+}
+
+.area-chugoku {
+  left: 37%;
+  top: 51%;
+  width: 15%;
+  height: 12%;
+}
+
+.area-shikoku {
+  left: 43%;
+  top: 63%;
+  width: 18%;
+  height: 10%;
+}
+
+.area-kyushu {
+  left: 33%;
+  top: 66%;
+  width: 19%;
+  height: 13%;
+}
+
+@media (max-width: 1024px) {
+  .japan-map-wrap {
+    border-radius: 12px;
   }
 }
 
