@@ -29,8 +29,9 @@ const menusByMarket = {
 
 const state = {
   area: 'hokuriku',
-  date: null,
-  slot: 0,
+  date: null,              // Market Panel用に選択された日付
+  snapshotDate: null,      // ページ読込時の実際の日付
+  snapshotTimeLabel: null, // ページ読込時の実際の時刻
   market: 'eprx',
   menu: 'primary',
   view: 'graph'
@@ -40,9 +41,6 @@ const EM_DEBUG = false; // 必要なら true に
 
 document.addEventListener('DOMContentLoaded', () => {
   const dateInput    = document.getElementById('em-date');
-  const timeSlider   = document.getElementById('em-time-slider');
-  const timeLabel    = document.getElementById('em-time-label');
-  const nowBtn       = document.getElementById('em-now-btn');
 
   const areaLabel    = document.getElementById('em-area-label');
   const snapshotMeta = document.getElementById('em-snapshot-meta');
@@ -54,22 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
   const viewButtons  = document.querySelectorAll('.seg-btn');
   const viewTitle    = document.getElementById('em-market-view-title');
   const viewBody     = document.getElementById('em-market-view-body');
-  const marketView   = document.getElementById('em-market-view');
 
   if (EM_DEBUG) console.log('[EnergyMap] DOMContentLoaded');
 
-  // 初期日付＆時間をセット
+  // ★ 「現在時刻」のスナップショット情報を保持
   const now = new Date();
   const yyyy = now.getFullYear();
   const mm = String(now.getMonth() + 1).padStart(2, '0');
   const dd = String(now.getDate()).padStart(2, '0');
-  dateInput.value = `${yyyy}-${mm}-${dd}`;
-  state.date = dateInput.value;
+  const snapshotDate = `${yyyy}-${mm}-${dd}`;
+  const snapshotSlot = Math.floor(now.getHours() * 2 + now.getMinutes() / 30);
 
-  const slot = Math.floor(now.getHours() * 2 + now.getMinutes() / 30);
-  timeSlider.value = String(slot);
-  state.slot = slot;
-  timeLabel.textContent = slotToLabel(slot);
+  state.snapshotDate = snapshotDate;
+  state.snapshotTimeLabel = slotToLabel(snapshotSlot);
+
+  // Market Panel 用の日付（初期値は「今日」）
+  dateInput.value = snapshotDate;
+  state.date = dateInput.value;
 
   // ===== SVG ファイルを fetch してインライン挿入 =====
   const mapContainer = document.getElementById('em-map-inline');
@@ -112,7 +111,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
 
-  // 日付変更
+  // 日付変更（Market Panel 用）
   dateInput.addEventListener('change', () => {
     state.date = dateInput.value;
     updateMeta(areaLabel, snapshotMeta, marketMeta);
@@ -258,43 +257,38 @@ function populateMenu(select, market){
 
 function updateMeta(areaLabelEl, snapshotMetaEl, marketMetaEl){
   const areaText = getAreaLabel(state.area);
-  const timeText = `${state.date} ${slotToLabel(state.slot)}`;
 
-  areaLabelEl.textContent = areaText;
-  snapshotMetaEl.textContent = `${areaText} / ${timeText}（ダミー値）`;
+  // Area ラベル（カード右上）
+  if (areaLabelEl) {
+    areaLabelEl.textContent = areaText;
+  }
 
-  const marketText = state.market === 'eprx'
-    ? '需給調整市場（EPRX）'
-    : '卸電力市場（JEPX）';
+  // Now Snapshot メタ
+  if (snapshotMetaEl) {
+    const textEl = snapshotMetaEl.querySelector('.em-meta-text') || snapshotMetaEl;
+    if (state.snapshotDate && state.snapshotTimeLabel) {
+      textEl.textContent =
+        `${areaText} ｜ ${state.snapshotDate} ${state.snapshotTimeLabel} 現在のスナップショット（ダミー値）`;
+    } else {
+      textEl.textContent =
+        `${areaText} ｜ 現在時刻のスナップショット（ダミー値）`;
+    }
+  }
 
-  const menuText = (menusByMarket[state.market] || [])
-    .find(m => m.value === state.menu)?.label || '';
+  // Market Panel メタ（時間表現は出さない）
+  if (marketMetaEl) {
+    const textEl = marketMetaEl.querySelector('.em-meta-text') || marketMetaEl;
 
-  marketMetaEl.textContent =
-    `${areaText} / ${timeText}｜${marketText} - ${menuText}`;
-}
+    const marketText = state.market === 'eprx'
+      ? '需給調整市場（EPRX）'
+      : '卸電力市場（JEPX）';
 
-function updateMarketPlaceholder(titleEl, bodyEl){
-  const marketText = state.market === 'eprx'
-    ? 'EPRX'
-    : 'JEPX';
+    const menuText = (menusByMarket[state.market] || [])
+      .find(m => m.value === state.menu)?.label || '';
 
-  const menuText = (menusByMarket[state.market] || [])
-    .find(m => m.value === state.menu)?.label || '';
+    const dateText = state.date || '-';
 
-  const viewText = state.view === 'graph' ? '時系列グラフ' : 'テーブル';
-
-  titleEl.textContent = `Frame only / ${marketText} - ${menuText}`;
-
-  if (state.market === 'jepx') {
-    bodyEl.textContent =
-      `卸電力市場（JEPX）の「${menuText}」に関するビューの枠組みだけを先に用意している段階です。`
-      + ` 実際の価格データは利用条件に従い、この画面では表示していません。`
-      + ` 将来的には ${viewText} で指標を切り替えながら眺められる構成を想定しています。`;
-  } else {
-    bodyEl.textContent =
-      `需給調整市場（EPRX）の「${menuText}」に関する指標を、${viewText}で眺めるためのビュー。`
-      + ` いまはダミーの枠だけ実装し、後のフェーズで EPRX 公開データを読み込み、`
-      + ` エリア別に比較できるインジケータ群を検討していきます。`;
+    textEl.textContent =
+      `${areaText} ｜ ${dateText} ｜ ${marketText} - ${menuText}`;
   }
 }
