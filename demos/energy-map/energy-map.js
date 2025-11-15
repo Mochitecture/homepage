@@ -82,16 +82,21 @@ document.addEventListener('DOMContentLoaded', () => {
       .then(svgText => {
         // 中身をそのまま挿入
         mapContainer.innerHTML = svgText;
-
+  
         // ルート <svg> を取得してクラスを付加（サイズ指定用）
         const svgEl = mapContainer.querySelector('svg');
         if (svgEl) {
           svgEl.classList.add('jp-energy-map');
+          // ★ SVG 内の <title> 要素をすべて削除（ブラウザのツールチップを消す）
+          svgEl.querySelectorAll('title').forEach(t => t.remove());
         }
-
+  
         const areaElems = mapContainer.querySelectorAll('.jp-area');
+        // 念のため title 属性も消す
+        areaElems.forEach(el => el.removeAttribute('title'));
+  
         if (EM_DEBUG) console.log('[EnergyMap] .jp-area count:', areaElems.length);
-
+  
         wireAreaEvents(
           areaElems,
           areaLabel,
@@ -105,6 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error('[EnergyMap] SVG load error:', err);
       });
   }
+
 
   // 日付変更
   dateInput.addEventListener('change', () => {
