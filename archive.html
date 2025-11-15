@@ -57,21 +57,55 @@
       </footer>
     </article>
 
-    <!-- 03: Energy UI Snippets -->
-    <article class="card-works" id="arch-20251108-energy-ui-snippets">
-      <header>
-        <h3>［Component Lab］Energy UI Snippets</h3>
-        <p class="meta">
-          <time datetime="2025-11-08">2025-11-08</time><span> / 所要: 0.8h</span><span> / 状態: 継続</span>
+    <!-- 03: Energy Map -->
+    <article class="card-works">
+      <header class="card-works-header">
+        <h2 class="card-works-title">
+          [Data Prototype] Energy Map #00：オープンデータの地図を構想する
+        </h2>
+        <p class="card-works-meta">
+          2025-11-16　／ 所要: 1h（構想整理）　／ 状態: 枠組み設計中 v0
         </p>
       </header>
-      <p class="lead">エネルギーSaaS向けの再利用コンポーネントを小さく検証し、良いパターンだけを残す箱。</p>
-      <ul class="bullets">
-        <li>before：画面ごとにUIがばらつき、実装の手戻りが発生</li>
-        <li>how：小粒なUI実験→命名・バリエーション・使用例を最小セットで記録</li>
-        <li>after：設計の再現性とスピードが向上。失敗も履歴化して学習に回す</li>
-      </ul>
-      <p class="tags"><span class="pill">#UI</span><span class="pill">#Design</span></p>
+    
+      <div class="card-works-body">
+        <p>
+          日本の電力システムを「一枚の地図」として観測できる場所をつくる計画。
+          JEPX・EPRX・OCCTO・気象庁などに散らばった情報を、電力エリアごとの
+          レイヤーとして整理し、「市場シグナル × 需給 × 天気」の関係を
+          直感的に眺められるプロダクトを目指す。
+        </p>
+    
+        <p>
+          ただしデータの扱いは慎重に。まずはオープンデータの利用規約を整理しつつ、
+          日本地図／右側の詳細カード／下部のタイムスライダーという三分割レイアウトだけを
+          先に実装する方針にした。市場やメニューの選択 UI だけ先に用意しておき、
+          後から安全に使えるデータレイヤーを一つずつ積み上げていく。
+        </p>
+    
+        <ul>
+          <li>
+            before：電力関連データは各サイト・CSV・PDFに散在しており、
+            関係性は頭の中だけで整理していた
+          </li>
+          <li>
+            how：Energy Map というコンセプトのもとで、
+            「日本地図＋詳細カード＋タイムスライダー」の枠組みと
+            Phase0〜2 の進め方を定義
+          </li>
+          <li>
+            after：まずはオープンデータのライセンス調査と「枠だけ実装」から着手できる状態に整理。
+            今後はレイヤーを少しずつ追加していく前提が固まった
+          </li>
+        </ul>
+    
+        <ul class="card-works-tags">
+          <li><span>#OpenData</span></li>
+          <li><span>#Energy</span></li>
+          <li><span>#UI Prototype</span></li>
+          <li><span>#Concept</span></li>
+        </ul>
+      </div>
     </article>
   </main>
 
