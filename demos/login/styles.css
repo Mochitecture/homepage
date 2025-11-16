@@ -4,10 +4,11 @@
   Scope: body.login-page, .login-* 名前空間
 */
 
-/* ページ全体の背景は Mochitecture 本体に合わせてライトにする */
+/* ページ背景 */
+
 body.login-page {
-  background: #f7f7fb; /* うっすらグレー */
-  color: #111827;      /* 濃いめの文字色 */
+  background: #f7f7fb;
+  color: #111827;
 }
 
 .login-wrap {
@@ -105,7 +106,7 @@ body.login-page {
 }
 
 .login-field input:focus {
-  outline: 2px solid rgba(59, 130, 246, 0.8); /* 青寄りフォーカス */
+  outline: 2px solid rgba(59, 130, 246, 0.8);
   border-color: rgba(59, 130, 246, 0.9);
 }
 
@@ -148,7 +149,7 @@ body.login-page {
   font: inherit;
 }
 
-/* サブパネル（Verify / Reset / Devices 内） */
+/* サブパネル */
 
 .login-subpanel {
   margin-top: 1.25rem;
