@@ -4,28 +4,34 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Archive｜Mochitecture</title>
-  <meta name="description" content="Mochitectureの制作・実験のスナップショット。">
+
+  <meta name="description" content="Mochitecture の制作・実験のスナップショットを静かに積層していくためのアーカイブ。">
   <meta property="og:title" content="Mochitecture – Archive">
-  <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速に。">
+  <meta property="og:description" content="抽象の言語化 → UI → Web実装 を、過程ごとに記録する Archive。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/archive">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
+
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+  <link rel="stylesheet" href="/assets/base.css?v=20251116a">
 
   <!--
-    Mochitecture / Archive
+    File: archive.html
+    Role: Mochitecture の「過程のスナップショット」を積層するページ
     Pattern:
-      - HTML: Archive Pattern（1カード = 1スナップショット）
-      - CSS : base.css の .card-works / .pill / .btn
-      - JS  : /assets/include.js のみ
+      - P1: Layout Pattern（header/footer + .site-main.wrap）
+      - P5: Folder Pattern（ルート直下の本番ページ）
+      - P9: Archive Card Pattern（1カード = 1スナップショット）
+      - P6: Comment Header Pattern（役割と読み方をコメントに集約）
     Notes:
-      - 各カードは before / how / after の 3 行構成を基本とする
-      - ID は arch-YYYYMMDD-slug 形式で付与
+      - 各 <article.card-works> は「before / how / after」の3行を基本形とする
+      - id は arch-YYYYMMDD-key 形式で付与（後から探しやすくするため）
+      - 追加・編集は基本的に <main> 内のみで完結させる
   -->
 </head>
 <body>
+  <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
@@ -36,17 +42,22 @@
       <header>
         <h3>［Case Study］Homepage</h3>
         <p class="meta">
-          <time datetime="2025-11-09">2025-11-09</time><span>所要: 3h</span><span>状態: 完了</span>
+          <time datetime="2025-11-09">2025-11-09</time>
+          <span>所要: 3h</span>
+          <span>状態: 完了</span>
         </p>
       </header>
-      <p class="lead">“ゼロから3時間”。設計〜公開までの最短ルートを検証し、Mochitectureの土台を確立。</p>
+      <p class="lead">
+        “ゼロから3時間”。設計〜公開までの最短ルートを検証し、Mochitecture の土台を確立。
+      </p>
       <ul class="bullets">
         <li>before：公開までの初動が重い／手が動かない</li>
         <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイ</li>
         <li>after：以後の更新が「カードを足すだけ」に。運用コストを極小化</li>
       </ul>
       <p class="tags">
-        <span class="pill">#HTML/CSS</span><span class="pill">#Vercel</span>
+        <span class="pill">#HTML/CSS</span>
+        <span class="pill">#Vercel</span>
       </p>
     </article>
 
@@ -55,20 +66,28 @@
       <header>
         <h3>［UI Prototype］Calender</h3>
         <p class="meta">
-          <time datetime="2025-11-10">2025-11-10</time><span>所要: 2h</span><span>状態: 試作 v0</span>
+          <time datetime="2025-11-10">2025-11-10</time>
+          <span>所要: 2h</span>
+          <span>状態: 試作 v0</span>
         </p>
       </header>
-      <p class="lead">Outlook / iPhone 風の週グリッド。用途別に色分けし、予定を重ねて俯瞰できる軽量デモ。</p>
+      <p class="lead">
+        Outlook / iPhone 風の週グリッド。用途別に色分けし、予定を重ねて俯瞰できる軽量デモ。
+      </p>
       <ul class="bullets">
         <li>before：仕事／私用／制作が別系統で見通しにくい</li>
         <li>how：週×時間のグリッド上にブロック配置。用途名で色分け。localStorageで即保存</li>
         <li>after：一画面で全体像を把握。次段はドラッグ編集／重なりレイアウト</li>
       </ul>
       <p class="tags">
-        <span class="pill">#UI</span><span class="pill">#CSS</span><span class="pill">#JavaScript</span>
+        <span class="pill">#UI</span>
+        <span class="pill">#CSS</span>
+        <span class="pill">#JavaScript</span>
       </p>
       <footer class="links">
-        <a class="btn btn-primary" href="/demos/calender/" target="_blank" rel="noopener">Calender を見る</a>
+        <a class="btn btn-primary" href="/demos/calender/" target="_blank" rel="noopener">
+          Calender を見る
+        </a>
       </footer>
     </article>
 
@@ -77,28 +96,34 @@
       <header>
         <h3>［Data Prototype］Energy Map</h3>
         <p class="meta">
-          <time datetime="2025-11-16">2025-11-16</time><span>所要: 6h</span><span>状態: UIフレーム試作 v0.1</span>
+          <time datetime="2025-11-16">2025-11-16</time>
+          <span>所要: 6h</span>
+          <span>状態: UIフレーム試作 v0.1</span>
         </p>
       </header>
-    
+
       <p class="lead">
         日本の電力エリアを「市場 × 需給 × 天気」でながめるためのミニマップ。
         まずはオープンデータ前提で、地図とカードだけを並べたフレーム版。
       </p>
-    
+
       <ul class="bullets">
         <li>before：JEPX / EPRX / OCCTO / 気象庁など、電力系データがサイトごと・CSVごとに散在していた</li>
         <li>how：上段に「現在」、下段に「Area（日本地図）」と「Market Panel（市場 × メニュー × 日付）」を置く3ブロック構成で UI を設計し、SVG地図はエリアをホバー／クリックすると反応するが指標はすべてダミー値にとどめる</li>
         <li>after：Data &amp; License セクションで各ソースの利用条件を整理しつつ、条件クリアな指標から順番に実データを接続していく（オープンデータ層 → 契約データ層 → 自社ログ層へ拡張）</li>
       </ul>
-    
+
       <p class="tags">
-        <span class="pill">#OpenData</span><span class="pill">#Energy</span>
-        <span class="pill">#UI</span><span class="pill">#Prototype</span>
+        <span class="pill">#OpenData</span>
+        <span class="pill">#Energy</span>
+        <span class="pill">#UI</span>
+        <span class="pill">#Prototype</span>
       </p>
-    
+
       <footer class="links">
-        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">Energy Map を開く</a>
+        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">
+          Energy Map を開く
+        </a>
       </footer>
     </article>
 
@@ -107,19 +132,21 @@
       <header>
         <h3>［Design Doc］Web Coding Design Pattern</h3>
         <p class="meta">
-          <time datetime="2025-11-16">2025-11-16</time><span>所要: 2h</span><span>状態: メモ v0.1</span>
+          <time datetime="2025-11-16">2025-11-16</time>
+          <span>所要: 2h</span>
+          <span>状態: Spec v1.0</span>
         </p>
       </header>
 
       <p class="lead">
-        Mochitecture のミニサイトを「後から読みやすく・拡張しやすく」するためのコーディング設計メモ。
+        Mochitecture のミニサイトを「後から読みやすく・拡張しやすく」するためのコーディング設計ドキュメント。
         HTML / CSS / JS / ファイル構成の考え方を 1 ページにまとめた。
       </p>
 
       <ul class="bullets">
         <li>before：実装ごとに書き方や置き場所がバラバラで、「なんとなくのルール」が頭の中にだけ存在していた</li>
-        <li>how：patterns.html にレイアウト／CSS／JS／コメントヘッダ／demos 追加手順を「型」として整理し、例とミニチェックリストを添えた</li>
-        <li>after：新しくページやデモを作るとき、まず patterns.html を見るだけで設計の起点と共通ルールを思い出せるようになった</li>
+        <li>how：web-coding-design-pattern.html にレイアウト／CSS／JS／コメントヘッダ／demos 追加手順を「型」として整理し、例とミニチェックリストを添えた</li>
+        <li>after：新しくページやデモを作るとき、まず patterns ページを見るだけで設計の起点と共通ルールを思い出せるようになった</li>
       </ul>
 
       <p class="tags">
@@ -129,12 +156,15 @@
       </p>
 
       <footer class="links">
-        <a class="btn btn-primary" href="/web-coding-design-pattern">Web Coding Design Pattern を見る</a>
+        <a class="btn btn-primary" href="/web-coding-design-pattern.html" target="_blank" rel="noopener">
+          Web Coding Design Pattern を見る
+        </a>
       </footer>
     </article>
 
   </main>
 
+  <!-- 共通フッター -->
   <div data-include="/partials/footer.html"></div>
   <script src="/assets/include.js"></script>
 </body>
