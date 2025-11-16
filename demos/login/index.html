@@ -4,379 +4,222 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
 
-  <title>Login Demo｜Mochitecture</title>
-  <meta name="description" content="Mochitecture のログイン画面デモ。ログイン／新規登録／パスワード再設定／アカウント／デバイス管理をタブで切り替えて確認できます。">
-  <meta property="og:title" content="Login Demo｜Mochitecture">
-  <meta property="og:description" content="ログインまわりの基本画面をまとめた、Mochitecture の Login デモ。">
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/demos/login/">
-  <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
-  <meta name="twitter:card" content="summary">
+  <title>Login｜Mochitecture</title>
+  <meta name="description" content="Mochitecture のシンプルなログイン UI デモ。Sign in / Sign up / Forgot / Account / Devices を1ページで切替表示。">
 
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251116b">
-  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116c">
+  <link rel="stylesheet" href="/assets/base.css">
+  <link rel="stylesheet" href="/demos/login/styles.css">
 
-  <!--
-    File: /demos/login/index.html
-    Pattern: Demo HTML Pattern
-    Role:
-      - Login まわりの画面構成を確認するためのデモ
-    Notes:
-      - v0 はフロントのみ。認証処理は行わない
-  -->
 </head>
 <body class="login-page">
-  <!-- 共通ヘッダー -->
+  <!-- header -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main">
     <div class="wrap login-wrap">
+
       <header class="page-head">
-        <h1 class="page-title">Login Demo</h1>
-        <p class="page-lead">
-          Mochitecture のログイン画面のサンプルです。
-        </p>
-        <p class="login-note">
-          実際の認証は行われません。個人情報は入力しないでください。
-        </p>
+        <h1 class="page-title">Login</h1>
+        <p class="page-lead">Mochitecture の最小構成ログインデモです。</p>
       </header>
 
-      <!-- タブ（画面 ①〜⑤ を切り替える） -->
-      <nav class="login-tabs" role="tablist" aria-label="Login navigation">
-        <button
-          class="login-tab is-active"
-          type="button"
-          data-view="signin"
-          role="tab"
-          id="login-tab-signin"
-          aria-selected="true"
-          aria-controls="login-panel-signin"
-        >① ログイン</button>
-
-        <button
-          class="login-tab"
-          type="button"
-          data-view="signup"
-          role="tab"
-          id="login-tab-signup"
-          aria-selected="false"
-          aria-controls="login-panel-signup"
-        >② 新規登録</button>
-
-        <button
-          class="login-tab"
-          type="button"
-          data-view="forgot"
-          role="tab"
-          id="login-tab-forgot"
-          aria-selected="false"
-          aria-controls="login-panel-forgot"
-        >③ パスワード再設定</button>
-
-        <button
-          class="login-tab"
-          type="button"
-          data-view="account"
-          role="tab"
-          id="login-tab-account"
-          aria-selected="false"
-          aria-controls="login-panel-account"
-        >④ アカウント</button>
-
-        <button
-          class="login-tab"
-          type="button"
-          data-view="devices"
-          role="tab"
-          id="login-tab-devices"
-          aria-selected="false"
-          aria-controls="login-panel-devices"
-        >⑤ デバイス</button>
+      <!-- ▼ タブ -->
+      <nav class="login-tabs" aria-label="Login tabs">
+        <button class="login-tab is-active" data-view="signin">Sign in</button>
+        <button class="login-tab" data-view="signup">Sign up</button>
+        <button class="login-tab" data-view="forgot">パスワード再設定</button>
+        <button class="login-tab" data-view="account">アカウント設定</button>
+        <button class="login-tab" data-view="devices">デバイス管理</button>
       </nav>
 
-      <!-- ① ログイン -->
-      <section
-        class="login-panel is-active"
-        data-view="signin"
-        role="tabpanel"
-        id="login-panel-signin"
-        aria-labelledby="login-tab-signin"
-      >
-        <h2 class="login-panel-title">① ログイン</h2>
-        <p class="login-panel-desc">
-          メールアドレスとパスワードでログインする基本画面です。
-        </p>
-
-        <!-- ログイン状態表示（共有） -->
-        <p class="login-status" data-login-status></p>
-
-        <!-- エラーメッセージ（ログイン用） -->
-        <p class="login-error" data-error-for="signin" aria-live="polite"></p>
-
-        <form class="login-form" aria-label="ログインフォーム" data-form="signin">
+      <!-- ▼ ① Sign in -->
+      <section class="login-panel is-active" data-view="signin">
+        <h2 class="login-panel-title">Sign in</h2>
+        <form class="login-form">
           <label class="login-field">
-            <span>メールアドレス</span>
-            <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email">
           </label>
+
           <label class="login-field">
-            <span>パスワード</span>
-            <input type="password" name="password" autocomplete="current-password" placeholder="••••••••">
+            <span>Password</span>
+            <input type="password" name="password" autocomplete="current-password">
           </label>
+
           <label class="login-checkbox">
             <input type="checkbox" name="remember">
-            <span>この端末を記憶する（Remember me）</span>
+            <span>この端末でログイン状態を保持する</span>
           </label>
-          <p class="login-hint">
-            セッション例：無操作 30 分で自動ログアウト。Remember me 有効時は、より長くログインを維持します（デモ）。
-          </p>
+
           <button type="submit" class="btn btn-primary login-submit">ログイン</button>
+
           <p class="login-switch">
-            パスワードを忘れた場合 →
-            <button type="button" class="link-like" data-switch="forgot">パスワード再設定</button>
+            パスワードを忘れましたか？
+            <button type="button" class="link-like" data-switch="forgot">再設定へ</button>
           </p>
         </form>
       </section>
 
-      <!-- ② 新規登録 + ②-2 認証コード -->
-      <section
-        class="login-panel"
-        data-view="signup"
-        role="tabpanel"
-        id="login-panel-signup"
-        aria-labelledby="login-tab-signup"
-        hidden
-      >
-        <h2 class="login-panel-title">② 新規登録</h2>
-        <p class="login-panel-desc">
-          メールアドレスとパスワードでアカウントを作成します。
-        </p>
+      <!-- ▼ ② Sign up -->
+      <section class="login-panel" data-view="signup">
+        <h2 class="login-panel-title">Sign up</h2>
 
-        <!-- エラーメッセージ（新規登録用） -->
-        <p class="login-error" data-error-for="signup" aria-live="polite"></p>
-
-        <!-- ② 本体 -->
-        <form class="login-form" aria-label="新規登録フォーム" data-form="signup">
+        <form class="login-form" id="signup-form">
           <label class="login-field">
-            <span>メールアドレス</span>
-            <input type="email" name="email" autocomplete="email">
-          </label>
-          <label class="login-field">
-            <span>パスワード</span>
-            <input type="password" name="password" autocomplete="new-password">
-          </label>
-          <label class="login-field">
-            <span>パスワード（確認）</span>
-            <input type="password" name="passwordConfirm" autocomplete="new-password">
+            <span>Email</span>
+            <input type="email" id="signup-email" autocomplete="email">
           </label>
 
-          <button type="submit" class="btn btn-primary login-submit">
-            認証コードを送信
+          <label class="login-field">
+            <span>Password</span>
+            <input type="password" id="signup-password" autocomplete="new-password">
+          </label>
+
+          <div class="pw-checklist" id="signup-checklist">
+            <div data-check="length">✕ 8文字以上</div>
+            <div data-check="upper">✕ 英大文字</div>
+            <div data-check="lower">✕ 英小文字</div>
+            <div data-check="number">✕ 数字</div>
+            <div data-check="symbol">✕ 記号</div>
+          </div>
+
+          <label class="login-field">
+            <span>Confirm</span>
+            <input type="password" id="signup-confirm" autocomplete="new-password">
+          </label>
+
+          <div class="pw-checklist" id="confirm-check">
+            <div data-check="match">✕ パスワード一致</div>
+          </div>
+
+          <button type="button" id="signup-button" class="btn btn-primary login-submit" disabled>
+            認証コード送信
           </button>
         </form>
 
-        <!-- ②-2 認証コード入力 -->
+        <!-- Verify code -->
         <section class="login-subpanel">
-          <h3 class="login-subpanel-title">メール認証</h3>
-          <p class="login-hint">
-            メールに届いた 6 桁コードを入力して登録を完了します。
-          </p>
-          <form class="login-form" aria-label="認証コードフォーム">
+          <h3 class="login-subpanel-title">認証コード確認</h3>
+          <form class="login-form">
             <label class="login-field">
-              <span>6 桁コード</span>
-              <input type="text" name="verifyCode" placeholder="123456">
+              <span>6桁コード</span>
+              <input type="text" maxlength="6">
             </label>
-            <button type="submit" class="btn btn-primary login-submit">
-              アカウント作成（ダミー）
-            </button>
+            <button type="submit" class="btn btn-primary login-submit">アカウント作成</button>
           </form>
         </section>
       </section>
 
-      <!-- ③ パスワード再設定 -->
-      <section
-        class="login-panel"
-        data-view="forgot"
-        role="tabpanel"
-        id="login-panel-forgot"
-        aria-labelledby="login-tab-forgot"
-        hidden
-      >
-        <h2 class="login-panel-title">③ パスワード再設定</h2>
-        <p class="login-panel-desc">
-          メールでコードを受け取り、パスワードをリセットします。
-        </p>
+      <!-- ▼ ③ Forgot -->
+      <section class="login-panel" data-view="forgot">
+        <h2 class="login-panel-title">パスワード再設定</h2>
 
-        <!-- エラーメッセージ（再設定メール送信用） -->
-        <p class="login-error" data-error-for="forgot" aria-live="polite"></p>
-
-        <!-- ③ 本体 -->
-        <form class="login-form" aria-label="再設定メール送信フォーム" data-form="forgot">
+        <form class="login-form">
           <label class="login-field">
-            <span>登録メールアドレス</span>
-            <input type="email" name="email" autocomplete="email">
+            <span>登録Email</span>
+            <input type="email" autocomplete="email">
           </label>
-          <button type="submit" class="btn login-submit">
-            認証コードを送信
+
+          <button type="button" class="btn btn-primary login-submit">
+            認証コード送信
           </button>
         </form>
 
-        <!-- ③-2 新しいパスワード設定 -->
+        <!-- Reset -->
         <section class="login-subpanel">
-          <h3 class="login-subpanel-title">新しいパスワード</h3>
-          <p class="login-hint">
-            コードと新しいパスワードを入力します。
-          </p>
+          <h3 class="login-subpanel-title">新しいパスワード設定</h3>
 
-          <!-- エラーメッセージ（パスワード再設定用） -->
-          <p class="login-error" data-error-for="reset" aria-live="polite"></p>
-
-          <form class="login-form" aria-label="パスワード再設定フォーム" data-form="reset">
+          <form class="login-form" id="reset-form">
             <label class="login-field">
               <span>認証コード</span>
-              <input type="text" name="resetCode" placeholder="6 桁コード">
+              <input type="text" maxlength="6">
             </label>
+
             <label class="login-field">
               <span>新しいパスワード</span>
-              <input type="password" name="newPassword" autocomplete="new-password">
+              <input type="password" id="reset-password" autocomplete="new-password">
             </label>
+
+            <div class="pw-checklist" id="reset-checklist">
+              <div data-check="length">✕ 8文字以上</div>
+              <div data-check="upper">✕ 英大文字</div>
+              <div data-check="lower">✕ 英小文字</div>
+              <div data-check="number">✕ 数字</div>
+              <div data-check="symbol">✕ 記号</div>
+            </div>
+
             <label class="login-field">
-              <span>パスワード（確認）</span>
-              <input type="password" name="newPasswordConfirm" autocomplete="new-password">
+              <span>Confirm</span>
+              <input type="password" id="reset-confirm" autocomplete="new-password">
             </label>
-            <button type="submit" class="btn btn-primary login-submit">
-              再設定する
+
+            <div class="pw-checklist" id="reset-confirm-check">
+              <div data-check="match">✕ パスワード一致</div>
+            </div>
+
+            <button type="submit" id="reset-button" class="btn btn-primary login-submit" disabled>
+              再設定
             </button>
           </form>
         </section>
       </section>
 
-      <!-- ④ アカウント設定 -->
-      <section
-        class="login-panel"
-        data-view="account"
-        role="tabpanel"
-        id="login-panel-account"
-        aria-labelledby="login-tab-account"
-        hidden
-      >
-        <h2 class="login-panel-title">④ アカウント</h2>
-        <p class="login-panel-desc">
-          パスワード変更やログアウトを行う画面です。
-        </p>
+      <!-- ▼ ④ Account -->
+      <section class="login-panel" data-view="account">
+        <h2 class="login-panel-title">アカウント設定</h2>
 
-        <!-- ログイン状態表示（共有） -->
-        <p class="login-status" data-login-status></p>
-
-        <!-- エラーメッセージ（パスワード変更用） -->
-        <p class="login-error" data-error-for="change" aria-live="polite"></p>
-
-        <div class="login-account-summary">
-          <p><strong>プロフィール</strong></p>
-          <p class="login-hint">
-            v0 では Email のみを想定しています。
-          </p>
-        </div>
-
-        <form class="login-form" aria-label="パスワード変更フォーム" data-form="change">
+        <form class="login-form">
           <label class="login-field">
             <span>現在のパスワード</span>
-            <input type="password" name="currentPassword" autocomplete="current-password">
+            <input type="password" autocomplete="current-password">
           </label>
+
           <label class="login-field">
             <span>新しいパスワード</span>
-            <input type="password" name="newPassword" autocomplete="new-password">
+            <input type="password">
           </label>
-          <button type="submit" class="btn login-submit">
-            パスワードを変更
-          </button>
+
+          <button class="btn btn-primary login-submit">更新</button>
         </form>
-
-        <div class="login-remember">
-          <p class="login-hint">
-            Remember me の状態や、長期セッションの扱いをここで説明する想定です（デモ）。
-          </p>
-        </div>
-
-        <div class="login-account-actions">
-          <button type="button" class="btn btn-secondary js-go-devices">
-            デバイス一覧へ
-          </button>
-          <button type="button" class="btn btn-ghost js-logout">
-            ログアウト
-          </button>
-        </div>
       </section>
 
-      <!-- ⑤ デバイス管理 -->
-      <section
-        class="login-panel"
-        data-view="devices"
-        role="tabpanel"
-        id="login-panel-devices"
-        aria-labelledby="login-tab-devices"
-        hidden
-      >
-        <h2 class="login-panel-title">⑤ デバイス</h2>
-        <p class="login-panel-desc">
-          ログイン中のデバイスを確認し、ログアウトできます（デモ）。
-        </p>
+      <!-- ▼ ⑤ Devices -->
+      <section class="login-panel" data-view="devices">
+        <h2 class="login-panel-title">デバイス管理</h2>
 
         <section class="login-subpanel">
           <h3 class="login-subpanel-title">ログイン中のデバイス</h3>
-          <table class="login-table" aria-label="ログイン中のデバイス一覧">
+          <table class="login-table">
             <thead>
               <tr>
-                <th>デバイス / OS</th>
+                <th>デバイス</th>
                 <th>ブラウザ</th>
-                <th>IP（おおよそ）</th>
+                <th>IP</th>
                 <th>最終アクセス</th>
-                <th>操作</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td>MacBook Pro / macOS</td>
+                <td>MacBook Pro</td>
                 <td>Chrome</td>
-                <td>Tokyo, JP</td>
-                <td>2025-11-16 12:34</td>
-                <td><button type="button" class="btn btn-ghost btn-xs js-logout">ログアウト</button></td>
-              </tr>
-              <tr>
-                <td>iPhone / iOS</td>
-                <td>Safari</td>
-                <td>Tokyo, JP</td>
-                <td>2025-11-15 22:10</td>
-                <td><button type="button" class="btn btn-ghost btn-xs js-logout">ログアウト</button></td>
+                <td>Tokyo JP</td>
+                <td>2025-11-16</td>
+                <td><button class="btn btn-ghost btn-xs">ログアウト</button></td>
               </tr>
             </tbody>
           </table>
         </section>
-
-        <section class="login-subpanel">
-          <h3 class="login-subpanel-title">ログイン通知（例）</h3>
-          <p class="login-hint">
-            新しいデバイスからログインがあったときの通知イメージです。
-          </p>
-          <ul class="login-list">
-            <li>2025-11-16 12:34 — MacBook Pro / Chrome / Tokyo, JP からログインがありました。</li>
-            <li>心当たりがない場合はパスワード変更と全デバイスからのログアウトを行ってください。</li>
-          </ul>
-        </section>
-
-        <div class="login-device-actions">
-          <button type="button" class="btn btn-secondary js-logout">
-            ほかのデバイスからすべてログアウト
-          </button>
-        </div>
       </section>
+
     </div>
   </main>
 
-  <!-- 共通フッター -->
+  <!-- footer -->
   <div data-include="/partials/footer.html"></div>
 
   <script defer src="/assets/include.js"></script>
-  <script defer src="/demos/login/app.js?v=20251116c"></script>
+  <script defer src="/demos/login/app.js"></script>
 </body>
 </html>
