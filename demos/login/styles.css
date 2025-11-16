@@ -1,0 +1,233 @@
+/*
+  File: /demos/login/styles.css
+  Pattern: Demo CSS Pattern
+  Scope: body.login-page, .login-* 名前空間
+*/
+
+body.login-page {
+  background: var(--color-bg, #05060c);
+}
+
+.login-wrap {
+  padding-top: 3rem;
+  padding-bottom: 4rem;
+}
+
+/* 説明テキスト */
+
+.login-note {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--color-text-muted, #a0a0bc);
+}
+
+/* タブ */
+
+.login-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 2rem 0 1.5rem;
+}
+
+.login-tab {
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: transparent;
+  color: inherit;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.login-tab.is-active {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* パネル */
+
+.login-panel {
+  display: none;
+  border-radius: 1.2rem;
+  padding: 1.4rem 1.5rem 1.7rem;
+  background: rgba(8, 8, 16, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.5);
+  margin-bottom: 1.75rem;
+}
+
+.login-panel.is-active {
+  display: block;
+}
+
+.login-panel-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+}
+
+.login-panel-desc {
+  font-size: 0.9rem;
+  color: var(--color-text-muted, #a0a0bc);
+  margin-bottom: 1rem;
+}
+
+/* フォーム */
+
+.login-form {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.login-field {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.login-field span {
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #a3a3bf);
+}
+
+.login-field input {
+  width: 100%;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(5, 5, 10, 0.9);
+  color: inherit;
+  font: inherit;
+}
+
+.login-field input:focus {
+  outline: 1px solid rgba(183, 167, 255, 0.7);
+  border-color: rgba(183, 167, 255, 0.9);
+}
+
+.login-checkbox {
+  display: flex;
+  gap: 0.45rem;
+  align-items: center;
+  font-size: 0.82rem;
+  color: var(--color-text-muted, #a3a3bf);
+}
+
+.login-checkbox input {
+  width: 1rem;
+  height: 1rem;
+}
+
+.login-hint {
+  margin-top: 0.25rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #a3a3bf);
+}
+
+.login-submit {
+  margin-top: 0.2rem;
+}
+
+.login-switch {
+  margin-top: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #a3a3bf);
+}
+
+.link-like {
+  border: none;
+  padding: 0;
+  background: none;
+  color: var(--color-link, #c0b7ff);
+  cursor: pointer;
+  text-decoration: underline;
+  font: inherit;
+}
+
+/* サブパネル（Verify / Reset / Devices 内） */
+
+.login-subpanel {
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.login-subpanel-title {
+  font-size: 0.95rem;
+  margin-bottom: 0.4rem;
+}
+
+/* Account / Device 関連 */
+
+.login-account-summary {
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.login-account-summary p {
+  margin: 0.1rem 0;
+}
+
+.login-account-actions {
+  margin-top: 0.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.login-device-actions {
+  margin-top: 0.9rem;
+}
+
+/* Device table */
+
+.login-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.8rem;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.login-table th,
+.login-table td {
+  padding: 0.45rem 0.55rem;
+}
+
+.login-table thead {
+  background: rgba(20, 18, 40, 0.9);
+  text-align: left;
+}
+
+.login-table tbody tr:nth-child(odd) {
+  background: rgba(8, 8, 15, 0.9);
+}
+
+.login-table tbody tr:nth-child(even) {
+  background: rgba(12, 12, 20, 0.9);
+}
+
+.btn-xs {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+/* Notification list */
+
+.login-list {
+  margin: 0.4rem 0 0;
+  padding-left: 1.2rem;
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #a3a3bf);
+}
+
+/* レスポンシブ */
+
+@media (max-width: 640px) {
+  .login-panel {
+    padding: 1.25rem 1rem 1.5rem;
+  }
+
+  .login-table {
+    font-size: 0.75rem;
+  }
+}
