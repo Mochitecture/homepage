@@ -3,17 +3,28 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Schedule – Calendar | Mochitecture</title>
+
+  <title>Schedule – Calendar｜Mochitecture</title>
 
   <!-- Mochitecture 共通 -->
   <link rel="icon" type="image/png" href="/mochitecture_icon.png" />
   <link rel="stylesheet" href="/assets/base.css?v=20251110a" />
 
-  <!-- このカレンダー用 -->
+  <!-- カレンダー専用 -->
   <link rel="stylesheet" href="/demos/calender/styles.css?v=20251116" />
+
+  <!--
+    /demos/calender/index.html
+    Pattern:
+      - Demo Pattern（UI試作用ページ）
+      - Layout: base.css の .wrap + .card をベースに、.calendar-page で微調整
+      - JS: /demos/calender/app.js にロジックを集約
+    Notes:
+      - 週ビューのスケジュールグリッド
+      - ローカルストレージ保存・ドラッグ編集・空き時間検索など UI 実験用
+  -->
 </head>
-<body>
-  <body class="calendar-page">
+<body class="calendar-page">
   <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
@@ -56,13 +67,13 @@
         <input name="title" placeholder="タイトル" />
       </label>
       <div class="grid2">
-        <label>開始日<input type="date"   name="startDate" required></label>
+        <label>開始日<input type="date" name="startDate" required></label>
         <label>開始時刻
           <select name="startTime" required></select>
         </label>
       </div>
       <div class="grid2">
-        <label>終了日<input type="date"   name="endDate" required></label>
+        <label>終了日<input type="date" name="endDate" required></label>
         <label>終了時刻
           <select name="endTime" required></select>
         </label>
@@ -91,8 +102,10 @@
       <div class="grid2">
         <label>必要時間
           <select id="needMin">
-            <option value="30">30分</option><option value="45">45分</option>
-            <option value="60" selected>60分</option><option value="90">90分</option>
+            <option value="30">30分</option>
+            <option value="45">45分</option>
+            <option value="60" selected>60分</option>
+            <option value="90">90分</option>
             <option value="120">120分</option>
           </select>
         </label>
