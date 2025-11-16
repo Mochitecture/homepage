@@ -5,7 +5,7 @@
  */
 
 (() => {
-  // 1. Config（今回は特になし）
+  // 1. Config（なし）
 
   // 2. State
   let currentView = 'signin';
@@ -18,7 +18,7 @@
   function setActiveView(view) {
     currentView = view;
 
-    // タブの更新
+    // タブの状態
     tabs.forEach((tab) => {
       const isActive = tab.dataset.view === view;
       tab.classList.toggle('is-active', isActive);
@@ -26,7 +26,7 @@
       tab.setAttribute('tabindex', isActive ? '0' : '-1');
     });
 
-    // パネルの更新
+    // パネルの状態
     panels.forEach((panel) => {
       const isActive = panel.dataset.view === view;
       panel.classList.toggle('is-active', isActive);
@@ -61,7 +61,7 @@
       });
     });
 
-    // 「Forgot Password へ」リンクからもタブ切り替え
+    // 「パスワード再設定」へのショートカット
     document.querySelectorAll('[data-switch="forgot"]').forEach((btn) => {
       btn.addEventListener('click', () => setActiveView('forgot'));
     });
