@@ -13,6 +13,17 @@
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+
+  <!--
+    Mochitecture / Archive
+    Pattern:
+      - HTML: Archive Pattern（1カード = 1スナップショット）
+      - CSS : base.css の .card-works / .pill / .btn
+      - JS  : /assets/include.js のみ
+    Notes:
+      - 各カードは before / how / after の 3 行構成を基本とする
+      - ID は arch-YYYYMMDD-slug 形式で付与
+  -->
 </head>
 <body>
   <div data-include="/partials/header.html"></div>
@@ -34,7 +45,9 @@
         <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイ</li>
         <li>after：以後の更新が「カードを足すだけ」に。運用コストを極小化</li>
       </ul>
-      <p class="tags"><span class="pill">#HTML/CSS</span><span class="pill">#Vercel</span></p>
+      <p class="tags">
+        <span class="pill">#HTML/CSS</span><span class="pill">#Vercel</span>
+      </p>
     </article>
 
     <!-- 02: Schedule UI Prototype -->
@@ -51,7 +64,9 @@
         <li>how：週×時間のグリッド上にブロック配置。用途名で色分け。localStorageで即保存</li>
         <li>after：一画面で全体像を把握。次段はドラッグ編集／重なりレイアウト</li>
       </ul>
-      <p class="tags"><span class="pill">#UI</span><span class="pill">#CSS</span><span class="pill">#JavaScript</span></p>
+      <p class="tags">
+        <span class="pill">#UI</span><span class="pill">#CSS</span><span class="pill">#JavaScript</span>
+      </p>
       <footer class="links">
         <a class="btn btn-primary" href="/demos/calender/" target="_blank" rel="noopener">Calender を見る</a>
       </footer>
@@ -84,6 +99,34 @@
     
       <footer class="links">
         <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">Energy Map を開く</a>
+      </footer>
+    </article>
+
+    <!-- 04: Web Coding Design Pattern -->
+    <article class="card-works" id="arch-20251116-web-coding-pattern">
+      <header>
+        <h3>［Note］Web Coding Design Pattern</h3>
+        <p class="meta">
+          <time datetime="2025-11-16">2025-11-16</time><span>所要: 2h</span><span>状態: Draft v0.1</span>
+        </p>
+      </header>
+
+      <p class="lead">
+        Mochitecture のフロント実装を「読みやすく／増やしやすく」するためのコーディング規則をまとめた内部ノート。
+      </p>
+
+      <ul class="bullets">
+        <li>before：ページごとに書き方や命名がばらつき、後から読むときの負荷が高い</li>
+        <li>how：HTML/CSS/JS/ディレクトリ構成のパターンを 10 個のノードとして整理し、各ファイルの先頭コメントと 1 ページの仕様書に落とし込む</li>
+        <li>after：新しいページやデモを追加するときも「パターンに沿って書けば迷わない」状態にする</li>
+      </ul>
+
+      <p class="tags">
+        <span class="pill">#CodingRule</span><span class="pill">#Pattern</span><span class="pill">#FrontEnd</span>
+      </p>
+
+      <footer class="links">
+        <a class="btn btn-primary" href="/web-coding-design-pattern.html">Web Coding Design Pattern を見る</a>
       </footer>
     </article>
 
