@@ -4,261 +4,98 @@
   <meta charset="utf-8">
   <title>Energy Map｜Mochitecture</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="日本の電力エリアを「市場 × 需給 × 天気」で眺めるミニマップ。オープンデータ前提のフレーム版 UI。">
 
-  <meta name="description" content="日本の電力エリアを「市場 × 需給 × 天気」で眺めるためのミニマップ。UIの骨組みだけを実装したデモ版。">
+  <meta property="og:title" content="Energy Map｜Mochitecture">
+  <meta property="og:description" content="JEPX / EPRX / 気象庁など、電力系データを 1 画面で俯瞰するためのミニマップ UI。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/demos/energy-map/">
+  <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
+  <meta name="twitter:card" content="summary">
 
   <link rel="icon" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
-  <link rel="stylesheet" href="/demos/energy-map/energy-map.css?v=20251116">
+  <link rel="stylesheet" href="/assets/base.css?v=20251116b">
+  <link rel="stylesheet" href="/demos/energy-map/energy-map.css?v=20251116b">
 
   <!--
-    /demos/energy-map/index.html
-    Pattern:
-      - Demo Pattern（データビューワの UI フレーム試作）
-      - 上段 Snapshot / 下段 Area + Market Panel の3ブロック構成
+    File: /demos/energy-map/index.html
+    Role:
+      - Energy Map デモのページ本体
     Notes:
-      - 実データはまだ接続せず、指標はすべてダミー
-      - Data & License セクションで利用条件だけ先に整理する
+      - 上段：現在ステータス
+      - 下段：エリアマップ（SVG）＋ Market Panel（メニューなど）
   -->
-
-  <script defer src="/assets/include.js"></script>
-  <script defer src="/demos/energy-map/energy-map.js?v=20251116"></script>
 </head>
 <body>
   <div data-include="/partials/header.html"></div>
 
-  <main class="site-main">
-    <div class="em-wrap">
-      <header class="em-header">
-        <h1 class="page-title">Energy Map</h1>
-        <p class="page-lead">
-          日本の電力エリアを「市場 × 需給 × 天気」で眺めるためのミニマップ。いまは UI の骨組みだけ実装している状態。
+  <main class="site-main wrap em-page">
+    <header class="em-header">
+      <h1 class="page-title">Energy Map</h1>
+      <p class="page-lead">
+        日本の電力エリアを「市場 × 需給 × 天気」でながめるためのミニマップ。
+        今はすべてダミー指標のフレーム版で、データの接続条件が整い次第、順番に差し替えていきます。
+      </p>
+    </header>
+
+    <section class="em-top" aria-label="Current snapshot">
+      <div class="em-top-card">
+        <h2>Now</h2>
+        <p class="em-top-note">ここには「今」の代表指標を数個だけ置く（スポット価格、需要、気温など）。</p>
+        <div class="em-metrics">
+          <!-- TODO: 既存の Now パネル UI をこの中に移植 -->
+        </div>
+      </div>
+    </section>
+
+    <section class="em-main" aria-label="Area and market panels">
+      <div class="em-area">
+        <h2 class="em-section-title">Area Map</h2>
+        <p class="em-section-note">
+          SVG の日本地図を使い、エリアをホバー／クリックしたときに右側の Market Panel と連動させます。
         </p>
-      </header>
-
-      <section class="em-layout">
-        <!-- 上段：Now（スナップショット） -->
-        <section class="em-card em-snapshot">
-          <header class="em-card-header em-card-header--single">
-            <p class="em-meta em-meta-snapshot" id="em-snapshot-meta">
-              <span class="em-meta-badge">NOW</span>
-              <span class="em-meta-text">
-                北陸 / Hokuriku ｜ 2025-11-16 07:00 現在（ダミー値）
-              </span>
-            </p>
-          </header>
-          <dl class="snapshot-grid">
-            <div>
-              <dt>予備率</dt>
-              <dd id="em-snapshot-reserve">-- %</dd>
-            </div>
-            <div>
-              <dt>需要</dt>
-              <dd id="em-snapshot-demand">-- MW</dd>
-            </div>
-            <div>
-              <dt>天気</dt>
-              <dd id="em-snapshot-weather">--</dd>
-            </div>
-            <div>
-              <dt>気温</dt>
-              <dd id="em-snapshot-temp">-- ℃</dd>
-            </div>
-          </dl>
-        </section>
-
-        <!-- 下段左：Area -->
-        <section class="em-card em-area">
-          <header class="em-card-header em-card-header--single">
-            <p class="em-meta em-meta-area">
-              <span class="em-meta-badge">AREA</span>
-              <span class="em-meta-text" id="em-area-label">
-                北陸 / Hokuriku
-              </span>
-            </p>
-          </header>
-
-          <div class="em-map-wrap">
-            <div id="em-map-inline" class="jp-energy-map" aria-label="Japan power grid areas"></div>
-          </div>
-          
-          <p class="em-note">
-            ※ 地図上でエリアを選択
-          </p>
-        </section>
-
-        <!-- 下段右：Market Panel -->
-        <section class="em-card em-market">
-          <header class="em-card-header em-card-header--single">
-            <p class="em-meta em-meta-market" id="em-market-meta">
-              <span class="em-meta-badge">MARKET</span>
-              <span class="em-meta-text">
-                北陸 / Hokuriku ｜ 2025-11-16 ｜ 需給調整市場（EPRX） - 一次調整力
-              </span>
-            </p>
-          </header>
-
-          <div class="market-controls">
-            <div class="field">
-              <label for="em-market-select">市場</label>
-              <select id="em-market-select">
-                <option value="eprx">需給調整市場（EPRX）</option>
-                <option value="jepx">卸電力市場（JEPX）</option>
-              </select>
-            </div>
-
-            <div class="field">
-              <label for="em-menu-select">メニュー</label>
-              <select id="em-menu-select"></select>
-            </div>
-
-            <div class="field field-date-inline">
-              <label for="em-date">日付</label>
-              <input type="date" id="em-date">
-            </div>
-
-            <div class="field view-toggle">
-              <label class="label">ビュー</label>
-              <div class="segmented">
-                <button type="button" class="seg-btn is-active" data-view="graph">Graph</button>
-                <button type="button" class="seg-btn" data-view="table">Table</button>
-              </div>
-            </div>
-          </div>
-
-          <div class="market-view is-graph" id="em-market-view">
-            <div class="market-placeholder">
-              <h3 id="em-market-view-title">Frame only / EPRX - 一次調整力</h3>
-              <p id="em-market-view-body">
-                需給調整市場（EPRX）の一次調整力に関する指標を、時系列グラフで眺めるためのビュー。今はまだダミーの枠のみを実装し、データの差し込み方や指標セットを検討する段階。
-              </p>
-            </div>
-
-            <!-- Graph ビュー用のダミー・フレーム -->
-            <div class="market-graph-skeleton" id="em-market-graph">
-              <div class="graph-grid">
-                <div class="graph-y">
-                  <span>High</span>
-                  <span>Mid</span>
-                  <span>Low</span>
-                </div>
-                <div class="graph-body">
-                  <div class="graph-bar bar-1"></div>
-                  <div class="graph-bar bar-2"></div>
-                  <div class="graph-bar bar-3"></div>
-                  <div class="graph-bar bar-4"></div>
-                  <div class="graph-bar bar-5"></div>
-                  <div class="graph-bar bar-6"></div>
-                </div>
-              </div>
-              <p class="graph-caption">
-                ※ 実データを接続する前のレイアウト確認用ダミー。将来的には 48 コマの価格・量などをここに重ねる想定。
-              </p>
-            </div>
-
-            <!-- Table ビュー用のダミー・フレーム -->
-            <div class="market-table-skeleton" id="em-market-table">
-              <div class="table-head">
-                <span>時刻</span>
-                <span>指標A</span>
-                <span>指標B</span>
-                <span>指標C</span>
-              </div>
-              <div class="table-body">
-                <div class="table-row">
-                  <span>00:00</span><span>--</span><span>--</span><span>--</span>
-                </div>
-                <div class="table-row">
-                  <span>03:00</span><span>--</span><span>--</span><span>--</span>
-                </div>
-                <div class="table-row">
-                  <span>06:00</span><span>--</span><span>--</span><span>--</span>
-                </div>
-                <div class="table-row">
-                  <span>09:00</span><span>--</span><span>--</span><span>--</span>
-                </div>
-                <div class="table-row">
-                  <span>12:00</span><span>--</span><span>--</span><span>--</span>
-                </div>
-              </div>
-              <p class="table-caption">
-                ※ テーブルビューでは 30 分単位の行を並べ、後のフェーズで EPRX / JEPX の指標を埋め込むイメージ。
-              </p>
-            </div>
-          </div>
-        </section>
-      </section>
-
-      <!-- Data & License セクション -->
-      <section class="em-card em-data-license">
-        <header class="em-card-header">
-          <h2>Data &amp; License</h2>
-          <p class="em-meta">
-            Energy Map で扱う予定のデータソースと、現時点での利用条件メモ。
-          </p>
-        </header>
-
-        <div class="dl-note">
-          <p>
-            ※ 現段階ではどの外部データソースとも接続しておらず、このページでは UI の枠組みのみ提供しています。
-            実データ接続の前に、各ソースの利用規約や二次利用条件を必ず確認します。
-          </p>
+        <div class="em-map-wrap">
+          <!-- SVG 読み込み -->
+          <object
+            id="em-map"
+            class="em-map-svg"
+            type="image/svg+xml"
+            data="/demos/energy-map/JP-EnergyAreas.svg"
+          >
+          </object>
         </div>
+      </div>
 
-        <div class="dl-table-wrap">
-          <table class="dl-table">
-            <thead>
-              <tr>
-                <th>データ種別</th>
-                <th>予定している取得元</th>
-                <th>ライセンス / 利用条件メモ</th>
-                <th>現状</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>電力需給（実績・予測）</td>
-                <td>OCCTO / 電力広域運営推進機関</td>
-                <td>一般向け利用不可。要契約・要審査。画面上の公開には別途合意が必要。</td>
-                <td>まだ接続しない</td>
-              </tr>
-              <tr>
-                <td>卸電力市場（JEPX）価格</td>
-                <td>JEPX 公開情報</td>
-                <td>二次利用・商用利用に制限あり。グラフ表示や履歴保存には転載条件を厳密に確認する。</td>
-                <td>UI のみ用意</td>
-              </tr>
-              <tr>
-                <td>需給調整市場（EPRX）</td>
-                <td>経産省 EPRX 公開データ</td>
-                <td>実データの扱いに注意。引用範囲や再配布に関する利用規定の確認が必須。</td>
-                <td>UI のみ用意</td>
-              </tr>
-              <tr>
-                <td>天気・気温</td>
-                <td>Open-Meteo / 気象庁</td>
-                <td>気象庁は出典明記が条件。Open-Meteo は商用利用可だが利用規約に従う。</td>
-                <td>未接続</td>
-              </tr>
-              <tr>
-                <td>アイコン / 図版</td>
-                <td>Mochitecture 自作素材</td>
-                <td>自作素材のため自由利用可能。</td>
-                <td>OK</td>
-              </tr>
-              <tr>
-                <td>日本地図ベース</td>
-                <td>自作 SVG（Mochitecture）</td>
-                <td>Mochitecture 著作の自作 SVG。Energy Map 内で自由に再利用可。</td>
-                <td>完成済み</td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="em-market">
+        <h2 class="em-section-title">Market Panel</h2>
+        <div class="em-market-controls">
+          <!-- メニュー（指標の種類 / 日時など） -->
+          <!-- TODO: 既存の select / input / タブ UI をここに移植 -->
         </div>
-      </section>
-    </div>
+        <div class="em-market-body">
+          <!-- エリア選択に応じたカードをここに描画 -->
+          <div id="em-market-panel" class="em-market-panel">
+            <!-- app.js / energy-map.js で中身を生成 -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="em-data-license" aria-label="Data &amp; License">
+      <h2 class="em-section-title">Data &amp; License</h2>
+      <p class="em-section-note">
+        ここでは、「どのデータをどの条件で使っているか」を一覧で管理します。
+        JEPX / OCCTO / 気象庁など、それぞれの転載・引用条件をテーブルで整理しておきます。
+      </p>
+
+      <div id="em-data-license-table" class="em-data-license-table">
+        <!-- TODO: 既存の Data & License テーブルをここに移植 -->
+      </div>
+    </section>
   </main>
 
   <div data-include="/partials/footer.html"></div>
+  <script src="/assets/include.js" defer></script>
+  <script src="/demos/energy-map/energy-map.js" defer></script>
 </body>
 </html>
