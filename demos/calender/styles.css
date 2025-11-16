@@ -1,3 +1,13 @@
+/*
+  /demos/calender/styles.css
+  Pattern:
+    - Demo CSS Pattern（ページ固有のスタイル）
+    - base.css のレイアウト／ボタンを前提に、カレンダー固有のスタイルを追加
+  Notes:
+    - .calendar-page を起点にページ全体の余白と幅を調整
+    - コンポーネント単位（toolbar / legend / calendar / dialog 等）でセレクタを分ける
+*/
+
 /* カレンダー固有。Mochitectureのトーンに合わせた薄いカード＋グリッド */
 :root{
   --grid:#e5e7eb;        /* グリッド線の明るさ */
