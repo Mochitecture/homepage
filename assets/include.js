@@ -1,15 +1,17 @@
 /**
- * /assets/include.js
+ * File: /assets/include.js
+ * Role:
+ *   - 共通パーツの読み込み（header / footer）
+ *   - 現在パスに応じた .nav.active の付与
+ *   - フッター年号 (#y) の自動挿入
  *
- * Pattern:
- *   - 共通レイアウトインクルード + nav.active + 年号の自動挿入
  * Usage:
- *   - 各ページで <script src="/assets/include.js" defer></script> を読み込む
- *   - <div data-include="/partials/header.html"></div> のような要素に HTML を挿入する
+ *   - 各ページ末尾で <script src="/assets/include.js"></script> を読み込む
+ *   - <div data-include="/partials/header.html"></div> のような要素に HTML を挿入
  *
  * Notes:
- *   - 1ページ内に複数の data-include があっても問題ない
- *   - 読み込み後に nav.active と フッター年号 (#y) をセットする
+ *   - 1ページ内に複数の data-include があっても動作する
+ *   - すべての include 完了後に nav.active / 年号をセット
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -63,7 +65,6 @@ function applyNavActive() {
 
   navLinks.forEach(a => {
     const href = a.getAttribute('href') || '';
-    // ルートは完全一致、それ以外は前方一致でざっくり判定
     const isRoot = href === '/' && path === '/';
     const isMatch = !isRoot && href !== '/' && path.startsWith(href);
 
