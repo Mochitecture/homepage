@@ -1,237 +1,370 @@
-/*
-  File: /demos/login/styles.css
-  Pattern: Demo CSS Pattern
-  Scope: body.login-page, .login-* 名前空間
-*/
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
 
-/* ページ全体の背景は Mochitecture 本体に合わせてライトにする */
-body.login-page {
-  background: #f7f7fb; /* うっすらグレー */
-  color: #111827;      /* 濃いめの文字色 */
-}
+  <title>Login Demo｜Mochitecture</title>
+  <meta name="description" content="Sign in / Sign up / Forgot Password / Account Settings をひとまとめにした、Mochitecture の Login デモ。">
+  <meta property="og:title" content="Login Demo｜Mochitecture">
+  <meta property="og:description" content="認証コード、セッション、Remember me、デバイス管理までを UI レベルで整理した Login デモ。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/demos/login/">
+  <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
+  <meta name="twitter:card" content="summary">
 
-.login-wrap {
-  padding-top: 3rem;
-  padding-bottom: 4rem;
-}
+  <link rel="icon" type="image/png" href="/mochitecture_icon.png">
+  <link rel="stylesheet" href="/assets/base.css?v=20251116b">
+  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116b">
 
-/* 説明テキスト */
+  <!--
+    File: /demos/login/index.html
+    Pattern: Demo HTML Pattern
+    Role:
+      - Mochitecture Login 構想（Sign in / Sign up / Forgot / Account / Device）の UI ワイヤー
+      - 認証コード・セッション・デバイス管理の「絵」を確認するためのデモページ
+    Notes:
+      - v0 はフロントのみ、JS 最小のタブ切り替え実装
+      - JS は config → state → DOM → util → render → events → init のパターンに従う
+  -->
+</head>
+<body class="login-page">
+  <!-- 共通ヘッダー -->
+  <div data-include="/partials/header.html"></div>
 
-.login-note {
-  margin-top: 0.75rem;
-  font-size: 0.85rem;
-  color: var(--color-text-muted, #6b7280);
-}
+  <main class="site-main">
+    <div class="wrap login-wrap">
+      <header class="page-head">
+        <h1 class="page-title">Login Demo</h1>
+        <p class="page-lead">
+          Mochitecture mini-site における
+          <strong>「ユーザーがどう入り、どう自分を管理するか」</strong>
+          を可視化するための Login デモ。
+        </p>
+        <p class="login-note">
+          このページはあくまで概念・UI構造の確認用です。
+          実運用ではパスワードや個人情報を入力しないでください。
+        </p>
+      </header>
 
-/* タブ */
+      <!-- タブ（画面 ①〜⑤ を切り替える） -->
+      <nav class="login-tabs" role="tablist" aria-label="Login navigation">
+        <button
+          class="login-tab is-active"
+          type="button"
+          data-view="signin"
+          role="tab"
+          id="login-tab-signin"
+          aria-selected="true"
+          aria-controls="login-panel-signin"
+        >① Sign in</button>
 
-.login-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
-  margin: 2rem 0 1.5rem;
-}
+        <button
+          class="login-tab"
+          type="button"
+          data-view="signup"
+          role="tab"
+          id="login-tab-signup"
+          aria-selected="false"
+          aria-controls="login-panel-signup"
+        >② Sign up</button>
 
-.login-tab {
-  border-radius: 999px;
-  padding: 0.4rem 0.9rem;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-  background: #ffffff;
-  color: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
+        <button
+          class="login-tab"
+          type="button"
+          data-view="forgot"
+          role="tab"
+          id="login-tab-forgot"
+          aria-selected="false"
+          aria-controls="login-panel-forgot"
+        >③ Forgot Password</button>
 
-.login-tab.is-active {
-  background: #111827;
-  color: #f9fafb;
-  border-color: #111827;
-}
+        <button
+          class="login-tab"
+          type="button"
+          data-view="account"
+          role="tab"
+          id="login-tab-account"
+          aria-selected="false"
+          aria-controls="login-panel-account"
+        >④ Account Settings</button>
 
-/* パネル */
+        <button
+          class="login-tab"
+          type="button"
+          data-view="devices"
+          role="tab"
+          id="login-tab-devices"
+          aria-selected="false"
+          aria-controls="login-panel-devices"
+        >⑤ Device Management</button>
+      </nav>
 
-.login-panel {
-  display: none;
-  border-radius: 1.2rem;
-  padding: 1.4rem 1.5rem 1.7rem;
-  background: #ffffff;
-  border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.10);
-  margin-bottom: 1.75rem;
-}
+      <!-- ① Sign in -->
+      <section
+        class="login-panel is-active"
+        data-view="signin"
+        role="tabpanel"
+        id="login-panel-signin"
+        aria-labelledby="login-tab-signin"
+      >
+        <h2 class="login-panel-title">① Sign in</h2>
+        <p class="login-panel-desc">
+          もっとも基本的なログイン画面。Email / Password / Remember me を軸に、セッション有効期限の概念を示す。
+        </p>
+        <form class="login-form" aria-label="Sign in form">
+          <label class="login-field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
+          </label>
+          <label class="login-field">
+            <span>Password</span>
+            <input type="password" name="password" autocomplete="current-password" placeholder="••••••••">
+          </label>
+          <label class="login-checkbox">
+            <input type="checkbox" name="remember">
+            <span>Remember me（この端末で保持）</span>
+          </label>
+          <p class="login-hint">
+            セッション有効期限の例：<strong>無操作 30 分</strong>。
+            Remember me 有効時は「この端末に限り長期トークンで自動ログイン」する想定。
+          </p>
+          <button type="submit" class="btn btn-primary login-submit">ログイン</button>
+          <p class="login-switch">
+            パスワードをお忘れですか？ →
+            <button type="button" class="link-like" data-switch="forgot">Forgot Password へ</button>
+          </p>
+        </form>
+      </section>
 
-.login-panel.is-active {
-  display: block;
-}
+      <!-- ② Sign up + ②-2 Verify code -->
+      <section
+        class="login-panel"
+        data-view="signup"
+        role="tabpanel"
+        id="login-panel-signup"
+        aria-labelledby="login-tab-signup"
+        hidden
+      >
+        <h2 class="login-panel-title">② Sign up</h2>
+        <p class="login-panel-desc">
+          新規アカウント作成。Email / Password / Confirm に加えて、
+          Email 認証コードによる本人確認を行う。
+        </p>
 
-.login-panel-title {
-  font-size: 1.1rem;
-  margin-bottom: 0.5rem;
-}
+        <!-- ② 本体 -->
+        <form class="login-form" aria-label="Sign up form">
+          <label class="login-field">
+            <span>Email</span>
+            <input type="email" name="email" autocomplete="email">
+          </label>
+          <label class="login-field">
+            <span>Password</span>
+            <input type="password" name="password" autocomplete="new-password">
+          </label>
+          <label class="login-field">
+            <span>Confirm password</span>
+            <input type="password" name="passwordConfirm" autocomplete="new-password">
+          </label>
 
-.login-panel-desc {
-  font-size: 0.9rem;
-  color: var(--color-text-muted, #6b7280);
-  margin-bottom: 1rem;
-}
+          <button type="button" class="btn btn-primary login-submit">
+            認証コードを送る（→ ②-2 Verify code）
+          </button>
+        </form>
 
-/* フォーム */
+        <!-- ②-2 Verify code（ワイヤー上は同じ画面内にブロックとして配置） -->
+        <section class="login-subpanel">
+          <h3 class="login-subpanel-title">②-2 Verify code</h3>
+          <p class="login-hint">
+            Email に送信された 6 桁コードを入力してアカウントを有効化する。
+            Mochitecture では <strong>Email 認証コード方式</strong> を基本とする。
+          </p>
+          <form class="login-form" aria-label="Verify code form">
+            <label class="login-field">
+              <span>6 桁コード</span>
+              <input type="text" name="verifyCode" placeholder="123456">
+            </label>
+            <button type="submit" class="btn btn-primary login-submit">
+              アカウント作成
+            </button>
+          </form>
+        </section>
+      </section>
 
-.login-form {
-  display: grid;
-  gap: 0.8rem;
-}
+      <!-- ③ Forgot Password + ③-2 Reset Password -->
+      <section
+        class="login-panel"
+        data-view="forgot"
+        role="tabpanel"
+        id="login-panel-forgot"
+        aria-labelledby="login-tab-forgot"
+        hidden
+      >
+        <h2 class="login-panel-title">③ Forgot Password</h2>
+        <p class="login-panel-desc">
+          Email 経由でパスワードをリセットするためのフロー。
+          Sign up と同様に認証コードを用いる。
+        </p>
 
-.login-field {
-  display: grid;
-  gap: 0.3rem;
-}
+        <!-- ③ 本体 -->
+        <form class="login-form" aria-label="Forgot password form">
+          <label class="login-field">
+            <span>登録メールアドレス</span>
+            <input type="email" name="email" autocomplete="email">
+          </label>
+          <button type="button" class="btn login-submit">
+            認証コードを送る（→ ③-2 Reset Password）
+          </button>
+        </form>
 
-.login-field span {
-  font-size: 0.82rem;
-  color: var(--color-text-muted, #6b7280);
-}
+        <!-- ③-2 Reset Password -->
+        <section class="login-subpanel">
+          <h3 class="login-subpanel-title">③-2 Reset Password</h3>
+          <p class="login-hint">
+            メールで受け取った認証コードを入力し、新しいパスワードを設定する。
+          </p>
+          <form class="login-form" aria-label="Reset password form">
+            <label class="login-field">
+              <span>認証コード</span>
+              <input type="text" name="resetCode" placeholder="6 桁コード">
+            </label>
+            <label class="login-field">
+              <span>新しいパスワード</span>
+              <input type="password" name="newPassword" autocomplete="new-password">
+            </label>
+            <label class="login-field">
+              <span>Confirm</span>
+              <input type="password" name="newPasswordConfirm" autocomplete="new-password">
+            </label>
+            <button type="submit" class="btn btn-primary login-submit">
+              再設定
+            </button>
+          </form>
+        </section>
+      </section>
 
-.login-field input {
-  width: 100%;
-  padding: 0.55rem 0.7rem;
-  border-radius: 0.6rem;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  color: inherit;
-  font: inherit;
-}
+      <!-- ④ Account Settings -->
+      <section
+        class="login-panel"
+        data-view="account"
+        role="tabpanel"
+        id="login-panel-account"
+        aria-labelledby="login-tab-account"
+        hidden
+      >
+        <h2 class="login-panel-title">④ Account Settings</h2>
+        <p class="login-panel-desc">
+          プロフィール / パスワード変更 / Remember me の状態など、
+          「自分のアカウント」を管理するための画面。
+        </p>
 
-.login-field input:focus {
-  outline: 2px solid rgba(59, 130, 246, 0.8); /* 青寄りフォーカス */
-  border-color: rgba(59, 130, 246, 0.9);
-}
+        <div class="login-account-summary">
+          <p><strong>プロフィール</strong></p>
+          <p class="login-hint">
+            v0 では Email を主キーとしつつ、将来的に表示名・アイコンなどを追加可能な想定。
+          </p>
+        </div>
 
-.login-checkbox {
-  display: flex;
-  gap: 0.45rem;
-  align-items: center;
-  font-size: 0.82rem;
-  color: var(--color-text-muted, #6b7280);
-}
+        <form class="login-form" aria-label="Account password change form">
+          <label class="login-field">
+            <span>現在のパスワード</span>
+            <input type="password" name="currentPassword" autocomplete="current-password">
+          </label>
+          <label class="login-field">
+            <span>新しいパスワード</span>
+            <input type="password" name="newPassword" autocomplete="new-password">
+          </label>
+          <button type="submit" class="btn login-submit">
+            パスワード変更
+          </button>
+        </form>
 
-.login-checkbox input {
-  width: 1rem;
-  height: 1rem;
-}
+        <div class="login-remember">
+          <p class="login-hint">
+            Remember me の状態（この端末が「長期セッション中」かどうか）をここから確認できる想定。
+          </p>
+        </div>
 
-.login-hint {
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
+        <div class="login-account-actions">
+          <button type="button" class="btn btn-secondary">
+            Device management へ
+          </button>
+          <button type="button" class="btn btn-ghost">
+            ログアウト
+          </button>
+        </div>
+      </section>
 
-.login-submit {
-  margin-top: 0.2rem;
-}
+      <!-- ⑤ Device Management -->
+      <section
+        class="login-panel"
+        data-view="devices"
+        role="tabpanel"
+        id="login-panel-devices"
+        aria-labelledby="login-tab-devices"
+        hidden
+      >
+        <h2 class="login-panel-title">⑤ Device Management</h2>
+        <p class="login-panel-desc">
+          「どのデバイスからログイン中か」を一覧で確認し、
+          個別ログアウト・すべての他デバイスからログアウトを行うための画面。
+        </p>
 
-.login-switch {
-  margin-top: 0.5rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
+        <section class="login-subpanel">
+          <h3 class="login-subpanel-title">ログイン中のデバイス一覧</h3>
+          <table class="login-table" aria-label="ログイン中のデバイス一覧">
+            <thead>
+              <tr>
+                <th>デバイス名 / OS</th>
+                <th>ブラウザ</th>
+                <th>IP（粗い位置）</th>
+                <th>最終アクセス</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>MacBook Pro / macOS</td>
+                <td>Chrome</td>
+                <td>Tokyo, JP（例）</td>
+                <td>2025-11-16 12:34</td>
+                <td><button type="button" class="btn btn-ghost btn-xs">ログアウト</button></td>
+              </tr>
+              <tr>
+                <td>iPhone / iOS</td>
+                <td>Safari</td>
+                <td>Tokyo, JP（例）</td>
+                <td>2025-11-15 22:10</td>
+                <td><button type="button" class="btn btn-ghost btn-xs">ログアウト</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-.link-like {
-  border: none;
-  padding: 0;
-  background: none;
-  color: var(--color-link, #2563eb);
-  cursor: pointer;
-  text-decoration: underline;
-  font: inherit;
-}
+        <section class="login-subpanel">
+          <h3 class="login-subpanel-title">ログイン通知（メール想定）</h3>
+          <p class="login-hint">
+            新規デバイスからログインがあった場合に送信するメール通知の例。
+          </p>
+          <ul class="login-list">
+            <li>2025-11-16 12:34 - 新しいデバイス（MacBook Pro / Chrome / Tokyo, JP）からログインがありました。</li>
+            <li>心当たりがない場合はパスワード変更と全デバイスからのログアウトを行ってください。</li>
+          </ul>
+        </section>
 
-/* サブパネル（Verify / Reset / Devices 内） */
+        <div class="login-device-actions">
+          <button type="button" class="btn btn-secondary">
+            すべての他デバイスからログアウト
+          </button>
+        </div>
+      </section>
+    </div>
+  </main>
 
-.login-subpanel {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
-  border-top: 1px solid rgba(15, 23, 42, 0.08);
-}
+  <!-- 共通フッター -->
+  <div data-include="/partials/footer.html"></div>
 
-.login-subpanel-title {
-  font-size: 0.95rem;
-  margin-bottom: 0.4rem;
-}
-
-/* Account / Device 関連 */
-
-.login-account-summary {
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
-}
-
-.login-account-summary p {
-  margin: 0.1rem 0;
-}
-
-.login-account-actions {
-  margin-top: 0.8rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
-}
-
-.login-device-actions {
-  margin-top: 0.9rem;
-}
-
-/* Device table */
-
-.login-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.8rem;
-  border-radius: 0.8rem;
-  overflow: hidden;
-  border: 1px solid rgba(15, 23, 42, 0.08);
-}
-
-.login-table th,
-.login-table td {
-  padding: 0.45rem 0.55rem;
-}
-
-.login-table thead {
-  background: #f3f4f6;
-  text-align: left;
-}
-
-.login-table tbody tr:nth-child(odd) {
-  background: #ffffff;
-}
-
-.login-table tbody tr:nth-child(even) {
-  background: #f9fafb;
-}
-
-.btn-xs {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-}
-
-/* Notification list */
-
-.login-list {
-  margin: 0.4rem 0 0;
-  padding-left: 1.2rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
-
-/* レスポンシブ */
-
-@media (max-width: 640px) {
-  .login-panel {
-    padding: 1.25rem 1rem 1.5rem;
-  }
-
-  .login-table {
-    font-size: 0.75rem;
-  }
-}
+  <script defer src="/assets/include.js"></script>
+  <script defer src="/demos/login/app.js?v=20251116a"></script>
+</body>
+</html>
