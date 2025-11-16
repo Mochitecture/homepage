@@ -47,14 +47,17 @@
           <span>状態: 完了</span>
         </p>
       </header>
+    
       <p class="lead">
-        “ゼロから3時間”。設計〜公開までの最短ルートを検証し、Mochitecture の土台を確立。
+        “ゼロから3時間”で、Top〜Archiveまでの最小4ページ構成と自動デプロイ基盤を構築。
       </p>
+    
       <ul class="bullets">
-        <li>before：公開までの初動が重い／手が動かない</li>
-        <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイ</li>
-        <li>after：以後の更新が「カードを足すだけ」に。運用コストを極小化</li>
+        <li>before：公開までの初動が重く、手が止まりがちだった</li>
+        <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイを設計</li>
+        <li>after：以後は「カードを足すだけ」で更新可能に。運用負担を極小化</li>
       </ul>
+    
       <p class="tags">
         <span class="pill">#HTML/CSS</span>
         <span class="pill">#Vercel</span>
@@ -64,29 +67,33 @@
     <!-- 02: Schedule UI Prototype -->
     <article class="card-works" id="arch-20251110-schedule-week-proto">
       <header>
-        <h3>［UI Prototype］Calender</h3>
+        <h3>［UI Prototype］Calendar</h3>
         <p class="meta">
           <time datetime="2025-11-10">2025-11-10</time>
           <span>所要: 2h</span>
           <span>状態: 試作 v0</span>
         </p>
       </header>
+    
       <p class="lead">
-        Outlook / iPhone 風の週グリッド。用途別に色分けし、予定を重ねて俯瞰できる軽量デモ。
+        Outlook / iPhone風の週グリッド UI を最小構成で試作し、用途別の視認性を確認。
       </p>
+    
       <ul class="bullets">
-        <li>before：仕事／私用／制作が別系統で見通しにくい</li>
-        <li>how：週×時間のグリッド上にブロック配置。用途名で色分け。localStorageで即保存</li>
-        <li>after：一画面で全体像を把握。次段はドラッグ編集／重なりレイアウト</li>
+        <li>before：仕事／私用／制作の予定が分断され、俯瞰しにくかった</li>
+        <li>how：週×時間のグリッド上に用途別ブロックを配置。localStorageで軽量保存</li>
+        <li>after：一画面で全体像を把握可能に。次段はドラッグ編集／レイアウト改善</li>
       </ul>
+    
       <p class="tags">
         <span class="pill">#UI</span>
         <span class="pill">#CSS</span>
         <span class="pill">#JavaScript</span>
       </p>
+    
       <footer class="links">
         <a class="btn btn-primary" href="/demos/calender/" target="_blank" rel="noopener">
-          Calender を見る
+          Calendar を見る
         </a>
       </footer>
     </article>
@@ -98,28 +105,27 @@
         <p class="meta">
           <time datetime="2025-11-16">2025-11-16</time>
           <span>所要: 6h</span>
-          <span>状態: UIフレーム試作 v0.1</span>
+          <span>状態: UIフレーム v0.1</span>
         </p>
       </header>
-
+    
       <p class="lead">
-        日本の電力エリアを「市場 × 需給 × 天気」でながめるためのミニマップ。
-        まずはオープンデータ前提で、地図とカードだけを並べたフレーム版。
+        日本の電力エリアを「市場 × 需給 × 天気」で俯瞰するための最小UIフレームを試作。
       </p>
-
+    
       <ul class="bullets">
-        <li>before：JEPX / EPRX / OCCTO / 気象庁など、電力系データがサイトごと・CSVごとに散在していた</li>
-        <li>how：上段に「現在」、下段に「Area（日本地図）」と「Market Panel（市場 × メニュー × 日付）」を置く3ブロック構成で UI を設計し、SVG地図はエリアをホバー／クリックすると反応するが指標はすべてダミー値にとどめる</li>
-        <li>after：Data &amp; License セクションで各ソースの利用条件を整理しつつ、条件クリアな指標から順番に実データを接続していく（オープンデータ層 → 契約データ層 → 自社ログ層へ拡張）</li>
+        <li>before：JEPX/EPRX/OCCTO/気象庁などの電力系データが分散し整理しづらかった</li>
+        <li>how：上段「現在」、下段「Area（地図）」＋「Market Panel」の3ブロック構成でUI設計</li>
+        <li>after：Data & License で利用条件を整理しつつ、指標を段階的に実データへ接続可能に</li>
       </ul>
-
+    
       <p class="tags">
         <span class="pill">#OpenData</span>
         <span class="pill">#Energy</span>
         <span class="pill">#UI</span>
         <span class="pill">#Prototype</span>
       </p>
-
+    
       <footer class="links">
         <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">
           Energy Map を開く
@@ -134,27 +140,26 @@
         <p class="meta">
           <time datetime="2025-11-16">2025-11-16</time>
           <span>所要: 2h</span>
-          <span>状態: Spec v1.0</span>
+          <span>状態: v0.1</span>
         </p>
       </header>
-
+    
       <p class="lead">
-        Mochitecture のミニサイトを「後から読みやすく・拡張しやすく」するためのコーディング設計ドキュメント。
-        HTML / CSS / JS / ファイル構成の考え方を 1 ページにまとめた。
+        Mochitecture を長期的に拡張・保守するためのコーディング規約を1ページに整理。
       </p>
-
+    
       <ul class="bullets">
-        <li>before：実装ごとに書き方や置き場所がバラバラで、「なんとなくのルール」が頭の中にだけ存在していた</li>
-        <li>how：web-coding-design-pattern.html にレイアウト／CSS／JS／コメントヘッダ／demos 追加手順を「型」として整理し、例とミニチェックリストを添えた</li>
-        <li>after：新しくページやデモを作るとき、まず patterns ページを見るだけで設計の起点と共通ルールを思い出せるようになった</li>
+        <li>before：書き方が実装ごとに異なり、暗黙ルールが個人の頭の中にしかなかった</li>
+        <li>how：patterns.html に HTML/CSS/JS/フォルダ構成/コメント規約を体系化して集約</li>
+        <li>after：新ページやデモの追加時、patterns を見るだけで即スタート可能に</li>
       </ul>
-
+    
       <p class="tags">
         <span class="pill">#DesignDoc</span>
         <span class="pill">#HTML/CSS</span>
         <span class="pill">#JavaScript</span>
       </p>
-
+    
       <footer class="links">
         <a class="btn btn-primary" href="/web-coding-design-pattern.html" target="_blank" rel="noopener">
           Web Coding Design Pattern を見る
