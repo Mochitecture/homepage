@@ -13,18 +13,28 @@
   <meta name="twitter:card" content="summary">
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+
+  <!--
+    Mochitecture / Contact
+    Pattern:
+      - HTML: Static Page Pattern（説明 + 1 CTA）
+      - CSS : base.css の .wrap + .btn
+      - JS  : /assets/include.js のみ
+    Notes:
+      - 連絡経路はメールに一本化
+      - 機密情報はメールに直接書かない前提を明記
+  -->
 </head>
 <body>
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
-    <h1>Contact</h1>
+    <h1 class="page-title">Contact</h1>
     <p>内容は可能な範囲でご記載ください。機密情報はメールでは送らず、必要に応じて別途手段をご案内します。</p>
     <p><a class="btn btn-primary" href="mailto:mochitecure@gmail.com">メールを送る</a></p>
   </main>
 
   <div data-include="/partials/footer.html"></div>
   <script src="/assets/include.js"></script>
-
 </body>
 </html>
