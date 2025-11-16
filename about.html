@@ -4,39 +4,82 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>About｜Mochitecture</title>
-  <meta name="description" content="Mochitectureの事業概要。言語設計×UI×Webを“ひとつの線”で設計します。">
-  <meta property="og:title" content="Mochitecture">
-  <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速に。">
+
+  <meta name="description" content="Mochitecture は、抽象の言語化からミニマルな UI 設計、Web 実装までを “最小で最速” に届ける個人スタジオです。">
+  <meta property="og:title" content="About｜Mochitecture">
+  <meta property="og:description" content="抽象の言語化 → UI → Web実装 をひとつの線で扱う、Mochitecture のスタジオ概要。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/about">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
+
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+  <link rel="stylesheet" href="/assets/base.css?v=20251116a">
 
   <!--
-    Mochitecture / About
+    File: about.html
+    Role: Mochitecture のスタジオ概要と提供領域を説明するページ
     Pattern:
-      - HTML: Static + Document Pattern（テキスト主体）
-      - CSS : base.css の .wrap + 標準タイポグラフィ
-      - JS  : /assets/include.js のみ
+      - P1: Layout Pattern（header/footer + .site-main.wrap）
+      - P5: Folder Pattern（ルート直下の本番ページ）
+      - P6: Comment Header Pattern（役割と読み方をコメントに集約）
+      - P10: New Page Template Pattern ベース
     Notes:
-      - 個人情報は載せず、スタジオとしての役割と範囲だけ記載
+      - 個人プロフィールではなく、「どんな線を引くスタジオか」を中心に記載
+      - 構造を固定し、文言だけ差し替えられるドキュメントページとして設計
   -->
 </head>
 <body>
+  <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
-    <h1 class="page-title">About</h1>
-    <p>Mochitectureは、抽象の言語化 → ミニマルなUI設計 → Web実装を“最小で最速”に届ける個人スタジオです。特定の個人情報は掲載していません。</p>
-    <ul>
-      <li>Strategy &amp; Words：概念整理／価値提案の言語化／構造設計</li>
-      <li>Design：最小UI・タイポ／OGPトーン整備</li>
-      <li>Web：小さく出して自動公開・保守までを軽量化</li>
-    </ul>
+    <section class="card page-about">
+      <header class="page-head">
+        <h1 class="page-title">About</h1>
+        <p class="page-lead">
+          Mochitecture は、抽象の言語化 → ミニマルな UI 設計 → Web 実装を
+          <strong>“最小で最速”</strong> に届ける個人スタジオです。
+        </p>
+      </header>
+
+      <section>
+        <h2>What is Mochitecture?</h2>
+        <p>
+          アイデアが立ち上がった瞬間の強さを、そのまま形にすることを大事にしています。<br>
+          企画書や冗長なワイヤーを飛ばして、
+          「言葉」「UI の骨格」「動く Web」の 3 つをできるだけ短い距離で結びます。
+        </p>
+      </section>
+
+      <section>
+        <h2>What I can help with</h2>
+        <ul>
+          <li>Strategy &amp; Words：概念整理／価値提案の言語化／情報構造の設計</li>
+          <li>Design：最小限の UI／タイポグラフィ／OGP やトーン&マナーの整理</li>
+          <li>Web：小さく出して自動公開するための HTML/CSS/JS 実装と軽い運用</li>
+        </ul>
+        <p>
+          大規模な制作体制というよりも、<br>
+          <strong>「まず 1 画面だけ動くものを見たい」</strong> ときに呼んでほしいスタジオです。
+        </p>
+      </section>
+
+      <section>
+        <h2>Notes</h2>
+        <p>
+          このサイトでは、特定の個人情報や詳細な経歴は掲載していません。<br>
+          代わりに、実験や制作の過程は <a href="/archive">Archive</a> に静かに積み上げています。
+        </p>
+        <p>
+          もし具体的な相談やコラボレーションのアイデアがあれば、<br>
+          右上の <strong>Contact</strong> から気軽に声をかけてください。
+        </p>
+      </section>
+    </section>
   </main>
 
+  <!-- 共通フッター -->
   <div data-include="/partials/footer.html"></div>
   <script src="/assets/include.js"></script>
 </body>
