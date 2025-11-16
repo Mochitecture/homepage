@@ -1,509 +1,113 @@
 /*
-  /demos/energy-map/energy-map.css
-  Pattern:
-    - Demo CSS Pattern（データビュー UI 向け）
-    - base.css のタイポ／カードをベースに、Energy Map 専用のレイアウトを追加
+  File: /demos/energy-map/energy-map.css
+  Role:
+    - Energy Map デモ専用の見た目
   Notes:
-    - .em-* 名前空間の下にスタイルを閉じ込める
-    - SVG マップ／マーケットパネル／Data&License テーブルをコンポーネント単位で分離
+    - クラス名は em- 接頭辞で名前空間化
 */
 
-/* ===== Energy Map 専用スタイル ===== */
-
-.em-wrap{
-  max-width:1200px;
-  margin:0 auto;
-  padding:32px 20px 48px;
+.em-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-.em-header{
-  margin-bottom:20px;
+.em-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
-.page-lead{
-  margin:0 0 16px;
-  font-size:14px;
-  opacity:.9;
+/* 上段 -------------------------------------------------------- */
+.em-top-card {
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.9rem;
+  background: var(--card, #fff);
+  box-shadow: var(--shadow, 0 8px 30px rgba(15, 23, 42, 0.12));
 }
 
-/* メインレイアウト：
-   上段 Snapshot（2カラムぶち抜き）
-   下段 左 Area / 右 Market
-*/
-.em-layout{
-  display:grid;
-  grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr);
-  grid-template-rows:auto auto;
-  gap:20px;
+.em-top-card h2 {
+  margin: 0 0 0.4rem;
+  font-size: 1rem;
 }
 
-@media (max-width:960px){
-  .em-layout{
-    grid-template-columns:1fr;
-    grid-template-rows:auto;
+.em-top-note {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+}
+
+.em-metrics {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+
+/* 中段 -------------------------------------------------------- */
+.em-main {
+  display: grid;
+  grid-template-columns: minmax(260px, 1.1fr) minmax(280px, 1.3fr);
+  gap: 1.5rem;
+}
+@media (max-width: 880px) {
+  .em-main {
+    grid-template-columns: 1fr;
   }
 }
 
-.em-card{
-  background:var(--card);
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  padding:16px 20px 14px;
+.em-area,
+.em-market {
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.9rem;
+  background: var(--card, #fff);
+  box-shadow: var(--shadow, 0 8px 30px rgba(15, 23, 42, 0.12));
 }
 
-/* 位置指定 */
-.em-snapshot{
-  grid-column:1 / span 2;
-  grid-row:1;
+.em-section-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+}
+.em-section-note {
+  margin: 0 0 0.9rem;
+  font-size: 0.9rem;
+  color: rgba(100, 116, 139, 0.95);
 }
 
-.em-area{
-  grid-column:1;
-  grid-row:2;
-  display:flex;
-  flex-direction:column;
+/* SVG map ----------------------------------------------------- */
+.em-map-wrap {
+  width: 100%;
+  max-width: 520px;
 }
 
-.em-market{
-  grid-column:2;
-  grid-row:2;
+.em-map-svg {
+  width: 100%;
+  height: auto;
+  display: block;
 }
 
-/* Card header */
-
-.em-card-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin-bottom:8px;
+/* Market panel ------------------------------------------------ */
+.em-market-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin-bottom: 0.9rem;
 }
 
-.em-card-header--single{
-  justify-content:flex-start;
+.em-market-panel {
+  min-height: 160px;
 }
 
-.em-meta{
-  font-size:.82rem;
-  display:flex;
-  align-items:center;
-  gap:6px;
+/* Data & License ---------------------------------------------- */
+.em-data-license {
+  padding: 1.25rem 1.5rem;
+  border-radius: 0.9rem;
+  background: var(--card, #fff);
+  box-shadow: var(--shadow, 0 8px 30px rgba(15, 23, 42, 0.12));
 }
 
-.em-meta-badge{
-  display:inline-flex;
-  align-items:center;
-  justify-content:center;
-  padding:2px 8px;
-  border-radius:999px;
-  background:rgba(15,23,42,.06);
-  font-size:.7rem;
-  font-weight:600;
-  letter-spacing:.06em;
+.em-data-license-table {
+  margin-top: 0.75rem;
+  font-size: 0.86rem;
 }
 
-.em-meta-text{
-  opacity:.8;
-}
-
-/* Now（Snapshot）1行レイアウト */
-
-.snapshot-grid{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:center;
-  gap:0;
-  margin:4px 0 0;
-}
-
-.snapshot-grid > div{
-  display:flex;
-  align-items:baseline;
-  gap:4px;
-  padding:0 12px;
-  border-left:1px solid #e5e7eb;
-}
-
-.snapshot-grid > div:first-child{
-  padding-left:0;
-  border-left:none;
-}
-
-.snapshot-grid dt{
-  font-size:.8rem;
-  opacity:.7;
-}
-
-.snapshot-grid dd{
-  margin:0;
-  font-size:.95rem;
-  font-weight:500;
-  font-variant-numeric:tabular-nums;
-}
-
-/* モバイルでは縦並び */
-
-@media (max-width:640px){
-  .snapshot-grid{
-    flex-direction:column;
-    align-items:flex-start;
-  }
-  .snapshot-grid > div{
-    padding:4px 0;
-    border-left:none;
-    border-bottom:1px solid #e5e7eb;
-  }
-  .snapshot-grid > div:last-child{
-    border-bottom:none;
-  }
-}
-
-/* ===== SVG 日本地図 ===== */
-
-.em-map-wrap{
-  flex:1;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:10px 0 4px;
-}
-
-.jp-energy-map{
-  width:100%;
-  max-width:360px;
-  height:auto;
-  display:block;
-}
-
-@media (max-width:600px){
-  .jp-energy-map{
-    max-width:420px;
-  }
-}
-
-/* エリアカラー */
-:root{
-  --area-hokkaido:#2f86d9;
-  --area-tohoku:#5675c7;
-  --area-tokyo:#3fb3d4;
-  --area-hokuriku:#a6c930;
-  --area-chubu:#33a365;
-  --area-kansai:#f3b222;
-  --area-chugoku:#f28a22;
-  --area-shikoku:#f25b3f;
-  --area-kyushu:#e1354f;
-}
-
-/* インライン SVG 用 */
-
-.jp-area{
-  stroke:rgba(0,0,0,.08);
-  stroke-width:2;
-  stroke-linejoin:round;
-  stroke-linecap:round;
-  fill:#e5e7eb;
-  cursor:pointer;
-  transition:transform .14s ease, filter .14s ease;
-  transform-origin:center;
-  touch-action:manipulation;
-}
-
-.jp-area[data-area="hokkaido"]{ fill:var(--area-hokkaido); }
-.jp-area[data-area="tohoku"]{ fill:var(--area-tohoku); }
-.jp-area[data-area="tokyo"]{ fill:var(--area-tokyo); }
-.jp-area[data-area="hokuriku"]{ fill:var(--area-hokuriku); }
-.jp-area[data-area="chubu"]{ fill:var(--area-chubu); }
-.jp-area[data-area="kansai"]{ fill:var(--area-kansai); }
-.jp-area[data-area="chugoku"]{ fill:var(--area-chugoku); }
-.jp-area[data-area="shikoku"]{ fill:var(--area-shikoku); }
-.jp-area[data-area="kyushu"]{ fill:var(--area-kyushu); }
-
-.jp-area:hover{
-  filter:brightness(1.05);
-  transform:translateY(-1px) scale(1.04);
-}
-
-.jp-area.is-active{
-  stroke:#111827;
-  stroke-width:2.8;
-  filter:brightness(1.12);
-}
-
-.em-note{
-  margin-top:6px;
-  font-size:.75rem;
-  opacity:.65;
-}
-
-/* Market controls */
-
-.market-controls{
-  display:grid;
-  grid-template-columns:repeat(4, minmax(0,1fr));
-  column-gap:16px;
-  row-gap:8px;
-  align-items:flex-end;
-  margin-bottom:10px;
-}
-
-@media (max-width:880px){
-  .market-controls{
-    grid-template-columns:repeat(2, minmax(0,1fr));
-  }
-}
-
-.market-controls .field{
-  display:flex;
-  flex-direction:column;
-  gap:4px;
-  font-size:.78rem;
-}
-
-.market-controls label{
-  opacity:.75;
-}
-
-.market-controls select,
-.field-date-inline input[type="date"]{
-  padding:6px 9px;
-  border-radius:8px;
-  border:1px solid #e5e7eb;
-  background:var(--card);
-  font-size:.86rem;
-}
-
-.view-toggle .label{
-  font-size:.78rem;
-  opacity:.7;
-}
-
-/* Segmented control */
-
-.segmented{
-  display:flex;
-  border-radius:999px;
-  border:1px solid #e5e7eb;
-  overflow:hidden;
-  background:#fff;
-}
-
-.seg-btn{
-  flex:1;
-  border:none;
-  background:transparent;
-  padding:5px 14px;
-  font-size:.8rem;
-  cursor:pointer;
-  white-space:nowrap;
-  text-align:center;
-}
-
-.seg-btn.is-active{
-  background:#111827;
-  color:#fff;
-}
-
-.market-view{
-  border-radius:12px;
-  border:1px dashed #d1d5db;
-  padding:12px 14px;
-  background:rgba(249,250,251,.85);
-  font-size:.85rem;
-}
-
-/* Graph / Table skeleton */
-
-.market-graph-skeleton,
-.market-table-skeleton{
-  margin-top:10px;
-}
-
-.graph-grid{
-  display:grid;
-  grid-template-columns:auto 1fr;
-  gap:0 8px;
-  align-items:stretch;
-}
-
-.graph-y{
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  font-size:.7rem;
-  opacity:.7;
-}
-
-.graph-body{
-  position:relative;
-  min-height:160px;
-  border-radius:10px;
-  border:1px solid #e5e7eb;
-  padding:6px 8px;
-  overflow:hidden;
-}
-
-.graph-body::before{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:repeating-linear-gradient(
-    to right,
-    rgba(156,163,175,.2),
-    rgba(156,163,175,.2) 1px,
-    transparent 1px,
-    transparent 24px
-  );
-  opacity:.35;
-  pointer-events:none;
-}
-
-.graph-bar{
-  position:absolute;
-  width:14px;
-  border-radius:999px;
-  background:rgba(31,41,55,.8);
-}
-
-.graph-bar.bar-1{ height:60%; bottom:0; left:6%; }
-.graph-bar.bar-2{ height:40%; bottom:0; left:22%; }
-.graph-bar.bar-3{ height:75%; bottom:0; left:38%; }
-.graph-bar.bar-4{ height:50%; bottom:0; left:54%; }
-.graph-bar.bar-5{ height:30%; bottom:0; left:70%; }
-.graph-bar.bar-6{ height:65%; bottom:0; left:86%; }
-
-.graph-caption,
-.table-caption{
-  margin-top:6px;
-  font-size:.72rem;
-  opacity:.7;
-}
-
-.table-head{
-  display:grid;
-  grid-template-columns:80px repeat(3, minmax(0,1fr));
-  gap:4px;
-  padding:6px 8px;
-  border-radius:8px;
-  background:rgba(243,244,246,.9);
-  font-size:.75rem;
-  font-weight:500;
-}
-
-.table-body{
-  margin-top:4px;
-  border-radius:8px;
-  border:1px solid #e5e7eb;
-  overflow:hidden;
-}
-
-.table-row{
-  display:grid;
-  grid-template-columns:80px repeat(3, minmax(0,1fr));
-  gap:4px;
-  padding:6px 8px;
-  font-size:.75rem;
-}
-
-.table-row:nth-child(odd){
-  background:rgba(249,250,251,.9);
-}
-
-.table-row:nth-child(even){
-  background:#fff;
-}
-
-/* view クラスで Graph / Table を切り替え */
-
-.market-view.is-graph #em-market-graph{
-  display:block;
-}
-.market-view.is-graph #em-market-table{
-  display:none;
-}
-
-.market-view.is-table #em-market-graph{
-  display:none;
-}
-.market-view.is-table #em-market-table{
-  display:block;
-}
-
-.market-placeholder h3{
-  margin:0 0 4px;
-  font-size:.9rem;
-}
-
-.market-placeholder p{
-  margin:0;
-  line-height:1.6;
-}
-
-/* Data & License */
-
-.em-data-license{
-  margin-top:24px;
-}
-
-.dl-note{
-  font-size:.78rem;
-  opacity:.8;
-}
-
-.dl-note p{
-  margin:0 0 8px;
-}
-
-.dl-table-wrap{
-  margin-top:6px;
-  overflow-x:auto;
-}
-
-.dl-table{
-  width:100%;
-  border-collapse:collapse;
-  font-size:.78rem;
-}
-
-.dl-table th,
-.dl-table td{
-  padding:6px 8px;
-  border-bottom:1px solid #e5e7eb;
-  text-align:left;
-  vertical-align:top;
-}
-
-.dl-table th{
-  white-space:nowrap;
-  font-weight:600;
-  opacity:.8;
-}
-
-/* ダークモード微調整 */
-@media (prefers-color-scheme: dark){
-  .market-view{
-    background:rgba(15,23,42,.6);
-    border-color:#374151;
-  }
-  .market-placeholder p{
-    color:#e5e7eb;
-  }
-  .graph-body{
-    border-color:#4b5563;
-  }
-  .table-body{
-    border-color:#4b5563;
-  }
-  .table-row:nth-child(odd){
-    background:rgba(31,41,55,.6);
-  }
-  .table-row:nth-child(even){
-    background:rgba(17,24,39,.9);
-  }
-  .dl-table th,
-  .dl-table td{
-    border-color:#374151;
-  }
-  .jp-area{
-    stroke:rgba(15,23,42,.9);
-  }
-}
+/* 必要に応じてテーブル用の class を追加していく */
