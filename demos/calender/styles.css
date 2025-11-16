@@ -1,150 +1,142 @@
 /*
-  /demos/calender/styles.css
-  Pattern:
-    - Demo CSS Pattern（ページ固有のスタイル）
-    - base.css のレイアウト／ボタンを前提に、カレンダー固有のスタイルを追加
+  File: /demos/calender/styles.css
+  Role:
+    - Schedule – Week View デモ専用の見た目
   Notes:
-    - .calendar-page を起点にページ全体の余白と幅を調整
-    - コンポーネント単位（toolbar / legend / calendar / dialog 等）でセレクタを分ける
+    - クラス名は cal- 接頭辞で名前空間化
+    - グローバル要素 (body, .wrap など) への影響は極力避ける
 */
 
-/* カレンダー固有。Mochitectureのトーンに合わせた薄いカード＋グリッド */
-:root{
-  --grid:#e5e7eb;        /* グリッド線の明るさ */
-  --grid-dark:#2a2f3a;
-  --panel:var(--card);   /* カード背景 */
-  --muted:#6b7280;       /* 補助テキスト色 */
-
-  --event-a:#60a5fa; /* Work */
-  --event-b:#fb7185; /* Personal */
-  --event-c:#34d399; /* Mochitecture */
-  --event-d:#f59e0b; /* Research */
-}
-@media (prefers-color-scheme: dark){
-  :root{
-    --grid:#2a2f3a;
-    --muted:#a8acb4;
-  }
+/* Page shell -------------------------------------------------- */
+.cal-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
 }
 
-/* レイアウト */
-.wrap{ max-width:1100px; margin:0 auto; padding:24px 20px; width:100%; }
-.page-title{ margin-bottom:12px; }
-
-.cal-toolbar{
-  display:flex; justify-content:space-between; align-items:center;
-  gap:12px; margin-bottom:10px;
-}
-.cal-toolbar .btn{ border:1px solid rgba(0,0,0,.08); }
-@media (prefers-color-scheme: dark){
-  .cal-toolbar .btn{ border-color: rgba(255,255,255,.12); }
+.cal-head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
-/* カード */
-.card{
-  background:var(--panel);
-  border-radius:14px;
-  box-shadow:var(--shadow);
-  padding:14px;
+.cal-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: space-between;
 }
 
-/* レジェンド */
-.legend{ display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:10px; }
-.legend .item{ display:inline-flex; align-items:center; gap:.35rem; color:var(--muted); }
-.legend .sw{ width:12px; height:12px; border-radius:3px; display:inline-block }
-
-/* カレンダー */
-.calendar-wrap{ position:relative; }
-.weekbar{
-  display:grid; grid-template-columns:80px repeat(7,1fr); align-items:end;
-  gap:0; padding:.2rem 0 .4rem; color:var(--muted);
-}
-.weekbar .dow .date{ display:block; font-size:18px; color:var(--fg); }
-
-.calendar{
-  display:grid; grid-template-columns:80px repeat(7,1fr);
-  position:relative; border-top:1px solid var(--grid); border-bottom:1px solid var(--grid);
-  min-height:680px;
-}
-.times{ display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid); }
-.timecell{ padding:2px 6px; color:var(--muted); font-size:12px; border-top:1px solid var(--grid); }
-.timecell:first-child{ border-top:none; }
-
-.day{ position:relative; display:grid; grid-auto-rows:24px; border-right:1px solid var(--grid); }
-.day:last-child{ border-right:none; }
-.slot{ border-top:1px solid var(--grid); }
-.slot:nth-child(odd){ background:rgba(0,0,0,.01) }
-@media (prefers-color-scheme: dark){
-  .slot:nth-child(odd){ background:rgba(255,255,255,.02) }
+/* Legend ------------------------------------------------------ */
+.cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
 }
 
-/* イベント */
-.event{
-  position:absolute; left:6px; right:6px; border-radius:10px;
-  padding:.28rem .45rem .34rem; color:#0b0b0c; font-weight:600;
-  box-shadow:0 2px 6px rgba(0,0,0,.22); cursor:grab; user-select:none;
-}
-.event small{ display:block; font-weight:500; opacity:.85; }
-.event .handle{ position:absolute; left:0; right:0; height:6px; cursor:n-resize; opacity:.6; }
-.event .h-top{ top:-3px; } .event .h-btm{ bottom:-3px; }
-
-/* 現在時刻ライン（今日の列にのみ表示） */
-.nowline{
-  position:absolute; left:80px; right:0; height:2px; background: #22d3ee;
-  box-shadow:0 0 0 1px rgba(34,211,238,.25);
+.cal-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.18rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  border: 1px solid rgba(148, 163, 184, 0.7);
 }
 
-/* ダイアログ */
-.dialog{ border:1px solid var(--grid); background:var(--panel); border-radius:14px; width:min(520px, 92vw); }
-.form{ display:grid; gap:.6rem; padding:12px; }
-.form input, .form select{ width:100%; padding:.5rem .6rem; border:1px solid var(--grid); border-radius:10px; background:transparent; color:var(--fg); }
-.grid2{ display:grid; grid-template-columns:1fr 1fr; gap:.6rem; }
-.actions{ display:flex; justify-content:flex-end; gap:.5rem; margin-top:.25rem; }
-
-.hint{ margin:.5rem 0 0; color:var(--muted); font-size:.9rem }
-
-/* 検索結果 */
-.results{ margin-top:.4rem; display:grid; gap:.5rem; max-height:50vh; overflow:auto; }
-.result-item{
-  display:flex; justify-content:space-between; align-items:center;
-  gap:.8rem; padding:.6rem .8rem; border:1px solid var(--grid); border-radius:12px;
+/* 色味は軽く（base のトーンと合わせる） */
+.cal-pill-work {
+  background: rgba(59, 130, 246, 0.14);
 }
-.pick label{ display:inline-flex; gap:.4rem; align-items:center; margin-right:.6rem; }
-
-/* ===== カレンダーページ固有のレイアウト調整 ===== */
-
-/* ページ全体の余白と幅 */
-body.calendar-page .wrap{
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: 32px 20px 40px;
+.cal-pill-personal {
+  background: rgba(234, 179, 8, 0.16);
+}
+.cal-pill-making {
+  background: rgba(16, 185, 129, 0.16);
 }
 
-/* カレンダーを載せるカードをフル幅にする（base.css の max-width:600px を上書き） */
-body.calendar-page .calendar-wrap.card{
-  max-width: none;
-  width: 100%;
-  padding: 16px 16px 12px;
+/* Grid -------------------------------------------------------- */
+.cal-grid-wrap {
+  overflow-x: auto;
 }
 
-/* タイトルとツールバーの間隔を少しだけ詰める */
-body.calendar-page .page-title{
-  margin-bottom: 8px;
+.cal-grid {
+  min-width: 720px;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.12);
+  background: var(--card, #fff);
 }
 
-/* ツールバーを画面幅いっぱいに気持ちよく広げる */
-body.calendar-page .cal-toolbar{
-  margin-bottom: 12px;
+/* ヘッダー行（曜日） */
+.cal-row--header {
+  display: grid;
+  grid-template-columns: minmax(72px, 80px) repeat(7, minmax(80px, 1fr));
+  border-bottom: 1px solid rgba(148, 163, 184, 0.4);
 }
 
-/* カレンダー自体もカードの中で左右いっぱいに広げる */
-body.calendar-page .calendar{
-  width: 100%;
+.cal-cell--time-head {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.78rem;
+  color: rgba(100, 116, 139, 0.9);
 }
 
-/* PC では少し背の高いカードにして「Energy Map」と同じくらいのボリューム感に */
-@media (min-width: 960px){
-  body.calendar-page .calendar-wrap.card{
-    min-height: 680px;
-  }
+.cal-cell--day-head {
+  padding: 0.55rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+/* 時間行 */
+.cal-row {
+  display: grid;
+  grid-template-columns: minmax(72px, 80px) repeat(7, minmax(80px, 1fr));
+}
+
+.cal-cell--time {
+  padding: 0.35rem 0.5rem;
+  font-size: 0.72rem;
+  color: rgba(100, 116, 139, 0.9);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.cal-cell {
+  position: relative;
+  min-height: 18px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.16);
+  border-left: 1px solid rgba(148, 163, 184, 0.12);
+  cursor: pointer;
+}
+
+.cal-cell:last-child {
+  border-right: 1px solid rgba(148, 163, 184, 0.18);
+}
+
+/* 予定 ON/OFF の見た目 */
+.cal-cell.is-busy {
+  background: rgba(59, 130, 246, 0.14);
+}
+
+.cal-cell.is-busy::after {
+  content: "";
+  position: absolute;
+  inset: 3px 4px;
+  border-radius: 0.35rem;
+  background: rgba(59, 130, 246, 0.45);
+}
+
+/* Hint -------------------------------------------------------- */
+.cal-hint h2 {
+  font-size: 1rem;
+  margin: 0 0 0.3rem;
+}
+
+.cal-hint .bullets {
+  margin: 0 0 0 1.1rem;
+  padding: 0;
+  font-size: 0.9rem;
+}
+.cal-hint .bullets li {
+  margin: 0.1rem 0;
 }
