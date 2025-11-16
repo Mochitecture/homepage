@@ -1,40 +1,86 @@
-// /assets/include.js
-async function injectPartials() {
-  const nodes = document.querySelectorAll('[data-include]');
-  for (const el of nodes) {
-    const url = el.getAttribute('data-include');
-    try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`Fetch failed: ${url}`);
-      const html = await res.text();
-      const tmp = document.createElement('div');
-      tmp.innerHTML = html;
+/**
+ * /assets/include.js
+ *
+ * Pattern:
+ *   - 共通レイアウトインクルード + nav.active + 年号の自動挿入
+ * Usage:
+ *   - 各ページで <script src="/assets/include.js" defer></script> を読み込む
+ *   - <div data-include="/partials/header.html"></div> のような要素に HTML を挿入する
+ *
+ * Notes:
+ *   - 1ページ内に複数の data-include があっても問題ない
+ *   - 読み込み後に nav.active と フッター年号 (#y) をセットする
+ */
 
-      // (任意) 内部scriptも実行したい場合の処理
-      const scripts = tmp.querySelectorAll('script');
-      scripts.forEach(s => {
-        const ns = document.createElement('script');
-        if (s.src) ns.src = s.src; else ns.textContent = s.textContent;
-        s.replaceWith(ns);
-      });
-
-      el.replaceWith(...Array.from(tmp.childNodes)); // 安全に展開
-    } catch (e) {
-      console.error('include error:', url, e);
-    }
+document.addEventListener('DOMContentLoaded', () => {
+  const includeTargets = document.querySelectorAll('[data-include]');
+  if (!includeTargets.length) {
+    applyNavActive();
+    applyFooterYear();
+    return;
   }
 
-  // 年号（footer内の #y に代入）
-  const y = document.getElementById('y');
-  if (y) y.textContent = new Date().getFullYear();
+  let loadedCount = 0;
 
-  // ▼ 追加：現在ページに応じて nav.active を付与
-  const path = location.pathname.replace(/\/$/, '') || '/';
-  document.querySelectorAll('a.nav').forEach(a => {
-    const href = a.getAttribute('href');
-    // トップ（/）は完全一致、それ以外は前方一致で判定
-    const match = (href === '/' && path === '/') || (href !== '/' && path.startsWith(href));
-    if (match) a.classList.add('active');
+  includeTargets.forEach(el => {
+    const url = el.getAttribute('data-include');
+    if (!url) {
+      onIncluded();
+      return;
+    }
+
+    fetch(url)
+      .then(res => {
+        if (!res.ok) throw new Error(`include failed: ${url} (${res.status})`);
+        return res.text();
+      })
+      .then(html => {
+        el.innerHTML = html;
+      })
+      .catch(err => {
+        console.error('[include.js] include error:', err);
+        el.innerHTML = '<!-- include error -->';
+      })
+      .finally(onIncluded);
+  });
+
+  function onIncluded() {
+    loadedCount++;
+    if (loadedCount >= includeTargets.length) {
+      // すべての partial 挿入が終わってから nav.active / 年号をセット
+      applyNavActive();
+      applyFooterYear();
+    }
+  }
+});
+
+/**
+ * 現在のパスに応じて header/footer の .nav に .active を付与
+ */
+function applyNavActive() {
+  const path = window.location.pathname || '/';
+  const navLinks = document.querySelectorAll('a.nav');
+
+  navLinks.forEach(a => {
+    const href = a.getAttribute('href') || '';
+    // ルートは完全一致、それ以外は前方一致でざっくり判定
+    const isRoot = href === '/' && path === '/';
+    const isMatch = !isRoot && href !== '/' && path.startsWith(href);
+
+    if (isRoot || isMatch) {
+      a.classList.add('active');
+    } else {
+      a.classList.remove('active');
+    }
   });
 }
-document.addEventListener('DOMContentLoaded', injectPartials);
+
+/**
+ * フッターの年号 (#y) を現在年で埋める
+ */
+function applyFooterYear() {
+  const el = document.getElementById('y');
+  if (!el) return;
+  const year = new Date().getFullYear();
+  el.textContent = year;
+}
