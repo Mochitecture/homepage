@@ -15,7 +15,7 @@
 
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251116b">
-  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116a">
+  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116b">
 
   <!--
     File: /demos/login/index.html
@@ -24,8 +24,8 @@
       - Mochitecture Login 構想（Sign in / Sign up / Forgot / Account / Device）の UI ワイヤー
       - 認証コード・セッション・デバイス管理の「絵」を確認するためのデモページ
     Notes:
-      - v0 はフロントのみ、JS 最小 or なしのワイヤー実装
-      - JS 追加時は config → state → DOM → util → render → events → init のパターンに従う
+      - v0 はフロントのみ、JS 最小のタブ切り替え実装
+      - JS は config → state → DOM → util → render → events → init のパターンに従う
   -->
 </head>
 <body class="login-page">
@@ -48,16 +48,66 @@
       </header>
 
       <!-- タブ（画面 ①〜⑤ を切り替える） -->
-      <nav class="login-tabs" aria-label="Login navigation">
-        <button class="login-tab is-active" type="button" data-view="signin">① Sign in</button>
-        <button class="login-tab" type="button" data-view="signup">② Sign up</button>
-        <button class="login-tab" type="button" data-view="forgot">③ Forgot Password</button>
-        <button class="login-tab" type="button" data-view="account">④ Account Settings</button>
-        <button class="login-tab" type="button" data-view="devices">⑤ Device Management</button>
+      <nav class="login-tabs" role="tablist" aria-label="Login navigation">
+        <button
+          class="login-tab is-active"
+          type="button"
+          data-view="signin"
+          role="tab"
+          id="login-tab-signin"
+          aria-selected="true"
+          aria-controls="login-panel-signin"
+        >① Sign in</button>
+
+        <button
+          class="login-tab"
+          type="button"
+          data-view="signup"
+          role="tab"
+          id="login-tab-signup"
+          aria-selected="false"
+          aria-controls="login-panel-signup"
+        >② Sign up</button>
+
+        <button
+          class="login-tab"
+          type="button"
+          data-view="forgot"
+          role="tab"
+          id="login-tab-forgot"
+          aria-selected="false"
+          aria-controls="login-panel-forgot"
+        >③ Forgot Password</button>
+
+        <button
+          class="login-tab"
+          type="button"
+          data-view="account"
+          role="tab"
+          id="login-tab-account"
+          aria-selected="false"
+          aria-controls="login-panel-account"
+        >④ Account Settings</button>
+
+        <button
+          class="login-tab"
+          type="button"
+          data-view="devices"
+          role="tab"
+          id="login-tab-devices"
+          aria-selected="false"
+          aria-controls="login-panel-devices"
+        >⑤ Device Management</button>
       </nav>
 
       <!-- ① Sign in -->
-      <section class="login-panel is-active" data-view="signin">
+      <section
+        class="login-panel is-active"
+        data-view="signin"
+        role="tabpanel"
+        id="login-panel-signin"
+        aria-labelledby="login-tab-signin"
+      >
         <h2 class="login-panel-title">① Sign in</h2>
         <p class="login-panel-desc">
           もっとも基本的なログイン画面。Email / Password / Remember me を軸に、セッション有効期限の概念を示す。
@@ -88,7 +138,14 @@
       </section>
 
       <!-- ② Sign up + ②-2 Verify code -->
-      <section class="login-panel" data-view="signup">
+      <section
+        class="login-panel"
+        data-view="signup"
+        role="tabpanel"
+        id="login-panel-signup"
+        aria-labelledby="login-tab-signup"
+        hidden
+      >
         <h2 class="login-panel-title">② Sign up</h2>
         <p class="login-panel-desc">
           新規アカウント作成。Email / Password / Confirm に加えて、
@@ -135,7 +192,14 @@
       </section>
 
       <!-- ③ Forgot Password + ③-2 Reset Password -->
-      <section class="login-panel" data-view="forgot">
+      <section
+        class="login-panel"
+        data-view="forgot"
+        role="tabpanel"
+        id="login-panel-forgot"
+        aria-labelledby="login-tab-forgot"
+        hidden
+      >
         <h2 class="login-panel-title">③ Forgot Password</h2>
         <p class="login-panel-desc">
           Email 経由でパスワードをリセットするためのフロー。
@@ -180,7 +244,14 @@
       </section>
 
       <!-- ④ Account Settings -->
-      <section class="login-panel" data-view="account">
+      <section
+        class="login-panel"
+        data-view="account"
+        role="tabpanel"
+        id="login-panel-account"
+        aria-labelledby="login-tab-account"
+        hidden
+      >
         <h2 class="login-panel-title">④ Account Settings</h2>
         <p class="login-panel-desc">
           プロフィール / パスワード変更 / Remember me の状態など、
@@ -225,7 +296,14 @@
       </section>
 
       <!-- ⑤ Device Management -->
-      <section class="login-panel" data-view="devices">
+      <section
+        class="login-panel"
+        data-view="devices"
+        role="tabpanel"
+        id="login-panel-devices"
+        aria-labelledby="login-tab-devices"
+        hidden
+      >
         <h2 class="login-panel-title">⑤ Device Management</h2>
         <p class="login-panel-desc">
           「どのデバイスからログイン中か」を一覧で確認し、
@@ -287,7 +365,6 @@
   <div data-include="/partials/footer.html"></div>
 
   <script defer src="/assets/include.js"></script>
-  <!-- v0 では JS なし or ここから将来 app.js を読み込む想定 -->
-  <!-- <script defer src="/demos/login/app.js?v=20251116a"></script> -->
+  <script defer src="/demos/login/app.js?v=20251116a"></script>
 </body>
 </html>
