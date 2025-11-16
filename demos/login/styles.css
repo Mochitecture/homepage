@@ -4,7 +4,7 @@
   Scope: body.login-page, .login-* 名前空間
 */
 
-/* ページ背景 */
+/* 全体 */
 
 body.login-page {
   background: #f7f7fb;
@@ -16,28 +16,20 @@ body.login-page {
   padding-bottom: 4rem;
 }
 
-/* 説明テキスト */
+/* 説明テキスト・見出し */
 
-.login-note {
-  margin-top: 0.75rem;
-  font-size: 0.85rem;
-  color: var(--color-text-muted, #6b7280);
+.page-head {
+  margin-bottom: 1.5rem;
 }
 
-/* ログイン状態表示 */
-
-.login-status {
-  margin-bottom: 0.75rem;
-  font-size: 0.8rem;
-  color: #6b7280;
+.page-title {
+  font-size: 1.6rem;
+  margin-bottom: 0.25rem;
 }
 
-/* エラーメッセージ */
-
-.login-error {
-  margin: 0 0 0.5rem;
-  font-size: 0.8rem;
-  color: #b91c1c;
+.page-lead {
+  font-size: 0.95rem;
+  color: #4b5563;
 }
 
 /* タブ */
@@ -45,37 +37,41 @@ body.login-page {
 .login-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 0;
-  margin: 2rem 0 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
+  gap: 0.5rem;
+  margin: 1.8rem 0 1.5rem;
 }
 
 .login-tab {
-  border: none;
-  border-radius: 0;
-  padding: 0.75rem 1.2rem;
-  background: transparent;
-  color: #6b7280;
-  font-size: 0.9rem;
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgba(15, 23, 42, 0.08);
+  background: #ffffff;
+  color: #111827;
+  font-size: 0.85rem;
   cursor: pointer;
-  border-bottom: 2px solid transparent;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.login-tab:hover {
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.06);
 }
 
 .login-tab.is-active {
-  color: #111827;
-  font-weight: 600;
-  border-bottom-color: #111827;
+  background: #111827;
+  color: #f9fafb;
+  border-color: #111827;
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.18);
 }
 
-/* パネル */
+/* パネル共通 */
 
 .login-panel {
   display: none;
-  border-radius: 1rem;
-  padding: 1.5rem 1.5rem 1.75rem;
+  border-radius: 1.1rem;
+  padding: 1.4rem 1.6rem 1.7rem;
   background: #ffffff;
   border: 1px solid rgba(15, 23, 42, 0.06);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.08);
+  box-shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
   margin-bottom: 1.75rem;
 }
 
@@ -85,20 +81,14 @@ body.login-page {
 
 .login-panel-title {
   font-size: 1.1rem;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.9rem;
 }
 
-.login-panel-desc {
-  font-size: 0.9rem;
-  color: var(--color-text-muted, #6b7280);
-  margin-bottom: 1rem;
-}
-
-/* フォーム */
+/* フォーム基礎 */
 
 .login-form {
   display: grid;
-  gap: 0.8rem;
+  gap: 0.9rem;
 }
 
 .login-field {
@@ -108,30 +98,35 @@ body.login-page {
 
 .login-field span {
   font-size: 0.82rem;
-  color: var(--color-text-muted, #6b7280);
+  color: #4b5563;
 }
 
 .login-field input {
   width: 100%;
-  padding: 0.55rem 0.7rem;
+  padding: 0.6rem 0.7rem;
   border-radius: 0.6rem;
   border: 1px solid #d1d5db;
   background: #ffffff;
-  color: inherit;
+  color: #111827;
   font: inherit;
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
 }
 
 .login-field input:focus {
-  outline: 2px solid rgba(59, 130, 246, 0.8);
-  border-color: rgba(59, 130, 246, 0.9);
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 1px rgba(37, 99, 235, 0.65);
+  background: #f9fafb;
 }
+
+/* チェックボックス */
 
 .login-checkbox {
   display: flex;
-  gap: 0.45rem;
   align-items: center;
-  font-size: 0.82rem;
-  color: var(--color-text-muted, #6b7280);
+  gap: 0.45rem;
+  font-size: 0.8rem;
+  color: #4b5563;
 }
 
 .login-checkbox input {
@@ -139,81 +134,109 @@ body.login-page {
   height: 1rem;
 }
 
-.login-hint {
-  margin-top: 0.25rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
+/* ボタン & 状態 */
 
 .login-submit {
-  margin-top: 0.2rem;
+  margin-top: 0.1rem;
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    border-color 0.2s ease;
 }
+
+.login-submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: scale(0.98);
+  box-shadow: none;
+}
+
+.login-submit:not(:disabled) {
+  transform: scale(1);
+}
+
+/* 追加：小さいボタン */
+
+.btn-xs {
+  padding: 0.25rem 0.55rem;
+  font-size: 0.72rem;
+}
+
+/* サブテキスト・リンク */
 
 .login-switch {
   margin-top: 0.5rem;
   font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
+  color: #4b5563;
 }
 
 .link-like {
   border: none;
   padding: 0;
   background: none;
-  color: var(--color-link, #2563eb);
+  color: #2563eb;
   cursor: pointer;
   text-decoration: underline;
   font: inherit;
 }
 
-/* サブパネル */
+/* サブパネル（Verify / Reset / Devices 内） */
 
 .login-subpanel {
-  margin-top: 1.25rem;
-  padding-top: 1rem;
+  margin-top: 1.4rem;
+  padding-top: 1.1rem;
   border-top: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .login-subpanel-title {
   font-size: 0.95rem;
-  margin-bottom: 0.4rem;
+  margin-bottom: 0.6rem;
 }
 
-/* Account / Device 関連 */
+/* パスワード条件チェック */
 
-.login-account-summary {
-  margin-bottom: 1rem;
-  font-size: 0.9rem;
+.pw-checklist {
+  margin-top: 0.25rem;
+  margin-bottom: 0.1rem;
+  font-size: 0.78rem;
+  line-height: 1.35;
 }
 
-.login-account-summary p {
-  margin: 0.1rem 0;
-}
-
-.login-account-actions {
-  margin-top: 0.8rem;
+.pw-checklist div {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.6rem;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0.16rem 0;
+  transition: color 0.16s ease;
 }
 
-.login-device-actions {
-  margin-top: 0.9rem;
+/* ここで JS 側から .is-ok / .is-ng を付与する想定 */
+/* バツ＝赤、チェック＝緑 */
+
+.pw-checklist div.is-ng {
+  color: #dc2626; /* red-600 */
 }
 
-/* Device table */
+.pw-checklist div.is-ok {
+  color: #059669; /* green-600 */
+}
+
+/* デバイステーブル */
 
 .login-table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.8rem;
-  border-radius: 0.8rem;
+  border-radius: 0.7rem;
   overflow: hidden;
   border: 1px solid rgba(15, 23, 42, 0.08);
 }
 
 .login-table th,
 .login-table td {
-  padding: 0.45rem 0.55rem;
+  padding: 0.5rem 0.65rem;
 }
 
 .login-table thead {
@@ -229,25 +252,22 @@ body.login-page {
   background: #f9fafb;
 }
 
-.btn-xs {
-  padding: 0.25rem 0.5rem;
-  font-size: 0.75rem;
-}
-
-/* Notification list */
-
-.login-list {
-  margin: 0.4rem 0 0;
-  padding-left: 1.2rem;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #6b7280);
-}
-
 /* レスポンシブ */
 
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .login-panel {
-    padding: 1.25rem 1rem 1.5rem;
+    padding: 1.25rem 1.2rem 1.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  .login-tabs {
+    gap: 0.35rem;
+  }
+
+  .login-tab {
+    font-size: 0.8rem;
+    padding: 0.35rem 0.7rem;
   }
 
   .login-table {
