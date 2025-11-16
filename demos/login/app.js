@@ -8,147 +8,121 @@
     - ボタン有効化制御
 */
 
-/* ------------------------------------------------------
-   1. タブ切替
------------------------------------------------------- */
+document.addEventListener("DOMContentLoaded", () => {
+  /* ------------------------------------------------------
+     1. タブ切替
+  ------------------------------------------------------ */
+  const tabs = document.querySelectorAll(".login-tab");
+  const panels = document.querySelectorAll(".login-panel");
 
-const tabs = document.querySelectorAll(".login-tab");
-const panels = document.querySelectorAll(".login-panel");
-
-tabs.forEach(tab => {
-  tab.addEventListener("click", () => {
-    const view = tab.dataset.view;
-
-    tabs.forEach(t => t.classList.remove("is-active"));
-    tab.classList.add("is-active");
-
-    panels.forEach(panel => {
-      panel.classList.toggle("is-active", panel.dataset.view === view);
-    });
-  });
-});
-
-// Forgot → Reset などのボタン切り替え
-document.querySelectorAll("[data-switch]").forEach(btn => {
-  btn.addEventListener("click", () => {
-    const target = btn.dataset.switch;
-
+  function activateView(view) {
     tabs.forEach(t => {
-      t.classList.toggle("is-active", t.dataset.view === target);
+      t.classList.toggle("is-active", t.dataset.view === view);
     });
-
     panels.forEach(p => {
-      p.classList.toggle("is-active", p.dataset.view === target);
+      p.classList.toggle("is-active", p.dataset.view === view);
+    });
+  }
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const view = tab.dataset.view;
+      activateView(view);
     });
   });
-});
 
+  // 「再設定へ」などのショートカット
+  document.querySelectorAll("[data-switch]").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const target = btn.dataset.switch;
+      activateView(target);
+    });
+  });
 
-/* ------------------------------------------------------
-   2. Password Validation (共通ロジック)
------------------------------------------------------- */
+  /* ------------------------------------------------------
+     2. Password Validation 共通ロジック
+  ------------------------------------------------------ */
+  function validatePassword(pw) {
+    return {
+      length: pw.length >= 8,
+      upper: /[A-Z]/.test(pw),
+      lower: /[a-z]/.test(pw),
+      number: /[0-9]/.test(pw),
+      symbol: /[^A-Za-z0-9]/.test(pw)
+    };
+  }
 
-function validatePassword(pw) {
-  return {
-    length: pw.length >= 8,
-    upper: /[A-Z]/.test(pw),
-    lower: /[a-z]/.test(pw),
-    number: /[0-9]/.test(pw),
-    symbol: /[^A-Za-z0-9]/.test(pw)
-  };
-}
+  function updateChecklist(checklistEl, result) {
+    if (!checklistEl) return;
+    checklistEl.querySelectorAll("[data-check]").forEach(item => {
+      const key = item.dataset.check;
+      if (result[key]) {
+        item.classList.add("valid");
+      } else {
+        item.classList.remove("valid");
+      }
+    });
+  }
 
-function updateChecklist(checklistEl, result) {
-  if (!checklistEl) return;
+  function updateMatch(checkEl, pw, confirmPw) {
+    if (!checkEl) return false;
+    const item = checkEl.querySelector("[data-check='match']");
+    if (!item) return false;
 
-  checklistEl.querySelectorAll("[data-check]").forEach(item => {
-    const key = item.dataset.check;
-    if (result[key]) {
+    const match = pw.length > 0 && pw === confirmPw;
+    if (match) {
       item.classList.add("valid");
     } else {
       item.classList.remove("valid");
     }
-  });
-}
-
-
-/* ------------------------------------------------------
-   3. Confirm Password 一致チェック
------------------------------------------------------- */
-
-function updateMatch(checkEl, pw, confirmPw) {
-  if (!checkEl) return;
-
-  const item = checkEl.querySelector("[data-check='match']");
-  if (!item) return;
-
-  const match = pw.length > 0 && pw === confirmPw;
-  if (match) {
-    item.classList.add("valid");
-  } else {
-    item.classList.remove("valid");
+    return match;
   }
-  return match;
-}
 
+  /* ------------------------------------------------------
+     3. Sign up のバリデーション
+  ------------------------------------------------------ */
+  const signupPw = document.getElementById("signup-password");
+  const signupConfirm = document.getElementById("signup-confirm");
+  const signupChecklist = document.getElementById("signup-checklist");
+  const confirmCheck = document.getElementById("confirm-check");
+  const signupButton = document.getElementById("signup-button");
 
-/* ------------------------------------------------------
-   4. Sign up のバリデーション
------------------------------------------------------- */
+  function validateSignup() {
+    const pw = signupPw.value;
+    const confirm = signupConfirm.value;
 
-const signupPw = document.getElementById("signup-password");
-const signupConfirm = document.getElementById("signup-confirm");
-const signupChecklist = document.getElementById("signup-checklist");
-const confirmCheck = document.getElementById("confirm-check");
-const signupButton = document.getElementById("signup-button");
+    const result = validatePassword(pw);
+    updateChecklist(signupChecklist, result);
 
-function validateSignup() {
-  const pw = signupPw.value;
-  const confirm = signupConfirm.value;
+    const isMatch = updateMatch(confirmCheck, pw, confirm);
+    const allValid = Object.values(result).every(Boolean) && isMatch;
+    if (signupButton) signupButton.disabled = !allValid;
+  }
 
-  const result = validatePassword(pw);
-  updateChecklist(signupChecklist, result);
+  if (signupPw) signupPw.addEventListener("input", validateSignup);
+  if (signupConfirm) signupConfirm.addEventListener("input", validateSignup);
 
-  const isMatch = updateMatch(confirmCheck, pw, confirm);
+  /* ------------------------------------------------------
+     4. Reset Password のバリデーション
+  ------------------------------------------------------ */
+  const resetPw = document.getElementById("reset-password");
+  const resetConfirm = document.getElementById("reset-confirm");
+  const resetChecklist = document.getElementById("reset-checklist");
+  const resetConfirmCheck = document.getElementById("reset-confirm-check");
+  const resetButton = document.getElementById("reset-button");
 
-  const allValid = Object.values(result).every(v => v) && isMatch;
-  signupButton.disabled = !allValid;
-}
+  function validateReset() {
+    const pw = resetPw.value;
+    const confirm = resetConfirm.value;
 
-if (signupPw) {
-  signupPw.addEventListener("input", validateSignup);
-}
-if (signupConfirm) {
-  signupConfirm.addEventListener("input", validateSignup);
-}
+    const result = validatePassword(pw);
+    updateChecklist(resetChecklist, result);
 
+    const isMatch = updateMatch(resetConfirmCheck, pw, confirm);
+    const allValid = Object.values(result).every(Boolean) && isMatch;
+    if (resetButton) resetButton.disabled = !allValid;
+  }
 
-/* ------------------------------------------------------
-   5. Reset Password のバリデーション
------------------------------------------------------- */
-
-const resetPw = document.getElementById("reset-password");
-const resetConfirm = document.getElementById("reset-confirm");
-const resetChecklist = document.getElementById("reset-checklist");
-const resetConfirmCheck = document.getElementById("reset-confirm-check");
-const resetButton = document.getElementById("reset-button");
-
-function validateReset() {
-  const pw = resetPw.value;
-  const confirm = resetConfirm.value;
-
-  const result = validatePassword(pw);
-  updateChecklist(resetChecklist, result);
-
-  const isMatch = updateMatch(resetConfirmCheck, pw, confirm);
-
-  const allValid = Object.values(result).every(v => v) && isMatch;
-  resetButton.disabled = !allValid;
-}
-
-if (resetPw) {
-  resetPw.addEventListener("input", validateReset);
-}
-if (resetConfirm) {
-  resetConfirm.addEventListener("input", validateReset);
-}
+  if (resetPw) resetPw.addEventListener("input", validateReset);
+  if (resetConfirm) resetConfirm.addEventListener("input", validateReset);
+});
