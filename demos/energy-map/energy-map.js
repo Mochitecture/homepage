@@ -1,3 +1,16 @@
+/**
+ * /demos/energy-map/energy-map.js
+ *
+ * Pattern:
+ *   - Demo JS Pattern（状態オブジェクト + DOM紐付け + ビュー更新関数）
+ * Role:
+ *   - SVG 日本地図のクリックでエリアを切り替え
+ *   - 市場／メニュー／日付／ビュー（Graph/Table）の状態管理とテキスト更新
+ * Notes:
+ *   - データはまだ接続せず、すべてダミー値
+ *   - 実データを接続するときは updateMarketPlaceholder を差し替えるイメージ
+ */
+
 // ===== Energy Map JS =====
 
 const areas = [
