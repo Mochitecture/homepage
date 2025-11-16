@@ -1,20 +1,23 @@
 <!--
-  /partials/footer.html
-  Role:
-    - サイト共通のフッター
+  File: /partials/footer.html
+  Role: サイト共通のフッター
+  Notes:
     - ブランドロゴ／簡易ナビ／コピーライト（年は include.js で自動挿入）
+    - 連絡導線は Contact ページに集約
 -->
-<footer class="footer">
+<footer class="footer" role="contentinfo">
   <div class="footer-inner">
     <div class="brand">
-      <img class="logo" src="/mochitecture_icon.png" alt="">
+      <img class="logo" src="/mochitecture_icon.png" alt="Mochitecture icon small">
       <span>Mochitecture</span>
     </div>
-    <nav class="footer-nav">
+
+    <nav class="footer-nav" aria-label="Footer navigation">
       <a href="/archive" class="nav">Archive</a>
       <a href="/about"   class="nav">About</a>
       <a href="/contact" class="nav">Contact</a>
     </nav>
+
     <span class="copy">© <span id="y"></span> Mochitecture</span>
   </div>
 </footer>
