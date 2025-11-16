@@ -4,173 +4,48 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Archive｜Mochitecture</title>
-
-  <meta name="description" content="Mochitecture の制作・実験のスナップショットを静かに積層していくためのアーカイブ。">
+  <meta name="description" content="Mochitectureの制作・実験のスナップショット。">
   <meta property="og:title" content="Mochitecture – Archive">
-  <meta property="og:description" content="抽象の言語化 → UI → Web実装 を、過程ごとに記録する Archive。">
+  <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速に。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/archive">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
-
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251116a">
+  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
 
   <!--
-    File: archive.html
-    Role: Mochitecture の「過程のスナップショット」を積層するページ
+    Mochitecture / Archive
     Pattern:
-      - P1: Layout Pattern（header/footer + .site-main.wrap）
-      - P5: Folder Pattern（ルート直下の本番ページ）
-      - P9: Archive Card Pattern（1カード = 1スナップショット）
-      - P6: Comment Header Pattern（役割と読み方をコメントに集約）
+      - HTML: Archive Pattern（1カード = 1スナップショット）
+      - CSS : base.css の .card-works / .pill / .btn
+      - JS  :
+          - /assets/include.js（header/footer, nav.active, year）
+          - /assets/archive-data.js（カードデータ）
+          - /assets/archive.js（JSON → HTML生成）
     Notes:
-      - 各 <article.card-works> は「before / how / after」の3行を基本形とする
-      - id は arch-YYYYMMDD-key 形式で付与（後から探しやすくするため）
-      - 追加・編集は基本的に <main> 内のみで完結させる
+      - 各カードは before / how / after の 3 行構成を基本とする
+      - ID は arch-YYYYMMDD-slug 形式で付与
+      - 実体は JSON 配列（ARCHIVE_ITEMS）から自動生成
   -->
 </head>
 <body>
-  <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
     <h1 class="page-title">Archive</h1>
 
-    <!-- 01: Mini Landing -->
-    <article class="card-works" id="arch-20251109-mini-landing">
-      <header>
-        <h3>［Case Study］Homepage</h3>
-        <p class="meta">
-          <time datetime="2025-11-09">2025-11-09</time>
-          <span>所要: 3h</span>
-          <span>状態: 完了</span>
-        </p>
-      </header>
-    
-      <p class="lead">
-        “ゼロから3時間”で、Top〜Archiveまでの最小4ページ構成と自動デプロイ基盤を構築。
-      </p>
-    
-      <ul class="bullets">
-        <li>before：公開までの初動が重く、手が止まりがちだった</li>
-        <li>how：静的4ページ＋partials共通化＋Vercel自動デプロイを設計</li>
-        <li>after：以後は「カードを足すだけ」で更新可能に。運用負担を極小化</li>
-      </ul>
-    
-      <p class="tags">
-        <span class="pill">#HTML/CSS</span>
-        <span class="pill">#Vercel</span>
-      </p>
-    </article>
-
-    <!-- 02: Schedule UI Prototype -->
-    <article class="card-works" id="arch-20251110-schedule-week-proto">
-      <header>
-        <h3>［UI Prototype］Calendar</h3>
-        <p class="meta">
-          <time datetime="2025-11-10">2025-11-10</time>
-          <span>所要: 2h</span>
-          <span>状態: 試作 v0</span>
-        </p>
-      </header>
-    
-      <p class="lead">
-        Outlook / iPhone風の週グリッド UI を最小構成で試作し、用途別の視認性を確認。
-      </p>
-    
-      <ul class="bullets">
-        <li>before：仕事／私用／制作の予定が分断され、俯瞰しにくかった</li>
-        <li>how：週×時間のグリッド上に用途別ブロックを配置。localStorageで軽量保存</li>
-        <li>after：一画面で全体像を把握可能に。次段はドラッグ編集／レイアウト改善</li>
-      </ul>
-    
-      <p class="tags">
-        <span class="pill">#UI</span>
-        <span class="pill">#CSS</span>
-        <span class="pill">#JavaScript</span>
-      </p>
-    
-      <footer class="links">
-        <a class="btn btn-primary" href="/demos/calender/" target="_blank" rel="noopener">
-          Calendar を見る
-        </a>
-      </footer>
-    </article>
-
-    <!-- 03: Energy Map #00 -->
-    <article class="card-works" id="arch-20251116-energy-map-00">
-      <header>
-        <h3>［Data Prototype］Energy Map</h3>
-        <p class="meta">
-          <time datetime="2025-11-16">2025-11-16</time>
-          <span>所要: 6h</span>
-          <span>状態: UIフレーム v0.1</span>
-        </p>
-      </header>
-    
-      <p class="lead">
-        日本の電力エリアを「市場 × 需給 × 天気」で俯瞰するための最小UIフレームを試作。
-      </p>
-    
-      <ul class="bullets">
-        <li>before：JEPX/EPRX/OCCTO/気象庁などの電力系データが分散し整理しづらかった</li>
-        <li>how：上段「現在」、下段「Area（地図）」＋「Market Panel」の3ブロック構成でUI設計</li>
-        <li>after：Data & License で利用条件を整理しつつ、指標を段階的に実データへ接続可能に</li>
-      </ul>
-    
-      <p class="tags">
-        <span class="pill">#OpenData</span>
-        <span class="pill">#Energy</span>
-        <span class="pill">#UI</span>
-        <span class="pill">#Prototype</span>
-      </p>
-    
-      <footer class="links">
-        <a class="btn btn-primary" href="/demos/energy-map/" target="_blank" rel="noopener">
-          Energy Map を開く
-        </a>
-      </footer>
-    </article>
-
-    <!-- 04: Web Coding Design Pattern -->
-    <article class="card-works" id="arch-20251116-web-coding-pattern">
-      <header>
-        <h3>［Design Doc］Web Coding Design Pattern</h3>
-        <p class="meta">
-          <time datetime="2025-11-16">2025-11-16</time>
-          <span>所要: 2h</span>
-          <span>状態: v0.1</span>
-        </p>
-      </header>
-    
-      <p class="lead">
-        Mochitecture を長期的に拡張・保守するためのコーディング規約を1ページに整理。
-      </p>
-    
-      <ul class="bullets">
-        <li>before：書き方が実装ごとに異なり、暗黙ルールが個人の頭の中にしかなかった</li>
-        <li>how：patterns.html に HTML/CSS/JS/フォルダ構成/コメント規約を体系化して集約</li>
-        <li>after：新ページやデモの追加時、patterns を見るだけで即スタート可能に</li>
-      </ul>
-    
-      <p class="tags">
-        <span class="pill">#DesignDoc</span>
-        <span class="pill">#HTML/CSS</span>
-        <span class="pill">#JavaScript</span>
-      </p>
-    
-      <footer class="links">
-        <a class="btn btn-primary" href="/web-coding-design-pattern.html" target="_blank" rel="noopener">
-          Web Coding Design Pattern を見る
-        </a>
-      </footer>
-    </article>
-
+    <!-- ここに JS からカードを流し込む -->
+    <section id="archive-list" class="archive-list" aria-label="Archive snapshots"></section>
   </main>
 
-  <!-- 共通フッター -->
   <div data-include="/partials/footer.html"></div>
+
+  <!-- Archive 用データとレンダラ -->
+  <script src="/assets/archive-data.js"></script>
+  <script src="/assets/archive.js"></script>
+
+  <!-- 共通 include（最後でOK） -->
   <script src="/assets/include.js"></script>
 </body>
 </html>
