@@ -10,8 +10,8 @@
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css">
   <link rel="stylesheet" href="/demos/login/styles.css">
-
 </head>
+
 <body class="login-page">
   <!-- header -->
   <div data-include="/partials/header.html"></div>
@@ -36,6 +36,7 @@
       <!-- ▼ ① Sign in -->
       <section class="login-panel is-active" data-view="signin">
         <h2 class="login-panel-title">Sign in</h2>
+
         <form class="login-form">
           <label class="login-field">
             <span>Email</span>
@@ -66,6 +67,7 @@
         <h2 class="login-panel-title">Sign up</h2>
 
         <form class="login-form" id="signup-form">
+
           <label class="login-field">
             <span>Email</span>
             <input type="email" id="signup-email" autocomplete="email">
@@ -76,6 +78,7 @@
             <input type="password" id="signup-password" autocomplete="new-password">
           </label>
 
+          <!-- ▼ パスワード条件チェック（✓✕ 表示） -->
           <div class="pw-checklist" id="signup-checklist">
             <div data-check="length">✕ 8文字以上</div>
             <div data-check="upper">✕ 英大文字</div>
@@ -89,6 +92,7 @@
             <input type="password" id="signup-confirm" autocomplete="new-password">
           </label>
 
+          <!-- ▼ 一致チェック -->
           <div class="pw-checklist" id="confirm-check">
             <div data-check="match">✕ パスワード一致</div>
           </div>
@@ -101,11 +105,13 @@
         <!-- Verify code -->
         <section class="login-subpanel">
           <h3 class="login-subpanel-title">認証コード確認</h3>
+
           <form class="login-form">
             <label class="login-field">
               <span>6桁コード</span>
               <input type="text" maxlength="6">
             </label>
+
             <button type="submit" class="btn btn-primary login-submit">アカウント作成</button>
           </form>
         </section>
@@ -141,6 +147,7 @@
               <input type="password" id="reset-password" autocomplete="new-password">
             </label>
 
+            <!-- ▼ Reset: パスワード条件 -->
             <div class="pw-checklist" id="reset-checklist">
               <div data-check="length">✕ 8文字以上</div>
               <div data-check="upper">✕ 英大文字</div>
@@ -154,6 +161,7 @@
               <input type="password" id="reset-confirm" autocomplete="new-password">
             </label>
 
+            <!-- ▼ Reset: 一致チェック -->
             <div class="pw-checklist" id="reset-confirm-check">
               <div data-check="match">✕ パスワード一致</div>
             </div>
@@ -190,6 +198,7 @@
 
         <section class="login-subpanel">
           <h3 class="login-subpanel-title">ログイン中のデバイス</h3>
+
           <table class="login-table">
             <thead>
               <tr>
@@ -200,6 +209,7 @@
                 <th></th>
               </tr>
             </thead>
+
             <tbody>
               <tr>
                 <td>MacBook Pro</td>
