@@ -79,5 +79,25 @@ const ARCHIVE_ITEMS = [
       href: '/web-coding-design-pattern.html',
       label: 'Web Coding Design Pattern を見る'
     }
+  },
+  // ここから Login のスナップショット
+  {
+    id: 'arch-20251116-login-structure',
+    category: 'Auth Design',
+    title: 'Login',
+    date: '2025-11-16',
+    duration: '3h',
+    status: '構想 v1.0',
+    lead: 'Sign in / Sign up / Forgot Password / Account Settings をひとまとめにし、認証コード・セッション・Remember me・デバイス管理までを設計した Login 構造。',
+    points: {
+      before: '認証やセッション、デバイス管理の要素が頭の中に散らばっており、実装時の全体像が掴みにくかった',
+      how: '4画面＋Device Managementを基本ユニットにし、Email認証コード方式・30分セッション・Remember me・ログイン通知をセットで整理',
+      after: '実装やレビュー時に「これを見れば全体が分かる」参照点となり、/demos/login デモとして可視化できる状態になった'
+    },
+    tags: ['#Login', '#Auth', '#Security', '#UIFlow'],
+    link: {
+      href: '/demos/login/',
+      label: 'Login デモを開く'
+    }
   }
 ];
