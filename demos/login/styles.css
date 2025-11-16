@@ -152,6 +152,8 @@ body.login-page {
    Password checklist (✓ / ✕)
 ------------------------------------------------------ */
 
+/* Password checklist (✓ / ✕) */
+
 .pw-checklist {
   margin-top: -0.3rem;
   margin-bottom: 0.3rem;
@@ -169,17 +171,13 @@ body.login-page {
   font-weight: 500;
 }
 
+/* 有効時は green */
 .pw-checklist div.valid {
   color: #059669;   /* ✓ green */
 }
 
-.pw-checklist div::before {
-  content: attr(data-icon);
-  font-weight: bold;
-}
-
-/* JS で追加する class */
-.pw-checklist .valid::before {
+/* アイコンは ::before で一元管理 */
+.pw-checklist div.valid::before {
   content: "✓";
 }
 .pw-checklist div:not(.valid)::before {
