@@ -2,13 +2,27 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <title>Energy Map | Mochitecture</title>
+  <title>Energy Map｜Mochitecture</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
+
+  <meta name="description" content="日本の電力エリアを「市場 × 需給 × 天気」で眺めるためのミニマップ。UIの骨組みだけを実装したデモ版。">
+
   <link rel="icon" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css">
-  <link rel="stylesheet" href="/demos/energy-map/energy-map.css">
+  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+  <link rel="stylesheet" href="/demos/energy-map/energy-map.css?v=20251116">
+
+  <!--
+    /demos/energy-map/index.html
+    Pattern:
+      - Demo Pattern（データビューワの UI フレーム試作）
+      - 上段 Snapshot / 下段 Area + Market Panel の3ブロック構成
+    Notes:
+      - 実データはまだ接続せず、指標はすべてダミー
+      - Data & License セクションで利用条件だけ先に整理する
+  -->
+
   <script defer src="/assets/include.js"></script>
-  <script defer src="/demos/energy-map/energy-map.js"></script>
+  <script defer src="/demos/energy-map/energy-map.js?v=20251116"></script>
 </head>
 <body>
   <div data-include="/partials/header.html"></div>
