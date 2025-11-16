@@ -1,178 +1,432 @@
-/* ===== base.css ===== */
-:root{
-  --bg:#fafafa;
-  --fg:#111;
-  --card:#fff;
-  --shadow:0 4px 28px rgba(0,0,0,.08);
+/* =========================================
+ * assets/base.css
+ * Role:
+ *   - Mochitecture 全体のスタイル基盤
+ * Layers:
+ *   - Tokens   : 色・影・余白などの共通トークン
+ *   - Layout   : body / .wrap / .site-main / .content-wrap
+ *   - Components: card / button / nav / pill など
+ *   - Pages    : Archive / Home / Patterns などページ固有
+ * =======================================*/
+
+/* ===== Tokens ===== */
+:root {
+  --bg: #fafafa;
+  --fg: #111111;
+  --card: #ffffff;
+  --shadow: 0 4px 28px rgba(0, 0, 0, 0.08);
+
+  --muted: #6b7280;
+  --border: #e5e7eb;
+
+  --accent: #111827;
+  --accent-soft: #0f172a;
 }
-@media (prefers-color-scheme: dark){
-  :root{
-    --bg:#0f1115;
-    --fg:#e8e8e8;
-    --card:#151822;
-    --shadow:0 6px 28px rgba(0,0,0,.45);
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0f1115;
+    --fg: #e8e8e8;
+    --card: #151822;
+    --shadow: 0 6px 28px rgba(0, 0, 0, 0.45);
+
+    --muted: #9ca3af;
+    --border: #2c2f36;
+
+    --accent: #2563eb;
+    --accent-soft: #1d4ed8;
   }
 }
 
-*{ box-sizing:border-box }
-
-/* ★ フッター常時最下部レイアウト：bodyを縦フレックス、mainを伸ばす */
-body{
-  margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Hiragino Sans","Helvetica Neue",sans-serif;
-  background:var(--bg);
-  color:var(--fg);
-  min-height:100vh;
-  display:flex;              /* 縦フレックス */
-  flex-direction:column;
+/* ===== Reset / Base ===== */
+* {
+  box-sizing: border-box;
 }
-/* main があるページも、ないページ(Homeのcontent-wrapだけ等)も対応 */
-main, .site-main, .content-wrap{ flex:1; }
 
-/* Header */
-.header{
-  height:64px;
-  background:var(--card);
-  display:flex;
-  align-items:center;
-  padding:0 24px;
-  box-shadow:0 2px 18px rgba(0,0,0,.12);
-  position:sticky; top:0; z-index:10;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Hiragino Sans", "Helvetica Neue", sans-serif;
+  background: var(--bg);
+  color: var(--fg);
+  min-height: 100vh;
+  display: flex;           /* フッター最下部配置用の縦フレックス */
+  flex-direction: column;
 }
-.logo{ width:32px; height:32px; margin-right:12px }
-.site-title{ font-size:20px; font-weight:600 }
-.nav-wrap{ margin-left:auto; display:flex; gap:16px }
-.nav{ text-decoration:none; color:var(--fg); padding:6px 8px; border-radius:10px }
-.nav:hover{ background:rgba(0,0,0,.06) }
-@media (prefers-color-scheme: dark){
-  .nav:hover{ background:rgba(255,255,255,.06) }
+
+a {
+  color: inherit;
+}
+
+/* main がある／ない両方に対応させるための flex:1 */
+main,
+.site-main,
+.content-wrap {
+  flex: 1;
+}
+
+/* ===== Layout ===== */
+
+.site-main {
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+.wrap {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 32px 20px;
+}
+
+.content-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Header ===== */
+
+.header {
+  height: 64px;
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 2px 18px rgba(0, 0, 0, 0.12);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo {
+  width: 32px;
+  height: 32px;
+  margin-right: 12px;
+}
+
+.site-title {
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.nav-wrap {
+  margin-left: auto;
+  display: flex;
+  gap: 16px;
 }
 
 /* Brand link (header/footer 共通) */
-.brand{
-  display:flex; align-items:center; gap:8px; line-height:1;
-  text-decoration:none; color:var(--fg);
-}
-.brand:visited{ color:var(--fg); }
-.brand:hover{ text-decoration:none; opacity:.9; }
-
-/* Layout */
-.content-wrap{
-  display:flex; align-items:center; justify-content:center;
-}
-.wrap{ max-width:1000px; margin:0 auto; padding:32px 20px }
-
-/* Card / Text / Buttons */
-.card{
-  background:var(--card);
-  padding:48px;
-  border-radius:16px;
-  box-shadow:var(--shadow);
-  max-width:600px;
-  width:calc(100% - 40px);
-}
-h1{ margin:0 0 16px; font-size:32px }
-h2{ margin:24px 0 12px; font-size:22px }
-p{ line-height:1.8; font-size:16px; margin:0 0 16px }
-
-/* 旧ボタン（トップの小さなリンク用） */
-.button{
-  display:inline-block; padding:10px 14px; border-radius:12px; border:1px solid #ddd;
-  text-decoration:none; color:var(--fg); background:var(--card);
-  transition: box-shadow .15s ease, transform .05s ease, border-color .15s ease;
-}
-.button:hover{ border-color:#bbb; box-shadow:0 3px 12px rgba(0,0,0,.06) }
-.button:active{ transform: translateY(1px) }
-.button-primary{ background:#111; color:#fff; border-color:#111 }
-.button-primary:hover{ background:#000; border-color:#000; box-shadow:0 3px 12px rgba(0,0,0,.2) }
-
-/* Works grid (基本カード) */
-.grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap: 2rem }
-.card-works{
-  background:var(--card); border-radius:14px; box-shadow:0 4px 18px rgba(0,0,0,.08); padding:16px; margin-bottom: 2rem;
-}
-.card-works h3{ margin:0 0 8px }
-.tag{ display:inline-block; font-size:12px; border:1px solid #ddd; border-radius:999px; padding:2px 8px; margin-right:6px }
-
-/* Footer（bodyのフレックスで自然に最下部へ） */
-.footer{ margin-top:48px; background:var(--card); box-shadow:0 -2px 18px rgba(0,0,0,.06) }
-.footer-inner{
-  max-width:1000px; margin:0 auto; padding:20px; display:flex; gap:12px; align-items:center; flex-wrap:wrap;
-}
-.footer .brand{ display:flex; align-items:center }
-.footer-nav{ margin-left:auto; display:flex; gap:12px }
-.copy{ opacity:.7; font-size:13px }
-
-/* Active nav */
-.nav.active{ background:rgba(0,0,0,.08) }
-@media (prefers-color-scheme: dark){
-  .nav.active{ background:rgba(255,255,255,.12) }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  line-height: 1;
+  text-decoration: none;
+  color: var(--fg);
 }
 
-/* ===== 追加: Archiveカードのヒエラルキー整形 ===== */
-.card-works{ display:flex; flex-direction:column; gap:.5rem; }
-.card-works header h3{
-  font-size:1.06rem; line-height:1.25; margin:0 0 .1rem; letter-spacing:.01em;
-}
-.card-works .meta{
-  font-size:.9rem; color:var(--muted, #6b7280); display:flex; gap:.4rem; flex-wrap:wrap;
-}
-.card-works .meta span::before{ content:"／"; margin:0 .2rem; color:var(--muted,#6b7280); }
-.card-works .lead{ margin:.25rem 0 .25rem; font-weight:500; color:#111827; }
-@media (prefers-color-scheme: dark){
-  .card-works .lead{ color:#e5e7eb; }
-}
-.card-works .bullets{ margin:.25rem 0 .5rem 1.1rem; }
-.card-works .bullets li{ margin:.15rem 0; }
-.card-works .tags{ display:flex; flex-wrap:wrap; gap:.35rem; }
-.pill{
-  display:inline-block; padding:.18rem .55rem; border:1px solid var(--border,#e5e7eb);
-  border-radius:999px; font-size:.8rem; color:#374151; background:#fff;
-}
-@media (prefers-color-scheme: dark){
-  .pill{ background:#0b0b0c; color:#c7cbd1; border-color:#2c2f36; }
-}
-.card-works .links{ margin-top:.25rem; }
-.card-works .links a{ text-decoration:none; }
-
-/* ===== 追加: 新ボタン（Archiveの「デモを見る」などに使用） ===== */
-.btn{
-  display:inline-flex; align-items:center; justify-content:center; gap:.4rem;
-  padding:.5rem .9rem; border-radius:.7rem; border:1px solid transparent;
-  font-weight:600; line-height:1; text-decoration:none;
-}
-.btn:hover{ transform:translateY(-1px); transition:transform .12s ease; }
-.btn-primary{ background:#111827; color:#fff; }
-.btn-primary:hover{ background:#0f172a; }
-@media (prefers-color-scheme: dark){
-  .btn-primary{ background:#2563eb; }
-  .btn-primary:hover{ background:#1d4ed8; }
+.brand:visited {
+  color: var(--fg);
 }
 
-/* ===== 追加: Archiveページ見出し ===== */
-.page-title{
-  font-size:1.6rem;
-  line-height:1.25;
-  margin:0 0 1rem;
-  letter-spacing:.01em;
+.brand:hover {
+  text-decoration: none;
+  opacity: 0.9;
+}
+
+/* Global nav links */
+.nav {
+  text-decoration: none;
+  color: var(--fg);
+  padding: 6px 8px;
+  border-radius: 10px;
+}
+
+.nav:hover {
+  background: rgba(0, 0, 0, 0.06);
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav:hover {
+    background: rgba(255, 255, 255, 0.06);
+  }
+}
+
+/* Active nav（header / footer 共通） */
+.nav.active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+  .nav.active {
+    background: rgba(255, 255, 255, 0.12);
+  }
+}
+
+/* ===== Footer ===== */
+
+.footer {
+  margin-top: 48px;
+  background: var(--card);
+  box-shadow: 0 -2px 18px rgba(0, 0, 0, 0.06);
+}
+
+.footer-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.footer .brand {
+  display: flex;
+  align-items: center;
+}
+
+.footer-nav {
+  margin-left: auto;
+  display: flex;
+  gap: 12px;
+}
+
+.copy {
+  opacity: 0.7;
+  font-size: 13px;
+}
+
+/* ===== Typography ===== */
+
+h1 {
+  margin: 0 0 16px;
+  font-size: 32px;
+}
+
+h2 {
+  margin: 24px 0 12px;
+  font-size: 22px;
+}
+
+p {
+  line-height: 1.8;
+  font-size: 16px;
+  margin: 0 0 16px;
+}
+
+.page-title {
+  font-size: 1.6rem;
+  line-height: 1.25;
+  margin: 0 0 1rem;
+  letter-spacing: 0.01em;
+}
+
+.page-head {
+  margin-bottom: 1.5rem;
+}
+
+.page-lead {
+  margin: 0;
+  line-height: 1.8;
+  color: var(--muted);
+}
+
+/* ===== Card / Grid ===== */
+
+.card {
+  background: var(--card);
+  padding: 48px;
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  max-width: 600px;
+  width: calc(100% - 40px);
+}
+
+/* 汎用グリッド（必要に応じて使用） */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 2rem;
+}
+
+/* 旧タグ表示（過去コード互換用） */
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  border: 1px solid #ddd;
+  border-radius: 999px;
+  padding: 2px 8px;
+  margin-right: 6px;
+}
+
+/* ===== Archive Card Pattern (.card-works) ===== */
+
+.card-works {
+  background: var(--card);
+  border-radius: 14px;
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.08);
+  padding: 16px;
+  margin-bottom: 2rem;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card-works header h3 {
+  font-size: 1.06rem;
+  line-height: 1.25;
+  margin: 0 0 0.1rem;
+  letter-spacing: 0.01em;
+}
+
+.card-works .meta {
+  font-size: 0.9rem;
+  color: var(--muted);
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.card-works .meta span::before {
+  content: "／";
+  margin: 0 0.2rem;
+  color: var(--muted);
+}
+
+.card-works .meta span:first-of-type::before {
+  content: "";
+  margin: 0;
+}
+
+.card-works .lead {
+  margin: 0.25rem 0 0.25rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+@media (prefers-color-scheme: dark) {
+  .card-works .lead {
+    color: #e5e7eb;
+  }
+}
+
+.card-works .bullets {
+  margin: 0.25rem 0 0.5rem 1.1rem;
+}
+
+.card-works .bullets li {
+  margin: 0.15rem 0;
+}
+
+.card-works .tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.card-works .links {
+  margin-top: 0.25rem;
+}
+
+.card-works .links a {
+  text-decoration: none;
+}
+
+/* Pills / Tags */
+.pill {
+  display: inline-block;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: #374151;
+  background: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  .pill {
+    background: #0b0b0c;
+    color: #c7cbd1;
+    border-color: var(--border);
+  }
+}
+
+/* ===== Buttons ===== */
+
+/* 新ボタン（Archive の「デモを見る」など） */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.9rem;
+  border-radius: 0.7rem;
+  border: 1px solid transparent;
+  font-weight: 600;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  transition: transform 0.12s ease;
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-primary:hover {
+  background: var(--accent-soft);
+}
+
+/* 旧ボタン（トップの小さなリンク用。互換のため残す） */
+.button {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #ddd;
+  text-decoration: none;
+  color: var(--fg);
+  background: var(--card);
+  transition:
+    box-shadow 0.15s ease,
+    transform 0.05s ease,
+    border-color 0.15s ease;
+}
+
+.button:hover {
+  border-color: #bbb;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+}
+
+.button:active {
+  transform: translateY(1px);
 }
 
 /* ===== Home (index.html) ===== */
-.home-lead-list{
-  margin:0 0 20px 20px;
-  padding:0;
-  line-height:1.8;
+
+.home-lead-list {
+  margin: 0 0 20px 20px;
+  padding: 0;
+  line-height: 1.8;
 }
-.home-lead-list li{
-  margin:0 0 4px;
+
+.home-lead-list li {
+  margin: 0 0 4px;
 }
-.home-note{
-  opacity:.85;
-  margin-top:8px;
+
+.home-note {
+  opacity: 0.85;
+  margin-top: 8px;
 }
-.home-actions{
-  display:flex;
-  gap:12px;
-  flex-wrap:wrap;
-  margin-top:28px;
+
+.home-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 28px;
 }
