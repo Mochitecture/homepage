@@ -1,3 +1,14 @@
+/**
+ * /demos/calender/app.js
+ *
+ * Pattern:
+ *   - Demo JS Pattern（設定 → 状態 → DOM参照 → ユーティリティ → 描画 → イベント登録 → 初期化）
+ * Role:
+ *   - 週ビューカレンダーの UI ロジック（localStorage 保存／ドラッグ編集／空き時間検索など）
+ * Notes:
+ *   - 本番コードではなく UI 実験用。ロジックを読みやすくすることを優先する。
+ */
+
 (() => {
   // ====== 設定 ======
   const STEP_MIN = 15;                 // 15分刻み
@@ -15,8 +26,10 @@
   let events = load();
   let currentMonday = startOfWeek(new Date());
 
-  // ====== 要素 ======
+  // ====== 要素参照ユーティリティ ======
   const $ = (q)=>document.querySelector(q);
+
+  // ====== DOM 参照 ======
   const weekbar = $('#weekbar');
   const calendar = $('#calendar');
   const calendarWrap = $('#calendarWrap');
@@ -31,7 +44,7 @@
   const runFinderBtn = $('#runFinder');
   const resultsEl = $('#finderResults');
 
-  // ====== ツール ======
+  // ====== ユーティリティ関数 ======
   function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim(); }
   function pad2(n){ return String(n).padStart(2,'0'); }
   function toKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
@@ -40,7 +53,14 @@
   function snap(m){ return Math.round(m/STEP_MIN)*STEP_MIN; }
   function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
   function isSameDay(a,b){ return a.getFullYear()==b.getFullYear() && a.getMonth()==b.getMonth() && a.getDate()==b.getDate(); }
-  function startOfWeek(d){ const x=new Date(d.getFullYear(), d.getMonth(), d.getDate()); const day=x.getDay(); const diff=(day===0?-6:1-day); x.setDate(x.getDate()+diff); x.setHours(0,0,0,0); return x; }
+  function startOfWeek(d){
+    const x=new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const day=x.getDay();
+    const diff=(day===0?-6:1-day); // 月曜始まり
+    x.setDate(x.getDate()+diff);
+    x.setHours(0,0,0,0);
+    return x;
+  }
   function load(){ try{ return JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]'); }catch{ return []; } }
   function save(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(events)); }
 
@@ -54,7 +74,7 @@
     });
   }
 
-  // ====== Render ======
+  // ====== Render（週全体） ======
   function render(){
     // weekbar
     weekbar.innerHTML = '<div></div>';
@@ -73,7 +93,7 @@
     const rows = (HOURS.end - HOURS.start)*(60/STEP_MIN); // 96
     calendar.innerHTML = '';
 
-    // gutter
+    // 時刻カラム
     const times = document.createElement('div'); times.className='times';
     for(let r=0;r<rows;r++){
       const totalMin = HOURS.start*60 + r*STEP_MIN;
@@ -81,7 +101,7 @@
     }
     calendar.appendChild(times);
 
-    // day cols
+    // 日付カラム（7列）
     const columns=[];
     for(let i=0;i<7;i++){
       const col = document.createElement('div'); col.className='day'; col.dataset.day=i;
@@ -92,7 +112,7 @@
       col.addEventListener('pointerdown', (ev)=>onPointerDownCol(ev,col));
     }
 
-    // events
+    // イベント配置
     const ws = new Date(currentMonday);
     const we = new Date(currentMonday); we.setDate(we.getDate()+7);
     const visible = events.filter(e => new Date(e.end) > ws && new Date(e.start) < we);
@@ -317,7 +337,11 @@
     dialog.showModal();
   }
 
-  function parseDT(dStr,tStr){ const [y,m,d]=dStr.split('-').map(Number); const [hh,mm]=tStr.split(':').map(Number); return new Date(y,m-1,d,hh,mm,0); }
+  function parseDT(dStr,tStr){
+    const [y,m,d]=dStr.split('-').map(Number);
+    const [hh,mm]=tStr.split(':').map(Number);
+    return new Date(y,m-1,d,hh,mm,0);
+  }
 
   form.addEventListener('submit', (ev)=>{
     ev.preventDefault();
@@ -325,28 +349,52 @@
     const s=parseDT(form.startDate.value, form.startTime.value);
     const t=parseDT(form.endDate.value,   form.endTime.value);
     if(+t<=+s){ alert('終了は開始より後にしてください'); return; }
-    const payload={ id, title:(form.title.value||'(無題)').trim(), calendar:form.calendar.value, start:s.toISOString(), end:t.toISOString() };
+    const payload={
+      id,
+      title:(form.title.value||'(無題)').trim(),
+      calendar:form.calendar.value,
+      start:s.toISOString(),
+      end:t.toISOString()
+    };
     const i=events.findIndex(x=>x.id===id); if(i>=0) events[i]=payload; else events.push(payload);
     save(); dialog.close(); render();
   });
+
   delBtn.addEventListener('click', ()=>{
     const id=form.id.value; if(!id) return;
-    if(confirm('この予定を削除しますか？')){ events = events.filter(x=>x.id!==id); save(); dialog.close(); render(); }
+    if(confirm('この予定を削除しますか？')){
+      events = events.filter(x=>x.id!==id);
+      save(); dialog.close(); render();
+    }
   });
 
   // ====== Nav / Snapshot / Clear ======
-  $('#prevBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()-7); render(); });
-  $('#nextBtn').addEventListener('click', ()=>{ currentMonday.setDate(currentMonday.getDate()+7); render(); });
-  $('#todayBtn').addEventListener('click', ()=>{ currentMonday=startOfWeek(new Date()); render(); });
+  $('#prevBtn').addEventListener('click', ()=>{
+    currentMonday.setDate(currentMonday.getDate()-7);
+    render();
+  });
+  $('#nextBtn').addEventListener('click', ()=>{
+    currentMonday.setDate(currentMonday.getDate()+7);
+    render();
+  });
+  $('#todayBtn').addEventListener('click', ()=>{
+    currentMonday=startOfWeek(new Date());
+    render();
+  });
 
   $('#clearBtn').addEventListener('click', ()=>{
-    if(confirm('このデモの予定を全削除します。よろしいですか？')){ events=[]; save(); render(); }
+    if(confirm('このデモの予定を全削除します。よろしいですか？')){
+      events=[]; save(); render();
+    }
   });
+
   $('#snapBtn').addEventListener('click', async ()=>{
     const target = $('.calendar-wrap');
     const canvas = await html2canvas(target, {backgroundColor:null, scale:2});
     const a = document.createElement('a');
-    a.download = `schedule_${toKey(new Date())}.png`; a.href=canvas.toDataURL('image/png'); a.click();
+    a.download = `schedule_${toKey(new Date())}.png`;
+    a.href=canvas.toDataURL('image/png');
+    a.click();
   });
 
   // ====== 空き時間検索（最小連続“確保可能期間”で出力） ======
@@ -366,7 +414,8 @@
   runFinderBtn.addEventListener('click', (ev)=>{
     ev.preventDefault();
     const chosen = [...calPick.querySelectorAll('input:checked')].map(x=>x.value);
-    const need = +$('#needMin').value; const [wStart,wEnd] = $('#window').value.split('-').map(Number);
+    const need = +$('#needMin').value;
+    const [wStart,wEnd] = $('#window').value.split('-').map(Number);
     const blocks = findFreeBlocks(chosen, need, wStart, wEnd);
     renderBlocks(blocks, chosen, need);
   });
@@ -392,7 +441,10 @@
 
       // マージ
       const merged=[];
-      for(const cur of normalized){ if(!merged.length||merged.at(-1)[1]<cur[0]) merged.push(cur); else merged.at(-1)[1]=Math.max(merged.at(-1)[1],cur[1]); }
+      for(const cur of normalized){
+        if(!merged.length || merged.at(-1)[1]<cur[0]) merged.push(cur);
+        else merged.at(-1)[1]=Math.max(merged.at(-1)[1],cur[1]);
+      }
 
       // 補集合＝free の「連続ブロック」
       let cursor=wStart*60;
@@ -408,34 +460,49 @@
 
   function renderBlocks(blocks, chosen, needMin){
     resultsEl.innerHTML='';
-    if(!blocks.length){ resultsEl.innerHTML='<p class="hint">条件に合う連続ブロックがありません。</p>'; return; }
+    if(!blocks.length){
+      resultsEl.innerHTML='<p class="hint">条件に合う連続ブロックがありません。</p>';
+      return;
+    }
 
     blocks.forEach(b=>{
       const d=new Date(currentMonday); d.setDate(d.getDate()+b.day);
-      const lab = `${d.getMonth()+1}/${d.getDate()}（${['月','火','水','木','金','土','日'][b.day]}） `
+      const lab =
+        `${d.getMonth()+1}/${d.getDate()}（${['月','火','水','木','金','土','日'][b.day]}） `
         +`${pad2(Math.floor(b.startMin/60))}:${pad2(b.startMin%60)} 〜 ${pad2(Math.floor(b.endMin/60))}:${pad2(b.endMin%60)}`
         +`（最小${needMin}分確保可）`;
+
       const row=document.createElement('div'); row.className='result-item';
       row.innerHTML=`<span>${lab}</span>`;
+
       const copy=document.createElement('button'); copy.className='btn'; copy.textContent='コピー';
       copy.addEventListener('click', ()=>{
         navigator.clipboard.writeText(lab);
         copy.textContent='✓ コピー済'; setTimeout(()=>copy.textContent='コピー',1200);
       });
+
       const hold=document.createElement('button'); hold.className='btn btn-primary'; hold.textContent='ホールド作成';
       hold.addEventListener('click', ()=>{
         const cal=chosen[0]||'Mochitecture';
         const base=new Date(currentMonday); base.setDate(base.getDate()+b.day); base.setHours(0,0,0,0);
         const s=dateAt(base,b.startMin), t=dateAt(base,Math.min(b.startMin+needMin,b.endMin));
-        events.push({id:`e_${Date.now()}`, title:'Hold', calendar:cal, start:s.toISOString(), end:t.toISOString()});
+        events.push({
+          id:`e_${Date.now()}`,
+          title:'Hold',
+          calendar:cal,
+          start:s.toISOString(),
+          end:t.toISOString()
+        });
         save(); render();
       });
-      row.appendChild(copy); row.appendChild(hold);
+
+      row.appendChild(copy);
+      row.appendChild(hold);
       resultsEl.appendChild(row);
     });
   }
 
-  // ====== 初期データ（初回） ======
+  // ====== 初期データ（初回のみ） ======
   if(!events.length){
     const mon = startOfWeek(new Date());
     const mk=(dow,h1,m1,h2,m2,title,cal)=>({
@@ -449,8 +516,11 @@
       mk(4,10,0,12,0,'調査: UIパターン','Research'),
       mk(4,13,0,15,0,'顧客打合せ','Work'),
       mk(6,9,30,10,30,'家族','Personal'),
-    ]; save();
+    ];
+    save();
   }
 
-  renderLegend(); render();
+  // ====== 初期化 ======
+  renderLegend();
+  render();
 })();
