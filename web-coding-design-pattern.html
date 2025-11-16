@@ -1,23 +1,13 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <!-- ============================================
-       Web Coding Design Pattern | Mochitecture
-       Role:
-         - Mochitecture 全体のコード規約をまとめた基準書
-         - HTML/CSS/JS/Folder/Naming の統一的な「読み方・書き方」
-         - Archive / Demo / 新規ページ追加の実務フローも収録
-       Notes:
-         - 長期運用と将来拡張を前提に最小・最速の構造で整理
-         - ページ名は web-coding-design-pattern.html に統一
-       ============================================ -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Web Coding Design Pattern｜Mochitecture</title>
-  <meta name="description" content="Mochitecture mini-site の実装ルールを体系化した Web Coding Design Pattern。HTML/CSS/JS/フォルダ構成/命名規則/Archive 自動生成などの基準書。">
 
+  <title>Web Coding Design Pattern｜Mochitecture</title>
+  <meta name="description" content="Mochitecture mini-site の実装ルールをまとめた Web Coding Design Pattern。HTML/CSS/JS/フォルダ構成/命名規則など。">
   <meta property="og:title" content="Web Coding Design Pattern｜Mochitecture">
-  <meta property="og:description" content="抽象→UI→Web 実装を最小で最速にするためのコード規約。">
+  <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速にするための、Mochitecture Web Coding Design Pattern。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/web-coding-design-pattern.html">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
@@ -25,27 +15,31 @@
 
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251116b">
-</head>
 
+  <!--
+    File: web-coding-design-pattern.html
+    Role:
+      - Mochitecture mini-site のコーディング規約ドキュメント
+      - HTML / CSS / JS / フォルダ構成 / 命名ルール / Archive 追加フローを集約
+    Notes:
+      - サイト全体の「読み方・書き方」の参照元
+      - Appendix に「新しいページ」と「Archive カード」の追加手順を記載
+  -->
+</head>
 <body>
+  <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
-
-    <!-- =======================
-         Head
-    ======================== -->
     <header class="page-head">
       <h1 class="page-title">Web Coding Design Pattern</h1>
       <p class="page-lead">
-        Mochitecture mini-site のための <strong>長期運用コーディング規約</strong>。
-        「小さく出す」を軸にしつつ、後から読んでも迷わない実装指針をまとめています。
+        Mochitecture mini-site のための、<strong>長期運用前提のコーディング規約</strong>。
+        「小さく出す」を前提にしつつ、将来の拡張にも耐えられるように整理したルールブックです。
       </p>
     </header>
 
-    <!-- =======================
-         Index
-    ======================== -->
+    <!-- 目次 -->
     <nav class="pattern-toc card-works" aria-label="Pattern navigation">
       <h2>Index</h2>
       <ul class="bullets">
@@ -59,203 +53,295 @@
         <li><a href="#pattern-demo">P8. Demo Pattern</a></li>
         <li><a href="#pattern-archive">P9. Archive Card Pattern</a></li>
         <li><a href="#pattern-new-page">P10. New Page Template Pattern</a></li>
-        <li><a href="#appendix-quick">Appendix A. 新しいページを5分で出す</a></li>
-        <li><a href="#appendix-archive">Appendix B. Archive 追加手順（JSON → HTML）</a></li>
+        <li><a href="#pattern-quick-flow">Appendix. 新しいページを5分で出す手順</a></li>
+        <li><a href="#pattern-archive-flow">Appendix. Archive カード追加フロー</a></li>
       </ul>
     </nav>
 
-
-    <!-- ============================================
-         P1 – Layout
-    ============================================ -->
+    <!-- P1 -->
     <section id="pattern-layout" class="card-works">
       <header>
         <h2>P1. Layout Pattern（レイアウト）</h2>
-        <p class="meta"><span>対象：全ページ</span><span>目的：見通しをよくする構造</span></p>
+        <p class="meta">
+          <span>対象：全ページ</span>
+          <span>目的：構造の見通しをよくする</span>
+        </p>
       </header>
-
       <p class="lead">
-        全ページは「共通ヘッダー／main／共通フッター」の三段構成。
-        ページ固有のレイアウトは <code>&lt;main&gt;</code> の中だけに書きます。
+        各ページは「共通ヘッダー／フッター＋main」の三段構成を基本とし、
+        <code>&lt;main&gt;</code> 内にだけページ固有のレイアウトを書きます。
       </p>
-
-<pre><code>&lt;body&gt;
+      <pre><code>&lt;body&gt;
   &lt;div data-include="/partials/header.html"&gt;&lt;/div&gt;
 
   &lt;main class="site-main wrap"&gt;
-    &lt;!-- ページ固有 --&gt;
+    &lt;!-- ページ固有の中身 --&gt;
   &lt;/main&gt;
 
   &lt;div data-include="/partials/footer.html"&gt;&lt;/div&gt;
   &lt;script src="/assets/include.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
 </code></pre>
-
       <ul class="bullets">
-        <li><code>.wrap</code>：max-width 管理＋左右余白。</li>
-        <li><code>.site-main</code>：フッター常時最下部構造のための伸長領域。</li>
-        <li><code>.content-wrap</code>：Hero など中央寄せ用。</li>
+        <li><code>.site-main</code> は高さ確保のための共通領域。</li>
+        <li><code>.wrap</code> が横幅と余白を制御（現状 max-width: 1000px）。</li>
+        <li>Hero など中央寄せのページでは <code>.content-wrap</code> を使用。</li>
       </ul>
     </section>
 
-
-    <!-- ============================================
-         P2 – CSS Layers
-    ============================================ -->
+    <!-- P2 -->
     <section id="pattern-css-layer" class="card-works">
       <header>
-        <h2>P2. CSS Layer Pattern（CSS 階層）</h2>
-        <p class="meta"><span>対象：assets/base.css</span><span>目的：肥大化を防ぐ</span></p>
+        <h2>P2. CSS Layer Pattern（CSSの階層）</h2>
+        <p class="meta">
+          <span>対象：assets/base.css</span>
+          <span>目的：肥大化しても破綻しない構造</span>
+        </p>
       </header>
-
-      <p class="lead">CSS は将来的に分割可能なよう 4 レイヤーで整理します（今は1ファイル）。</p>
-
+      <p class="lead">
+        CSS は将来的に次の 4 レイヤーに分割できるように書きます（現在は 1 ファイルに集約）。
+      </p>
       <ul class="bullets">
-        <li><strong>Tokens：</strong> 色・影・余白（<code>:root</code> 変数）</li>
-        <li><strong>Layout：</strong> <code>.wrap</code> / <code>.site-main</code></li>
-        <li><strong>Components：</strong> <code>.card</code> / <code>.btn</code> / <code>.pill</code></li>
-        <li><strong>Pages：</strong> Archive 用クラス等</li>
+        <li><strong>Tokens：</strong> 色・影・余白などのカラーパレット（<code>:root</code> のカスタムプロパティ）。</li>
+        <li><strong>Layout：</strong> <code>.wrap</code>, <code>.site-main</code>, <code>.content-wrap</code> など骨格。</li>
+        <li><strong>Components：</strong> <code>.card</code>, <code>.btn</code>, <code>.pill</code> など再利用部品。</li>
+        <li><strong>Pages：</strong> Archive 用などのページ固有クラス（<code>.card-works</code> 等）。</li>
       </ul>
+      <p>将来、規模が大きくなったら次のようにファイル分割してもよい想定です：</p>
+      <pre><code>assets/
+  ├─ tokens.css      /* 色・影など */
+  ├─ layout.css      /* レイアウト系 */
+  ├─ components.css  /* ボタン等 */
+  └─ pages.css       /* ページ固有 */
+</code></pre>
     </section>
 
-
-    <!-- ============================================
-         P3 – JS Structure
-    ============================================ -->
+    <!-- P3 -->
     <section id="pattern-js-structure" class="card-works">
       <header>
-        <h2>P3. JS Structure Pattern（JavaScript）</h2>
-        <p class="meta"><span>対象：/demos/**/app.js</span></p>
+        <h2>P3. JS Structure Pattern（JavaScriptの構造）</h2>
+        <p class="meta">
+          <span>対象：demos/**/app.js, energy-map.js など</span>
+        </p>
       </header>
-
       <p class="lead">
-        「上から順に読めば理解できる」ことを最重要として、記述順を固定します。
+        JS ファイルは「上から順に読むと理解できる」ことを最優先し、次の順番で記述します。
       </p>
-
       <ol class="bullets">
-        <li>設定（定数）</li>
-        <li>状態管理（state）</li>
-        <li>DOM参照</li>
-        <li>ユーティリティ（純粋関数）</li>
-        <li>描画関数（render）</li>
-        <li>イベント（bindEvents）</li>
-        <li>初期化（DOMContentLoaded）</li>
+        <li>設定（定数・マジックナンバーの集約）</li>
+        <li>状態管理（<code>state</code> や <code>events</code> 配列など）</li>
+        <li>DOM 参照（<code>const el = document.querySelector...</code>）</li>
+        <li>ユーティリティ関数（純粋関数）</li>
+        <li>描画系関数（render 系）</li>
+        <li>イベントバインド（クリック / 入力など）</li>
+        <li>初期化処理（DOMContentLoaded または即時関数の末尾）</li>
       </ol>
+      <p>例：カレンダーデモの場合（簡略版）</p>
+      <pre><code>// 1. 設定
+const STEP_MIN = 15;
+
+// 2. 状態
+let events = [];
+
+// 3. DOM参照
+const calendar = document.getElementById('calendar');
+
+// 4. Utils
+function pad2(n){ return String(n).padStart(2, '0'); }
+
+// 5. Render
+function renderCalendar(){ /* ... */ }
+
+// 6. Events
+function bindEvents(){ /* ... */ }
+
+// 7. Init
+document.addEventListener('DOMContentLoaded', () => {
+  bindEvents();
+  renderCalendar();
+});
+</code></pre>
     </section>
 
-
-    <!-- ============================================
-         P4 – Naming
-    ============================================ -->
+    <!-- P4 -->
     <section id="pattern-naming" class="card-works">
       <header>
-        <h2>P4. Naming Pattern（命名）</h2>
-        <p class="meta"><span>対象：HTML/CSS/JS</span></p>
+        <h2>P4. Naming Pattern（命名規則）</h2>
+        <p class="meta">
+          <span>対象：HTML/CSS/JS 全般</span>
+        </p>
       </header>
-
+      <p class="lead">
+        「見るだけで役割がわかる」ことを優先して命名します。BEM ほど厳密ではなく、シンプルなルールです。
+      </p>
       <ul class="bullets">
-        <li>ページ固有：<code>.em-*</code>, <code>.cal-*</code> など。</li>
-        <li>共通部品：<code>.card</code>, <code>.btn</code> など短く。</li>
-        <li>ID は JS 参照が必要な箇所のみ。</li>
-        <li>JS：camelCase、定数は UPPER_SNAKE_CASE。</li>
+        <li>ページ固有：<code>.em-*</code>（Energy Map）、<code>.cal-*</code>（Calendar）など接頭辞で分ける。</li>
+        <li>共通コンポーネント：<code>.card</code>, <code>.btn</code>, <code>.pill</code> など短く一般的な名前。</li>
+        <li>ID は JS から参照する箇所のみ使用（<code>id="calendar"</code> など）。</li>
+        <li>JS の変数・関数名は <code>camelCase</code>、定数は <code>UPPER_SNAKE_CASE</code>。</li>
       </ul>
     </section>
 
-
-    <!-- ============================================
-         P5 – Folder
-    ============================================ -->
+    <!-- P5 -->
     <section id="pattern-folder" class="card-works">
       <header>
         <h2>P5. Folder Pattern（フォルダ構成）</h2>
-        <p class="meta"><span>対象：全体</span></p>
+        <p class="meta">
+          <span>対象：ルート / assets / demos / partials</span>
+        </p>
       </header>
-
-<pre><code>assets/     # サイト共通の見た目・スクリプト
-demos/      # UI実験（index.html / styles.css / app.js）
-partials/   # ヘッダー/フッター
-*.html      # 本体（Top / Archive / About / Contact / Patterns）
+      <p class="lead">
+        役割ごとにフォルダを分け、「どこを見ればよいか」がすぐにわかる構成にします。
+      </p>
+      <pre><code>assets/     # サイト共通の見た目・スクリプト
+demos/      # UI実験・プロトタイプレベル
+partials/   # 共通ヘッダー・フッター
+*.html      # ページ本体（Top / Archive / About / Contact / Patterns）
 </code></pre>
-    </section>
-
-
-    <!-- ============================================
-         P6 – Comment Header
-    ============================================ -->
-    <section id="pattern-comment" class="card-works">
-      <header>
-        <h2>P6. Comment Header Pattern（先頭コメント）</h2>
-        <p class="meta"><span>対象：全 HTML/CSS/JS</span></p>
-      </header>
-
-<pre><code>&lt;!--
-  File: index.html
-  Role: Top ページ（紹介）
-  Notes:
-    - header/footer は data-include 前提
-    - main 内のみ編集
---&gt;
-</code></pre>
-    </section>
-
-
-    <!-- ============================================
-         P7 – Page Style
-    ============================================ -->
-    <section id="pattern-page-style" class="card-works">
-      <header>
-        <h2>P7. Page-Specific Style Pattern</h2>
-      </header>
       <ul class="bullets">
-        <li>専用 CSS は demos や大規模ページのみ。</li>
-        <li>必ず接頭辞（例：<code>.em-*</code>）を付与。</li>
-        <li>グローバルに影響する変更は慎重に。</li>
+        <li>新しいデモは <code>demos/&lt;name&gt;/</code> を切って、その中に <code>index.html / styles.css / app.js</code> を配置。</li>
+        <li>本番ページに昇格したら、ルート直下に <code>&lt;name&gt;.html</code> を作成し、必要であれば Archive からリンク。</li>
       </ul>
     </section>
 
-
-    <!-- ============================================
-         P8 – Demo Pattern
-    ============================================ -->
-    <section id="pattern-demo" class="card-works">
+    <!-- P6 -->
+    <section id="pattern-comment" class="card-works">
       <header>
-        <h2>P8. Demo Pattern（プロトタイピング）</h2>
-      </header>
-
-<pre><code>demos/&lt;name&gt;/
-  ├─ index.html
-  ├─ styles.css
-  └─ app.js
-</code></pre>
-      <p>Archive からリンクし、必要になったらルート直下に昇格させる。</p>
-    </section>
-
-
-    <!-- ============================================
-         P9 – Archive Card Pattern
-    ============================================ -->
-    <section id="pattern-archive" class="card-works">
-      <header>
-        <h2>P9. Archive Card Pattern</h2>
+        <h2>P6. Comment Header Pattern（ファイル先頭コメント）</h2>
+        <p class="meta">
+          <span>対象：HTML/CSS/JS 全ファイル</span>
+        </p>
       </header>
       <p class="lead">
-        Archive は「過程のスナップショット」。形式は固定し、JSON から自動生成する。
+        各ファイルの冒頭に「役割」と「簡単な読み方」をコメントとして残します。
       </p>
+      <pre><code>&lt;!--
+  File: index.html
+  Role: Mochitecture Top / サイトの顔となる紹介ページ
+  Notes:
+    - 共通レイアウト（header/footer + .content-wrap）を利用
+    - 文言の変更のみで、構造を極力触らない想定
+--&gt;
+</code></pre>
+      <pre><code>/*
+  File: assets/base.css
+  Role: サイト共通のスタイル基盤
+  Layers:
+    - Tokens
+    - Layout
+    - Components
+    - Pages
+*/
+</code></pre>
     </section>
 
+    <!-- P7 -->
+    <section id="pattern-page-style" class="card-works">
+      <header>
+        <h2>P7. Page-Specific Style Pattern（ページ固有スタイル）</h2>
+        <p class="meta">
+          <span>対象：主に demos / 大規模ページ</span>
+        </p>
+      </header>
+      <p class="lead">
+        基本は <code>assets/base.css</code> に寄せつつ、「そのページにしか使わないスタイル」が増えたら
+        専用 CSS に切り出します。
+      </p>
+      <ul class="bullets">
+        <li>例：<code>demos/calender/styles.css</code>, <code>demos/energy-map/energy-map.css</code></li>
+        <li>クラス名に必ずページ接頭辞を付与（<code>.calendar-page</code>, <code>.em-wrap</code> など）。</li>
+        <li>グローバルへ影響するルール（<code>body</code> や <code>.wrap</code>）を上書きする場合は接頭辞を付けて限定。</li>
+      </ul>
+    </section>
 
-    <!-- ============================================
-         P10 – New Page Template
-    ============================================ -->
+    <!-- P8 -->
+    <section id="pattern-demo" class="card-works">
+      <header>
+        <h2>P8. Demo Pattern（デモの作り方）</h2>
+        <p class="meta">
+          <span>対象：/demos 以下</span>
+        </p>
+      </header>
+      <p class="lead">
+        デモは「ひとつの小さな UI 実験」として独立させ、最低限の構成で管理します。
+      </p>
+      <pre><code>demos/&lt;name&gt;/
+  ├─ index.html   # ページ本体（header/footer も含む）
+  ├─ styles.css   # デモ専用の見た目
+  └─ app.js       # デモ専用の挙動
+</code></pre>
+      <ul class="bullets">
+        <li>Archive からリンクする場合、<code>/demos/&lt;name&gt;/</code> へのボタンを置く。</li>
+        <li>Production 化する場合は、ルート直下に昇格ページを作る（例：Energy Map を将来 <code>/energy-map.html</code> にする等）。</li>
+      </ul>
+    </section>
+
+    <!-- P9 -->
+    <section id="pattern-archive" class="card-works">
+      <header>
+        <h2>P9. Archive Card Pattern（Archiveカード）</h2>
+        <p class="meta">
+          <span>対象：archive.html</span>
+        </p>
+      </header>
+      <p class="lead">
+        Archive は「成果物一覧」ではなく「過程のスナップショット」。カードの形式は揃え、内容は最小限に抑えます。
+      </p>
+      <pre><code>&lt;article class="card-works" id="arch-YYYYMMDD-key"&gt;
+  &lt;header&gt;
+    &lt;h3&gt;［カテゴリ］タイトル&lt;/h3&gt;
+    &lt;p class="meta"&gt;
+      &lt;time datetime="2025-11-16"&gt;2025-11-16&lt;/time&gt;
+      &lt;span&gt;所要: 3h&lt;/span&gt;
+      &lt;span&gt;状態: v0.1&lt;/span&gt;
+    &lt;/p&gt;
+  &lt;/header&gt;
+  &lt;p class="lead"&gt;一言で言うと何をしたか。&lt;/p&gt;
+  &lt;ul class="bullets"&gt;
+    &lt;li&gt;before：課題&lt;/li&gt;
+    &lt;li&gt;how：どう変えたか&lt;/li&gt;
+    &lt;li&gt;after：どう良くなったか&lt;/li&gt;
+  &lt;/ul&gt;
+  &lt;p class="tags"&gt;
+    &lt;span class="pill"&gt;#UI&lt;/span&gt;
+    &lt;span class="pill"&gt;#Prototype&lt;/span&gt;
+  &lt;/p&gt;
+  &lt;footer class="links"&gt;
+    &lt;a class="btn btn-primary" href="/demos/xxx/" target="_blank" rel="noopener"&gt;デモを見る&lt;/a&gt;
+  &lt;/footer&gt;
+&lt;/article&gt;
+</code></pre>
+    </section>
+
+    <!-- P10 -->
     <section id="pattern-new-page" class="card-works">
-      <header><h2>P10. New Page Template Pattern</h2></header>
-
-<pre><code>&lt;!doctype html&gt;
+      <header>
+        <h2>P10. New Page Template Pattern（新規ページテンプレート）</h2>
+        <p class="meta">
+          <span>対象：index/about/contact など新規ページ追加時</span>
+        </p>
+      </header>
+      <p class="lead">
+        新しいページを追加するときは、次のテンプレートをコピーして始めます。
+      </p>
+      <pre><code>&lt;!doctype html&gt;
 &lt;html lang="ja"&gt;
-&lt;head&gt; ... &lt;/head&gt;
+&lt;head&gt;
+  &lt;meta charset="utf-8"&gt;
+  &lt;meta name="viewport" content="width=device-width,initial-scale=1"&gt;
+  &lt;title&gt;Page Title｜Mochitecture&lt;/title&gt;
+  &lt;meta name="description" content="ページの説明文"&gt;
+  &lt;link rel="icon" type="image/png" href="/mochitecture_icon.png"&gt;
+  &lt;link rel="stylesheet" href="/assets/base.css?v=YYYYMMDDa"&gt;
+&lt;/head&gt;
 &lt;body&gt;
   &lt;div data-include="/partials/header.html"&gt;&lt;/div&gt;
-  &lt;main class="site-main wrap"&gt;...&lt;/main&gt;
+
+  &lt;main class="site-main wrap"&gt;
+    &lt;h1 class="page-title"&gt;Page Title&lt;/h1&gt;
+    &lt;p&gt;ここに本文。&lt;/p&gt;
+  &lt;/main&gt;
+
   &lt;div data-include="/partials/footer.html"&gt;&lt;/div&gt;
   &lt;script src="/assets/include.js"&gt;&lt;/script&gt;
 &lt;/body&gt;
@@ -263,64 +349,65 @@ partials/   # ヘッダー/フッター
 </code></pre>
     </section>
 
-
-    <!-- ============================================
-         Appendix A
-    ============================================ -->
-    <section id="appendix-quick" class="card-works">
-      <header><h2>Appendix A. 新しいページを 5 分で出す</h2></header>
+    <!-- Appendix 1: 新しいページ -->
+    <section id="pattern-quick-flow" class="card-works">
+      <header>
+        <h2>Appendix. 新しいページを5分で出すフロー</h2>
+      </header>
       <ol class="bullets">
-        <li>既存ページをコピーし、ファイル名を変更</li>
-        <li>title / description / OGP を修正</li>
-        <li>本文は main 内のみ編集</li>
-        <li>必要なら base.css に 1 ルール追加</li>
-        <li>Archive へカード追加（後述の JSON 版推奨）</li>
+        <li><strong>テンプレートをコピー：</strong> 既存の <code>about.html</code> などから複製し、ファイル名を変更。</li>
+        <li><strong>メタ情報を更新：</strong> <code>&lt;title&gt;</code> / <code>description</code> / OGP の URL・画像を修正。</li>
+        <li><strong>main 内だけ編集：</strong> <code>&lt;main&gt;</code> の中に本文を組む（header / footer には触れない）。</li>
+        <li><strong>CSS が必要なら base.css に 1 ルール追加：</strong> ページ接頭辞付きのクラスでスタイルを付与。</li>
+        <li><strong>Archive にカードを追加：</strong> 必要なら <code>archive.html</code> にスナップショットとして記録。</li>
       </ol>
-    </section>
-
-
-    <!-- ============================================
-         Appendix B – Archive Flow
-    ============================================ -->
-    <section id="appendix-archive" class="card-works">
-      <header><h2>Appendix B. Archive 追加手順（JSON → HTML 自動生成）</h2></header>
-
       <p class="lead">
-        Archive は <strong>HTML を直接書かず、JSON（archive-data.js）を更新するだけ</strong> の運用とする。
+        これらを守ることで、「小さく出す」ことと「後から読み返せること」の両方を両立します。
       </p>
-
-<pre><code>assets/
-  archive-data.js   # カード定義（JSON）
-  archive.js        # JSON → HTML 生成
-archive.html        # 空コンテナ + JS読込
-</code></pre>
-
-      <h3>手順（最小）</h3>
-      <ol class="bullets">
-        <li>archive-data.js を開く</li>
-        <li>ARCHIVE_ITEMS に 1 レコード追加</li>
-        <li>date / title / points / tags / link を記述</li>
-        <li>保存すれば自動反映（HTML 編集不要）</li>
-      </ol>
-
-      <h3>スキーマ</h3>
-<pre><code>{
-  id: "arch-YYYYMMDD-slug",
-  category: "Design Doc",
-  title: "Web Coding Design Pattern",
-  date: "2025-11-16",
-  duration: "2h",
-  status: "v0.1",
-  lead: "ページ全体の規約を統合",
-  points: { before: "...", how: "...", after: "..." },
-  tags: ["#HTML/CSS", "#JavaScript"],
-  link: { href: "/demos/...", label: "デモを見る" }
-}
-</code></pre>
     </section>
 
+    <!-- Appendix 2: Archive 追加フロー -->
+    <section id="pattern-archive-flow" class="card-works">
+      <header>
+        <h2>Appendix. Archive カード追加フロー</h2>
+      </header>
+      <ol class="bullets">
+        <li>
+          <strong>JSON にカード情報を追加：</strong><br>
+          <code>/assets/archive-data.js</code> の
+          <code>ARCHIVE_ITEMS</code> 配列に、テンプレに沿ったオブジェクトを 1 件追記する。<br>
+          （<code>id</code>, <code>category</code>, <code>title</code>, <code>date</code>, <code>duration</code>, <code>status</code>,
+          <code>lead</code>, <code>before</code>, <code>how</code>, <code>after</code>, <code>tags</code>, <code>demoUrl</code>）
+        </li>
+        <li>
+          <strong>必要ならデモを /demos 配下に作成：</strong><br>
+          <code>demos/&lt;name&gt;/index.html</code> / <code>styles.css</code> / <code>app.js</code> を用意し、
+          <code>demoUrl</code> にそのパス（例：<code>"/demos/energy-map/"</code>）を書く。
+        </li>
+        <li>
+          <strong>ローカルで表示確認：</strong><br>
+          <code>archive.html</code> をブラウザで開き、
+          新しいカードが他と同じスタイルで表示されているか確認する。
+        </li>
+        <li>
+          <strong>テキストを最小限に整える：</strong><br>
+          <code>lead</code> は「一言で何をしたか」、<br>
+          <code>before / how / after</code> は 1 行ずつに収まるよう調整する。
+        </li>
+        <li>
+          <strong>必要なら README / Patterns を更新：</strong><br>
+          大きめの追加（新しいデモなど）のときだけ、
+          README やこのページの対応箇所を追記する。
+        </li>
+      </ol>
+      <p class="lead">
+        Archive は「作業ログ」ではなく「スナップショット」です。
+        1 カード = 1 エピソードとして、最小限の情報だけを静かに積み上げていきます。
+      </p>
+    </section>
   </main>
 
+  <!-- 共通フッター -->
   <div data-include="/partials/footer.html"></div>
   <script src="/assets/include.js"></script>
 </body>
