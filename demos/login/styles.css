@@ -24,6 +24,22 @@ body.login-page {
   color: var(--color-text-muted, #6b7280);
 }
 
+/* ログイン状態表示 */
+
+.login-status {
+  margin-bottom: 0.75rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* エラーメッセージ */
+
+.login-error {
+  margin: 0 0 0.5rem;
+  font-size: 0.8rem;
+  color: #b91c1c;
+}
+
 /* タブ */
 
 .login-tabs {
