@@ -25,32 +25,55 @@ body.login-page {
    Tabs
 ------------------------------------------------------ */
 
+/* タブ（お知らせページ風の水平タブ） */
+
 .login-tabs {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  flex-wrap: nowrap;
+  gap: 2.5rem;                /* タブ間の間隔 */
   margin: 2rem 0 1.5rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e5e7eb; /* 下の1本線 */
+  overflow-x: auto;           /* スマホ幅での横スクロール対策 */
 }
 
 .login-tab {
-  border-radius: 999px;
-  padding: 0.45rem 1rem;
-  border: 1px solid rgba(0, 0, 0, 0.07);
-  background: #fff;
-  color: #111827;
+  position: relative;
+  background: none;
+  border: none;
+  padding: 0.25rem 0;
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;     /* 少しだけ字間を空ける */
+  color: #6b7280;             /* グレー文字 */
   cursor: pointer;
-  font-size: 0.85rem;
-  transition: 0.15s ease;
+  white-space: nowrap;
 }
 
-.login-tab:hover {
-  background: #f3f4f6;
+/* フォーカスリング（キーボード操作用） */
+.login-tab:focus-visible {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
 }
 
+/* アンダーライン用 */
+.login-tab::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -0.55rem;
+  height: 2px;
+  background: transparent;
+}
+
+/* アクティブ状態 */
 .login-tab.is-active {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  color: #111827;             /* 濃い文字 */
+  font-weight: 600;
+}
+
+.login-tab.is-active::after {
+  background: #111827;        /* 下線を濃いグレーで */
 }
 
 /* ------------------------------------------------------
