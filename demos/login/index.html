@@ -15,7 +15,7 @@
 
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251116b">
-  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116b">
+  <link rel="stylesheet" href="/demos/login/styles.css?v=20251116c">
 
   <!--
     File: /demos/login/index.html
@@ -105,9 +105,16 @@
       >
         <h2 class="login-panel-title">① ログイン</h2>
         <p class="login-panel-desc">
-          Email とパスワードでログインする基本画面です。
+          メールアドレスとパスワードでログインする基本画面です。
         </p>
-        <form class="login-form" aria-label="ログインフォーム">
+
+        <!-- ログイン状態表示（共有） -->
+        <p class="login-status" data-login-status></p>
+
+        <!-- エラーメッセージ（ログイン用） -->
+        <p class="login-error" data-error-for="signin" aria-live="polite"></p>
+
+        <form class="login-form" aria-label="ログインフォーム" data-form="signin">
           <label class="login-field">
             <span>メールアドレス</span>
             <input type="email" name="email" autocomplete="email" placeholder="you@example.com">
@@ -121,11 +128,12 @@
             <span>この端末を記憶する（Remember me）</span>
           </label>
           <p class="login-hint">
-            セッション例：無操作 30 分で自動ログアウト。
+            セッション例：無操作 30 分で自動ログアウト。Remember me 有効時は、より長くログインを維持します（デモ）。
           </p>
           <button type="submit" class="btn btn-primary login-submit">ログイン</button>
           <p class="login-switch">
-            <button type="button" class="link-like" data-switch="forgot">パスワードを忘れた場合</button>
+            パスワードを忘れた場合 →
+            <button type="button" class="link-like" data-switch="forgot">パスワード再設定</button>
           </p>
         </form>
       </section>
@@ -141,11 +149,14 @@
       >
         <h2 class="login-panel-title">② 新規登録</h2>
         <p class="login-panel-desc">
-          Email とパスワードでアカウントを作成します。
+          メールアドレスとパスワードでアカウントを作成します。
         </p>
 
+        <!-- エラーメッセージ（新規登録用） -->
+        <p class="login-error" data-error-for="signup" aria-live="polite"></p>
+
         <!-- ② 本体 -->
-        <form class="login-form" aria-label="新規登録フォーム">
+        <form class="login-form" aria-label="新規登録フォーム" data-form="signup">
           <label class="login-field">
             <span>メールアドレス</span>
             <input type="email" name="email" autocomplete="email">
@@ -159,7 +170,7 @@
             <input type="password" name="passwordConfirm" autocomplete="new-password">
           </label>
 
-          <button type="button" class="btn btn-primary login-submit">
+          <button type="submit" class="btn btn-primary login-submit">
             認証コードを送信
           </button>
         </form>
@@ -176,7 +187,7 @@
               <input type="text" name="verifyCode" placeholder="123456">
             </label>
             <button type="submit" class="btn btn-primary login-submit">
-              アカウント作成
+              アカウント作成（ダミー）
             </button>
           </form>
         </section>
@@ -196,13 +207,16 @@
           メールでコードを受け取り、パスワードをリセットします。
         </p>
 
+        <!-- エラーメッセージ（再設定メール送信用） -->
+        <p class="login-error" data-error-for="forgot" aria-live="polite"></p>
+
         <!-- ③ 本体 -->
-        <form class="login-form" aria-label="再設定メール送信フォーム">
+        <form class="login-form" aria-label="再設定メール送信フォーム" data-form="forgot">
           <label class="login-field">
             <span>登録メールアドレス</span>
             <input type="email" name="email" autocomplete="email">
           </label>
-          <button type="button" class="btn login-submit">
+          <button type="submit" class="btn login-submit">
             認証コードを送信
           </button>
         </form>
@@ -213,7 +227,11 @@
           <p class="login-hint">
             コードと新しいパスワードを入力します。
           </p>
-          <form class="login-form" aria-label="パスワード再設定フォーム">
+
+          <!-- エラーメッセージ（パスワード再設定用） -->
+          <p class="login-error" data-error-for="reset" aria-live="polite"></p>
+
+          <form class="login-form" aria-label="パスワード再設定フォーム" data-form="reset">
             <label class="login-field">
               <span>認証コード</span>
               <input type="text" name="resetCode" placeholder="6 桁コード">
@@ -247,6 +265,12 @@
           パスワード変更やログアウトを行う画面です。
         </p>
 
+        <!-- ログイン状態表示（共有） -->
+        <p class="login-status" data-login-status></p>
+
+        <!-- エラーメッセージ（パスワード変更用） -->
+        <p class="login-error" data-error-for="change" aria-live="polite"></p>
+
         <div class="login-account-summary">
           <p><strong>プロフィール</strong></p>
           <p class="login-hint">
@@ -254,7 +278,7 @@
           </p>
         </div>
 
-        <form class="login-form" aria-label="パスワード変更フォーム">
+        <form class="login-form" aria-label="パスワード変更フォーム" data-form="change">
           <label class="login-field">
             <span>現在のパスワード</span>
             <input type="password" name="currentPassword" autocomplete="current-password">
@@ -270,15 +294,15 @@
 
         <div class="login-remember">
           <p class="login-hint">
-            このあたりで Remember me の状態を表示する想定です。
+            Remember me の状態や、長期セッションの扱いをここで説明する想定です（デモ）。
           </p>
         </div>
 
         <div class="login-account-actions">
-          <button type="button" class="btn btn-secondary">
+          <button type="button" class="btn btn-secondary js-go-devices">
             デバイス一覧へ
           </button>
-          <button type="button" class="btn btn-ghost">
+          <button type="button" class="btn btn-ghost js-logout">
             ログアウト
           </button>
         </div>
@@ -295,7 +319,7 @@
       >
         <h2 class="login-panel-title">⑤ デバイス</h2>
         <p class="login-panel-desc">
-          ログイン中のデバイスを確認し、ログアウトできます。
+          ログイン中のデバイスを確認し、ログアウトできます（デモ）。
         </p>
 
         <section class="login-subpanel">
@@ -316,14 +340,14 @@
                 <td>Chrome</td>
                 <td>Tokyo, JP</td>
                 <td>2025-11-16 12:34</td>
-                <td><button type="button" class="btn btn-ghost btn-xs">ログアウト</button></td>
+                <td><button type="button" class="btn btn-ghost btn-xs js-logout">ログアウト</button></td>
               </tr>
               <tr>
                 <td>iPhone / iOS</td>
                 <td>Safari</td>
                 <td>Tokyo, JP</td>
                 <td>2025-11-15 22:10</td>
-                <td><button type="button" class="btn btn-ghost btn-xs">ログアウト</button></td>
+                <td><button type="button" class="btn btn-ghost btn-xs js-logout">ログアウト</button></td>
               </tr>
             </tbody>
           </table>
@@ -341,7 +365,7 @@
         </section>
 
         <div class="login-device-actions">
-          <button type="button" class="btn btn-secondary">
+          <button type="button" class="btn btn-secondary js-logout">
             ほかのデバイスからすべてログアウト
           </button>
         </div>
@@ -353,6 +377,6 @@
   <div data-include="/partials/footer.html"></div>
 
   <script defer src="/assets/include.js"></script>
-  <script defer src="/demos/login/app.js?v=20251116a"></script>
+  <script defer src="/demos/login/app.js?v=20251116c"></script>
 </body>
 </html>
