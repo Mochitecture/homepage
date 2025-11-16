@@ -261,6 +261,12 @@ p {
 
 /* ===== Archive Card Pattern (.card-works) ===== */
 
+.archive-list{
+  display: flex;
+  flex-direction: column;
+  gap: 2rem; /* .card-works の margin-bottom があるので好みで */
+}
+
 .card-works {
   background: var(--card);
   border-radius: 14px;
