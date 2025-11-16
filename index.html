@@ -3,18 +3,33 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
   <title>Mochitecture</title>
   <meta name="google-site-verification" content="LGMzNbbrndhpUt9GR5nEttUkghj1fpaMt49vOCOxKFM">
   <meta name="description" content="言語設計 × UI × Web。３つを、ひとつの線でつなぐスタジオ。1行で伝わるメッセージ／ミニマルなUI／小さく出して磨くWeb表現。">
+
   <meta property="og:title" content="Mochitecture">
   <meta property="og:description" content="言語設計 × UI × Web。３つを、ひとつの線でつなぐスタジオ。1行で伝わるメッセージ／ミニマルなUI／小さく出して磨くWeb表現。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
+
   <link rel="canonical" href="https://homepage-virid-zeta.vercel.app/">
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+
+  <!--
+    Mochitecture / Top
+    Pattern:
+      - HTML: Static Page Pattern（1画面の紹介 + 主要導線）
+      - CSS : base.css のレイアウト + .card + .home-* 専用クラス
+      - JS  : /assets/include.js（header/footer 挿入 + nav.active）
+    Notes:
+      - サイト全体のエレベーターピッチを 1 画面に集約
+      - 主要導線は Archive / About / Contact に限定
+      - Hero カード内のレイアウトは .home-* クラスで管理
+  -->
 </head>
 <body>
   <div data-include="/partials/header.html"></div>
@@ -25,7 +40,7 @@
 
       <p>言語設計 × UI × Web。<br>３つを、ひとつの線でつなぐスタジオ。</p>
 
-      <ul style="margin:0 0 20px 20px; line-height:1.8;">
+      <ul class="home-lead-list">
         <li>1行で伝わるメッセージの設計</li>
         <li>ミニマルなUIのスケッチ</li>
         <li>小さく出して磨くWeb表現</li>
@@ -33,9 +48,9 @@
 
       <p>アイデアは、立ち上がった瞬間がいちばん強い。<br>だから “小さく出す” を前提に設計しています。</p>
 
-      <p style="opacity:.85;margin-top:8px">連絡は右上の <strong>Contact</strong> からどうぞ。</p>
+      <p class="home-note">連絡は右上の <strong>Contact</strong> からどうぞ。</p>
 
-      <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:28px;">
+      <div class="home-actions">
         <a href="/archive" class="button">Archive</a>
         <a href="/about" class="button">About</a>
       </div>
