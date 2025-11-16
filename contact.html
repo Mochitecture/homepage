@@ -4,36 +4,62 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Contact｜Mochitecture</title>
+
   <meta name="description" content="Mochitectureへのご連絡はこちら。">
-  <meta property="og:title" content="Mochitecture">
-  <meta property="og:description" content="抽象の言語化→UI→Web実装を最小で最速に。">
+  <meta property="og:title" content="Contact｜Mochitecture">
+  <meta property="og:description" content="抽象の言語化 → UI → Web実装 を“最小で最速”に届けるためのコンタクトページ。">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/contact">
   <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
   <meta name="twitter:card" content="summary">
+
   <link rel="icon" type="image/png" href="/mochitecture_icon.png">
-  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+  <link rel="stylesheet" href="/assets/base.css?v=20251116a">
 
   <!--
-    Mochitecture / Contact
+    File: contact.html
+    Role: Mochitecture の連絡窓口ページ（メール1本化）
     Pattern:
-      - HTML: Static Page Pattern（説明 + 1 CTA）
-      - CSS : base.css の .wrap + .btn
-      - JS  : /assets/include.js のみ
+      - P1: Layout Pattern（header/footer + .site-main.wrap）
+      - P5: Folder Pattern（本番ページ）
+      - P6: Comment Header Pattern（役割の明示）
+      - P10: New Page Template Pattern（文言のみ差し替え）
     Notes:
-      - 連絡経路はメールに一本化
-      - 機密情報はメールに直接書かない前提を明記
+      - 連絡手段はメールに一本化
+      - 機密情報はメールに書かず、必要に応じて別途手段で共有
   -->
 </head>
 <body>
+  <!-- 共通ヘッダー -->
   <div data-include="/partials/header.html"></div>
 
   <main class="site-main wrap">
-    <h1 class="page-title">Contact</h1>
-    <p>内容は可能な範囲でご記載ください。機密情報はメールでは送らず、必要に応じて別途手段をご案内します。</p>
-    <p><a class="btn btn-primary" href="mailto:mochitecure@gmail.com">メールを送る</a></p>
+    <section class="card page-contact">
+      <header class="page-head">
+        <h1 class="page-title">Contact</h1>
+        <p class="page-lead">
+          Mochitecture へのご連絡は、下記メールアドレスよりお願いします。
+        </p>
+      </header>
+
+      <section>
+        <p>
+          内容は分かる範囲だけで構いません。<br>
+          機密情報はメールに直接書かず、必要に応じて安全な手段をご案内します。
+        </p>
+
+        <p style="margin-top: 1.5rem;">
+          <a class="btn btn-primary"
+             href="mailto:mochitecure@gmail.com"
+             rel="noopener">
+            メールを送る
+          </a>
+        </p>
+      </section>
+    </section>
   </main>
 
+  <!-- 共通フッター -->
   <div data-include="/partials/footer.html"></div>
   <script src="/assets/include.js"></script>
 </body>
