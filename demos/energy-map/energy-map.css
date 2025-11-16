@@ -1,3 +1,13 @@
+/*
+  /demos/energy-map/energy-map.css
+  Pattern:
+    - Demo CSS Pattern（データビュー UI 向け）
+    - base.css のタイポ／カードをベースに、Energy Map 専用のレイアウトを追加
+  Notes:
+    - .em-* 名前空間の下にスタイルを閉じ込める
+    - SVG マップ／マーケットパネル／Data&License テーブルをコンポーネント単位で分離
+*/
+
 /* ===== Energy Map 専用スタイル ===== */
 
 .em-wrap{
