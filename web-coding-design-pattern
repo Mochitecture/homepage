@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Web Coding Design Pattern｜Mochitecture</title>
+  <meta name="description" content="Mochitecture のフロント実装を読みやすく・増やしやすくするためのコーディングデザインパターン集。">
+  <meta property="og:title" content="Web Coding Design Pattern｜Mochitecture">
+  <meta property="og:description" content="ディレクトリ構成・HTML/CSS/JS・命名規則などを 10 個のノードで整理した内部向けメモ。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://homepage-virid-zeta.vercel.app/web-coding-design-pattern">
+  <meta property="og:image" content="https://homepage-virid-zeta.vercel.app/mochitecture_icon.png">
+  <meta name="twitter:card" content="summary">
+  <link rel="icon" type="image/png" href="/mochitecture_icon.png">
+  <link rel="stylesheet" href="/assets/base.css?v=20251110a">
+
+  <!--
+    Mochitecture / Web Coding Design Pattern
+    Pattern:
+      - HTML: Document Pattern（見出し + 箇条書き）
+      - CSS : base.css の .wrap + .page-title + 標準タイポグラフィ
+      - JS  : /assets/include.js のみ
+    Notes:
+      - Pattern 1〜10 を「マインドマップのノード」のように並べる
+      - 詳細な実装例は各ファイルの先頭コメントやコード内に記述
+  -->
+</head>
+<body>
+  <div data-include="/partials/header.html"></div>
+
+  <main class="site-main wrap">
+    <h1 class="page-title">Web Coding Design Pattern</h1>
+    <p>Mochitecture のフロント実装を、読みやすく・増やしやすく・壊しにくくするための内部向けメモです。ここでは、今後の実装で共通して参照する 10 個のパターンをまとめています。</p>
+
+    <section>
+      <h2>Pattern 1：ディレクトリ構成のレイヤーリング</h2>
+      <ul>
+        <li><strong>目的：</strong> どこに何を置けばよいかを迷わないようにする。</li>
+        <li><strong>ルール：</strong> <code>/</code> にページ、<code>/assets</code> に共通資産、<code>/partials</code> に共通レイアウト、<code>/demos</code> に実験UIを配置。</li>
+        <li><strong>メモ：</strong> 将来 <code>/assets/components.css</code> や <code>/assets/utils.js</code> へ分割しても、このレイヤー構造は維持する。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 2：ページ種別ごとの HTML パターン</h2>
+      <ul>
+        <li><strong>Static Page Pattern：</strong> <code>index.html</code>, <code>about.html</code>, <code>contact.html</code> のような「1 画面 = 1 メッセージ」。</li>
+        <li><strong>Archive Pattern：</strong> <code>archive.html</code> のような「カード一覧」。1 カード = 1 スナップショット。</li>
+        <li><strong>Demo Pattern：</strong> <code>/demos/</code> 以下で UI 実験を行うページ。</li>
+        <li><strong>Document Pattern：</strong> 本ページのような仕様・ノート。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 3：ファイル先頭の「読み方コメント」</h2>
+      <ul>
+        <li><strong>目的：</strong> ファイルを開いた瞬間に「どういう役割のコードか」が分かるようにする。</li>
+        <li><strong>ルール：</strong> 各 HTML/JS ファイルの先頭に、「Pattern / CSS / JS / Notes」を 3〜6 行でコメントとして記載。</li>
+        <li><strong>メモ：</strong> コードが増えてもコメントだけ読めば概要を把握できる状態を保つ。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 4：HTML の構造とクラス命名</h2>
+      <ul>
+        <li><strong>目的：</strong> レイアウトと意味が混ざらないようにする。</li>
+        <li><strong>ルール：</strong> レイアウト系は <code>.wrap</code> / <code>.site-main</code> / <code>.card</code> / <code>.grid</code>、意味系は <code>.page-title</code> / <code>.lead</code> / <code>.tags</code> など、役割ベースで命名。</li>
+        <li><strong>メモ：</strong> BEM ほど厳密にはしないが、「読む人が迷わない単語」を優先する。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 5：CSS の分担（Base / Page / Demo）</h2>
+      <ul>
+        <li><strong>Base：</strong> <code>assets/base.css</code> にレイアウト・タイポ・共通コンポーネント（ボタン／タグ／カード）を定義。</li>
+        <li><strong>Page：</strong> ページ固有の調整は <code>.home-*</code> / <code>.calendar-page</code> など、ページ名を含むクラスで上書き。</li>
+        <li><strong>Demo：</strong> UI 実験でしか使わないスタイルは <code>/demos/.../*.css</code> へ。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 6：JavaScript の基本構造</h2>
+      <ul>
+        <li><strong>目的：</strong> ロジックが増えても追いやすくする。</li>
+        <li><strong>ルール：</strong> 「設定 → 状態 → DOM 参照 → ユーティリティ → 描画関数 → イベント登録 → 初期化」の順で並べる。</li>
+        <li><strong>メモ：</strong> 共通処理は将来 <code>utils.js</code> などに切り出せるよう、関数単位で分けて記述。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 7：命名規則（ID / クラス / 変数）</h2>
+      <ul>
+        <li><strong>Archive ID：</strong> <code>arch-YYYYMMDD-slug</code>。例：<code>arch-20251116-energy-map-00</code>。</li>
+        <li><strong>JS 変数：</strong> DOM は <code>$el</code> / <code>container</code>、状態は <code>state</code> / <code>events</code> など役割ベース。</li>
+        <li><strong>CSS クラス：</strong> 状態は <code>.is-active</code> / <code>.is-graph</code> など <code>is-*</code> で統一。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 8：partial とナビゲーション</h2>
+      <ul>
+        <li><strong>ヘッダー／フッター：</strong> <code>/partials/header.html</code>, <code>/partials/footer.html</code> を <code>data-include</code> で読み込み。</li>
+        <li><strong>nav.active：</strong> <code>include.js</code> 側で <code>location.pathname</code> を見て <code>.nav.active</code> を付与。</li>
+        <li><strong>メモ：</strong> ページ側ではヘッダーの中身を意識せず、常に <code>data-include</code> を書くだけにする。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 9：アクセシビリティとモード</h2>
+      <ul>
+        <li><strong>目的：</strong> 小さなサイトでも読みやすさを損なわない。</li>
+        <li><strong>ルール：</strong> HTML 要素はできるだけセマンティックなタグ（<code>main</code> / <code>header</code> / <code>footer</code> / <code>section</code> / <code>article</code> / <code>time</code>）を使う。</li>
+        <li><strong>メモ：</strong> <code>prefers-color-scheme</code> に対応したダークモードは <code>base.css</code> で一元管理。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Pattern 10：実験と本番の距離感</h2>
+      <ul>
+        <li><strong>目的：</strong> 気軽に実験しつつ、本体を壊さない。</li>
+        <li><strong>ルール：</strong> 新しい UI 実験はまず <code>/demos/xxx/</code> に置き、必要に応じて Archive にカードを追加する。</li>
+        <li><strong>メモ：</strong> デモから本体に昇格させるときは、このページのパターンを再確認してから移植する。</li>
+      </ul>
+    </section>
+
+  </main>
+
+  <div data-include="/partials/footer.html"></div>
+  <script src="/assets/include.js"></script>
+</body>
+</html>
