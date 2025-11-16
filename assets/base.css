@@ -156,3 +156,23 @@ p{ line-height:1.8; font-size:16px; margin:0 0 16px }
   margin:0 0 1rem;
   letter-spacing:.01em;
 }
+
+/* ===== Home (index.html) ===== */
+.home-lead-list{
+  margin:0 0 20px 20px;
+  padding:0;
+  line-height:1.8;
+}
+.home-lead-list li{
+  margin:0 0 4px;
+}
+.home-note{
+  opacity:.85;
+  margin-top:8px;
+}
+.home-actions{
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:28px;
+}
