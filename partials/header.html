@@ -1,15 +1,17 @@
 <!--
-  /partials/header.html
-  Role:
-    - サイト共通のブランドロゴ＋グローバルナビ
+  File: /partials/header.html
+  Role: サイト共通のヘッダー（ブランドロゴ + グローバルナビ）
+  Notes:
     - /assets/include.js から data-include で読み込まれる前提
+    - .nav.active は include.js で現在パスに応じて自動付与
 -->
-<header class="header">
+<header class="header" role="banner">
   <a href="/" class="brand">
-    <img class="logo" src="/mochitecture_icon.png" alt="logo">
+    <img class="logo" src="/mochitecture_icon.png" alt="Mochitecture icon">
     <span class="site-title">Mochitecture</span>
   </a>
-  <nav class="nav-wrap">
+
+  <nav class="nav-wrap" aria-label="Global navigation">
     <a href="/archive" class="nav">Archive</a>
     <a href="/about"   class="nav">About</a>
     <a href="/contact" class="nav">Contact</a>
