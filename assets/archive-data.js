@@ -97,7 +97,7 @@ const ARCHIVE_ITEMS = [
     tags: ['#Login', '#Auth', '#Security', '#UIFlow'],
     link: {
       href: '/demos/login/',
-      label: 'Login デモを開く'
+      label: 'Login を開く'
     }
   }
 ];
