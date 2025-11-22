@@ -95,7 +95,21 @@ body.sun-dome-page {
   fill: url(#sunDomeGradient);
   stroke: #e5e7eb;
   stroke-width: 1.5;
-  fill: rgba(59, 130, 246, 0.04);
+}
+
+/* 地平面（緑の楕円） */
+.sun-ground {
+  fill: rgba(16, 185, 129, 0.08);
+  stroke: #bbf7d0;
+  stroke-width: 1.2;
+}
+
+/* 子午線（南中を通る大円の一部） */
+.sun-meridian {
+  fill: none;
+  stroke: #e5e7eb;
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
 }
 
 .sun-path {
