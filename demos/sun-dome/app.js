@@ -47,7 +47,7 @@
   };
 
   // ------------------------------------------------------------
-  // 4. Utilities
+  // 4. Utilities（NOAAベースの太陽位置計算）
   // ------------------------------------------------------------
 
   const toRad = (deg) => (deg * Math.PI) / 180;
@@ -60,147 +60,328 @@
     return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
   }
 
-  function dayOfYear(date) {
-    const start = new Date(date.getFullYear(), 0, 0);
-    const diff =
-      date - start +
-      (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000;
-    return Math.floor(diff / (1000 * 60 * 60 * 24));
-  }
-
   /**
-   * 太陽赤緯の簡易近似（単純なサインカーブモデル）
-   * δ ≈ 23.45° * sin(360° * (284 + n) / 365)
+   * ユリウス日（Julian Day）
+   * dateUtc: UTC基準のDate
    */
-  function solarDeclinationDeg(date) {
-    const n = dayOfYear(date);
-    const gamma = (2 * Math.PI * (n - 1)) / 365; // 0〜2π
-    const decl =
-      (180 / Math.PI) *
-      (0.006918 -
-        0.399912 * Math.cos(gamma) +
-        0.070257 * Math.sin(gamma) -
-        0.006758 * Math.cos(2 * gamma) +
-        0.000907 * Math.sin(2 * gamma) -
-        0.002697 * Math.cos(3 * gamma) +
-        0.00148 * Math.sin(3 * gamma));
-    return decl;
-  }
+  function calcJulianDay(dateUtc) {
+    let year = dateUtc.getUTCFullYear();
+    let month = dateUtc.getUTCMonth() + 1; // 1-12
+    const day =
+      dateUtc.getUTCDate() +
+      (dateUtc.getUTCHours() +
+        dateUtc.getUTCMinutes() / 60 +
+        dateUtc.getUTCSeconds() / 3600) /
+        24;
 
-  /**
-   * 簡易的な太陽高度・方位角計算
-   * - ローカル時刻を「太陽時」と近似（経度や均時差は無視）
-   * - 方位角は南を基準として東西に展開（デモ用途）
-   */
-  function computeSolarPosition(latDeg, lonDeg, date) {
-    const lat = toRad(latDeg);
-    const declDeg = solarDeclinationDeg(date);
-    const decl = toRad(declDeg);
-
-    // ローカル時刻（0〜24h）
-    const hours = date.getHours() + date.getMinutes() / 60 + date.getSeconds() / 3600;
-
-    // 太陽時と近似し、12時を南中
-    const hourAngleDeg = (hours - 12) * 15; // 1h = 15°
-    const H = toRad(hourAngleDeg);
-
-    // 太陽高度
-    const sinH = Math.sin(lat) * Math.sin(decl) + Math.cos(lat) * Math.cos(decl) * Math.cos(H);
-    const elevationRad = Math.asin(sinH);
-    const elevationDeg = toDeg(elevationRad);
-
-    // 太陽方位角（南基準）
-    // cosA = (sinδ − sinh·sinφ) / (cosh·cosφ)
-    let azimuthDeg;
-    const cosAz =
-      (Math.sin(decl) - Math.sin(elevationRad) * Math.sin(lat)) /
-      (Math.cos(elevationRad) * Math.cos(lat));
-
-    // 数値誤差のクリップ
-    const cosAzClamped = Math.max(-1, Math.min(1, cosAz));
-    let az = Math.acos(cosAzClamped); // 0〜π
-
-    // H の符号で東西を判定
-    if (H > 0) {
-      // 午後 → 西側
-      az = Math.PI + (Math.PI - az);
-    } else {
-      // 午前 → 東側
-      az = Math.PI - az;
+    if (month <= 2) {
+      year -= 1;
+      month += 12;
     }
 
-    // 結果を 0〜360° に
-    azimuthDeg = (toDeg(az) + 360) % 360;
+    const A = Math.floor(year / 100);
+    const B = 2 - A + Math.floor(A / 25);
+
+    const JD =
+      Math.floor(365.25 * (year + 4716)) +
+      Math.floor(30.6001 * (month + 1)) +
+      day +
+      B -
+      1524.5;
+
+    return JD;
+  }
+
+  function calcJulianCentury(JD) {
+    return (JD - 2451545.0) / 36525.0;
+  }
+
+  function geomMeanLongSun(T) {
+    const L0 = 280.46646 + T * (36000.76983 + 0.0003032 * T);
+    return ((L0 % 360) + 360) % 360;
+  }
+
+  function geomMeanAnomSun(T) {
+    return 357.52911 + T * (35999.05029 - 0.0001537 * T);
+  }
+
+  function eccEarthOrbit(T) {
+    return 0.016708634 - T * (0.000042037 + 0.0000001267 * T);
+  }
+
+  function sunEqOfCenter(T, Mdeg) {
+    const Mrad = toRad(Mdeg);
+    return (
+      Math.sin(Mrad) * (1.914602 - T * (0.004817 + 0.000014 * T)) +
+      Math.sin(2 * Mrad) * (0.019993 - 0.000101 * T) +
+      Math.sin(3 * Mrad) * 0.000289
+    );
+  }
+
+  function sunTrueLong(L0deg, Cdeg) {
+    return L0deg + Cdeg;
+  }
+
+  function sunAppLong(T, trueLongDeg) {
+    const omega = 125.04 - 1934.136 * T;
+    return (
+      trueLongDeg -
+      0.00569 -
+      0.00478 * Math.sin(toRad(omega))
+    );
+  }
+
+  function meanObliqEcliptic(T) {
+    const seconds =
+      21.448 -
+      T * (46.815 + T * (0.00059 - 0.001813 * T));
+    return 23 + (26 + seconds / 60) / 60;
+  }
+
+  function obliqCorr(T, e0deg) {
+    const omega = 125.04 - 1934.136 * T;
+    return e0deg + 0.00256 * Math.cos(toRad(omega));
+  }
+
+  function sunDeclination(epsDeg, lambdaDeg) {
+    return toDeg(
+      Math.asin(
+        Math.sin(toRad(epsDeg)) * Math.sin(toRad(lambdaDeg))
+      )
+    );
+  }
+
+  /**
+   * 均時差 Equation of Time [分]
+   */
+  function eqOfTimeMinutes(T, epsDeg, L0deg, Mdeg, ecc) {
+    const eps = toRad(epsDeg);
+    const L0 = toRad(L0deg);
+    const M = toRad(Mdeg);
+
+    const y = Math.tan(eps / 2) ** 2;
+
+    const Etime =
+      y * Math.sin(2 * L0) -
+      2 * ecc * Math.sin(M) +
+      4 * ecc * y * Math.sin(M) * Math.cos(2 * L0) -
+      0.5 * y * y * Math.sin(4 * L0) -
+      1.25 * ecc * ecc * Math.sin(2 * M);
+
+    // radians → 分
+    return toDeg(Etime) * 4;
+  }
+
+  /**
+   * 太陽高度・方位角（NOAAアルゴリズム）
+   * - latDeg, lonDeg: 緯度・経度（東経＋）
+   * - date: ローカル時刻の Date
+   */
+  function computeSolarPosition(latDeg, lonDeg, date) {
+    // JS の getTimezoneOffset(): local → UTC に足す分（分単位）
+    const tzOffsetMin = date.getTimezoneOffset(); // 例: JST = -540
+    const timezoneHours = -tzOffsetMin / 60;
+
+    // UTC 日時
+    const dateUtc = new Date(
+      date.getTime() + tzOffsetMin * 60 * 1000
+    );
+
+    const JD = calcJulianDay(dateUtc);
+    const T = calcJulianCentury(JD);
+    const L0 = geomMeanLongSun(T);
+    const M = geomMeanAnomSun(T);
+    const ecc = eccEarthOrbit(T);
+    const C = sunEqOfCenter(T, M);
+    const trueLong = sunTrueLong(L0, C);
+    const lambdaApp = sunAppLong(T, trueLong);
+    const e0 = meanObliqEcliptic(T);
+    const eps = obliqCorr(T, e0);
+    const decl = sunDeclination(eps, lambdaApp);
+    const eot = eqOfTimeMinutes(T, eps, L0, M, ecc); // 分
+
+    const minutesLocal =
+      date.getHours() * 60 +
+      date.getMinutes() +
+      date.getSeconds() / 60;
+
+    // Time offset (NOAA)
+    const timeOffset =
+      eot + 4 * lonDeg - 60 * timezoneHours;
+
+    // 真太陽時 [分]
+    const tst = (minutesLocal + timeOffset + 1440) % 1440;
+
+    // 時角 [度]
+    let hourAngleDeg;
+    if (tst / 4 < 0) {
+      hourAngleDeg = tst / 4 + 180;
+    } else {
+      hourAngleDeg = tst / 4 - 180;
+    }
+
+    const haRad = toRad(hourAngleDeg);
+    const latRad = toRad(latDeg);
+    const declRad = toRad(decl);
+
+    const cosZenith =
+      Math.sin(latRad) * Math.sin(declRad) +
+      Math.cos(latRad) *
+        Math.cos(declRad) *
+        Math.cos(haRad);
+    const cosZClamped = Math.max(-1, Math.min(1, cosZenith));
+    const zenithDeg = toDeg(Math.acos(cosZClamped));
+    const elevationDeg = 90 - zenithDeg;
+
+    // 大気差による簡易補正
+    let refraction = 0;
+    if (elevationDeg <= 85) {
+      const te = Math.tan(toRad(elevationDeg));
+      if (elevationDeg > 5) {
+        refraction =
+          58.1 / te -
+          0.07 / (te ** 3) +
+          0.000086 / (te ** 5);
+      } else if (elevationDeg > -0.575) {
+        refraction =
+          1735 +
+          elevationDeg *
+            (-518.2 +
+              elevationDeg *
+                (103.4 +
+                  elevationDeg *
+                    (-12.79 + elevationDeg * 0.711)));
+      } else {
+        refraction = -20.774 / te;
+      }
+      refraction /= 3600; // 秒 → 度
+    }
+
+    const elevationCorr = elevationDeg + refraction;
+
+    // 方位角（0° = 北, 時計回り）
+    const zenithRad = toRad(zenithDeg);
+    const azRad = Math.acos(
+      (Math.sin(latRad) * Math.cos(zenithRad) -
+        Math.sin(declRad)) /
+        (Math.cos(latRad) * Math.sin(zenithRad))
+    );
+
+    let azDeg;
+    if (hourAngleDeg > 0) {
+      azDeg = (toDeg(azRad) + 180) % 360;
+    } else {
+      azDeg = (540 - toDeg(azRad)) % 360;
+    }
 
     return {
-      elevationDeg,
-      azimuthDeg,
-      declinationDeg: declDeg,
-      hourAngleDeg
+      elevationDeg: elevationCorr,
+      azimuthDeg: azDeg,
+      declinationDeg: decl,
+      hourAngleDeg,
+      eqTimeMinutes: eot
     };
   }
 
   /**
-   * 日の出・日の入り時刻（簡易）
-   * - cosH0 = -tanφ·tanδ から時角 H0 を求める
-   * - H0 を ± に振り、12時±のローカル時刻とみなす
+   * 日の出・日の入り（NOAAアルゴリズム準拠）
+   * Date はローカル日付。戻り値はローカル Date。
    */
   function computeSunriseSunset(latDeg, lonDeg, date) {
-    const lat = toRad(latDeg);
-    const declDeg = solarDeclinationDeg(date);
-    const decl = toRad(declDeg);
-
-    const cosH0 = -Math.tan(lat) * Math.tan(decl);
-
-    if (cosH0 < -1 || cosH0 > 1) {
-      // 終日昇っている or 終日沈んでいる
-      return { sunrise: null, sunset: null };
-    }
-
-    const H0 = Math.acos(cosH0); // ラジアン
-    const H0deg = toDeg(H0);
-
-    const day = new Date(
+    // ローカル正午を基準にEqTimeと赤緯を計算
+    const noonLocal = new Date(
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
-      0,
+      12,
       0,
       0,
       0
     );
+    const tzOffsetMin = noonLocal.getTimezoneOffset();
+    const timezoneHours = -tzOffsetMin / 60;
 
-    const tSolarNoon = 12; // 簡易：ローカル12時が南中
-    const deltaHours = H0deg / 15; // 15° = 1h
+    const noonUtc = new Date(
+      noonLocal.getTime() + tzOffsetMin * 60 * 1000
+    );
 
-    const sunriseHours = tSolarNoon - deltaHours;
-    const sunsetHours = tSolarNoon + deltaHours;
+    const JD = calcJulianDay(noonUtc);
+    const T = calcJulianCentury(JD);
+    const L0 = geomMeanLongSun(T);
+    const M = geomMeanAnomSun(T);
+    const ecc = eccEarthOrbit(T);
+    const C = sunEqOfCenter(T, M);
+    const trueLong = sunTrueLong(L0, C);
+    const lambdaApp = sunAppLong(T, trueLong);
+    const e0 = meanObliqEcliptic(T);
+    const eps = obliqCorr(T, e0);
+    const decl = sunDeclination(eps, lambdaApp);
+    const eot = eqOfTimeMinutes(T, eps, L0, M, ecc);
 
-    const sunrise = new Date(day.getTime() + sunriseHours * 3600 * 1000);
-    const sunset = new Date(day.getTime() + sunsetHours * 3600 * 1000);
+    const latRad = toRad(latDeg);
+    const declRad = toRad(decl);
 
-    return { sunrise, sunset };
+    // 90.833°: 地平線 + 太陽半径 + 大気差
+    const zenithDeg = 90.833;
+    const cosH =
+      (Math.cos(toRad(zenithDeg)) /
+        (Math.cos(latRad) * Math.cos(declRad))) -
+      Math.tan(latRad) * Math.tan(declRad);
+
+    if (cosH > 1 || cosH < -1) {
+      // 終日昇っている or 終日沈んでいる
+      return { sunrise: null, sunset: null };
+    }
+
+    const Hdeg = toDeg(Math.acos(cosH));
+
+    // Solar noon [分]
+    const solarNoonMin =
+      720 - 4 * lonDeg - eot + 60 * timezoneHours;
+
+    const sunriseMin = solarNoonMin - 4 * Hdeg;
+    const sunsetMin = solarNoonMin + 4 * Hdeg;
+
+    function minutesToDate(baseDate, minutes) {
+      let h = Math.floor(minutes / 60);
+      let m = Math.round(minutes % 60);
+      if (m === 60) {
+        h += 1;
+        m = 0;
+      }
+      return new Date(
+        baseDate.getFullYear(),
+        baseDate.getMonth(),
+        baseDate.getDate(),
+        h % 24,
+        m,
+        0,
+        0
+      );
+    }
+
+    return {
+      sunrise: minutesToDate(date, sunriseMin),
+      sunset: minutesToDate(date, sunsetMin)
+    };
   }
 
   /**
-   * 半球ドーム上の座標へ変換
-   * - altitude: 0〜90°
-   * - azimuth: 0〜360° （南基準／前面）
-   * ここでは：
-   *   - 南 = 上（頂点）方向
-   *   - 東西で左右に振る
+   * 半球ドームへの射影
+   * - elevationDeg: 太陽高度
+   * - azimuthDeg: 方位角（0°=北, 時計回り）
+   *   → 南=180° を上方向とみなして配置
    */
   function projectToDome(elevationDeg, azimuthDeg) {
     const { cx, cy, r } = CONFIG.dome;
 
-    const elev = Math.max(-5, Math.min(90, elevationDeg)); // 少しだけ下も許容
+    const elev = Math.max(-5, Math.min(90, elevationDeg));
     const altRad = toRad(elev);
 
-    // 南基準に変換（南=0°）
+    // 南を0°とした角度に変換
     const azFromSouthDeg = (azimuthDeg - 180 + 360) % 360;
     const az = toRad(azFromSouthDeg);
 
-    // 簡易投影：高さは alt、水平は cos(alt) * sin/cos(az)
     const horizontalRadius = r * Math.cos(altRad);
     const x = cx + horizontalRadius * Math.sin(az);
     const y = cy - r * Math.sin(altRad);
@@ -209,8 +390,7 @@
   }
 
   /**
-   * 日の出〜日の入りの軌道を SVG Path で描く
-   * - N=32程度のサンプル
+   * 日の出〜日の入りの軌道を SVG Path で生成
    */
   function buildSunPath(latDeg, lonDeg, date, sunrise, sunset) {
     if (!sunrise || !sunset) return '';
@@ -218,15 +398,16 @@
     const N = 32;
     const parts = [];
 
-    for (let i = 0; i <= N; i++) {
+    for (let i = 0; i <= N; i += 1) {
       const t =
         sunrise.getTime() +
         ((sunset.getTime() - sunrise.getTime()) * i) / N;
       const d = new Date(t);
-
       const pos = computeSolarPosition(latDeg, lonDeg, d);
-      const { x, y } = projectToDome(pos.elevationDeg, pos.azimuthDeg);
-
+      const { x, y } = projectToDome(
+        pos.elevationDeg,
+        pos.azimuthDeg
+      );
       const cmd = i === 0 ? 'M' : 'L';
       parts.push(`${cmd} ${x.toFixed(2)} ${y.toFixed(2)}`);
     }
@@ -239,7 +420,6 @@
   // ------------------------------------------------------------
 
   function renderNow(date = new Date()) {
-    // 時刻
     dom.localTime.textContent = formatTime(date);
 
     if (state.lat == null || state.lon == null) {
@@ -254,10 +434,9 @@
       return;
     }
 
-    // 位置
-    dom.location.textContent = `${state.lat.toFixed(4)}°, ${state.lon.toFixed(
+    dom.location.textContent = `${state.lat.toFixed(
       4
-    )}°`;
+    )}°, ${state.lon.toFixed(4)}°`;
 
     // 太陽位置
     const pos = computeSolarPosition(state.lat, state.lon, date);
@@ -271,12 +450,14 @@
     const ss = computeSunriseSunset(state.lat, state.lon, date);
     state.sunrise = ss.sunrise;
     state.sunset = ss.sunset;
-
     dom.sunrise.textContent = formatTime(ss.sunrise);
     dom.sunset.textContent = formatTime(ss.sunset);
 
     // ドーム上の現在位置
-    const dotPos = projectToDome(pos.elevationDeg, pos.azimuthDeg);
+    const dotPos = projectToDome(
+      pos.elevationDeg,
+      pos.azimuthDeg
+    );
     dom.sunDot.setAttribute('cx', dotPos.x.toFixed(2));
     dom.sunDot.setAttribute('cy', dotPos.y.toFixed(2));
 
@@ -291,7 +472,7 @@
     dom.sunPath.setAttribute('d', path);
 
     dom.message.textContent =
-      '※ 計算は簡易モデルのため、数分〜十数分程度の誤差があります。';
+      '※ NOAA アルゴリズムに基づく近似値のため、数分〜十数分程度の誤差があります。';
   }
 
   // ------------------------------------------------------------
@@ -308,7 +489,8 @@
 
   function requestLocation() {
     if (!navigator.geolocation) {
-      state.lastError = 'このブラウザでは位置情報 API を利用できません。';
+      state.lastError =
+        'このブラウザでは位置情報 API を利用できません。';
       renderNow();
       return;
     }
@@ -342,16 +524,13 @@
   function init() {
     setupEvents();
     renderNow();
-
-    // 初回位置情報取得
     requestLocation();
 
-    // 1分ごとに再描画（時刻と太陽位置の更新）
+    // 1分ごとに時刻＆太陽位置を更新
     setInterval(() => {
       renderNow();
     }, CONFIG.refreshIntervalMs);
   }
 
-  // DOM 解析後に開始（defer指定なのでそのまま）
   init();
 })();
