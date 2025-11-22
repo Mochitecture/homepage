@@ -1,7 +1,6 @@
 /**
  * /demos/sun-dome/app.js
- * Sun API を叩いて NOW スナップショットを更新するだけの軽量版。
- * グラフ本体の描画は次フェーズで追加する。
+ * NOW スナップショットだけ更新する版（グラフは次ステップ）。
  */
 (() => {
   const API_BASE = 'https://mochitecture-sun-api.onrender.com';
@@ -17,9 +16,6 @@
 
   const dom = {
     metaText: document.getElementById('sun-meta-text'),
-    location: document.getElementById('sun-location'),
-    date: document.getElementById('sun-date'),
-    time: document.getElementById('sun-time'),
     elev: document.getElementById('sun-elevation'),
     az: document.getElementById('sun-azimuth'),
     sunrise: document.getElementById('sun-sunrise'),
@@ -49,7 +45,7 @@
     const timeStr = formatTime(now);
     dom.metaText.textContent =
       `${dateStr} ${timeStr} 現在 ｜ ` +
-      `${state.lat.toFixed(4)}°, ${state.lon.toFixed(4)}°`;
+      `緯度 ${state.lat.toFixed(4)}°, 経度 ${state.lon.toFixed(4)}°`;
   }
 
   // -----------------------------
@@ -78,23 +74,20 @@
 
   async function renderNow() {
     const now = new Date();
-
-    dom.date.textContent = formatDate(now);
-    dom.time.textContent = formatTime(now);
     updateMeta(now);
 
     if (state.lat == null || state.lon == null) {
-      dom.location.textContent = '--, --';
+      dom.elev.textContent = '-- °';
+      dom.az.textContent = '-- °';
+      dom.sunrise.textContent = '--:--';
+      dom.sunset.textContent = '--:--';
       dom.message.textContent =
         'ブラウザの位置情報許可をオンにすると、現在地ベースで太陽位置を取得します。';
       return;
     }
 
-    dom.location.textContent =
-      `${state.lat.toFixed(4)}°, ${state.lon.toFixed(4)}°`;
-
     try {
-      // 太陽位置
+      // 太陽位置（太陽高度角・太陽方位角）
       const sun = await apiSun(state.lat, state.lon, now);
       dom.elev.textContent = `${sun.elevation.toFixed(1)} °`;
       dom.az.textContent = `${sun.azimuth.toFixed(1)} °`;
@@ -108,7 +101,7 @@
       dom.sunset.textContent = formatTime(sunset);
 
       dom.message.textContent =
-        'Sun API から取得した近似値です。天文観測などの正確な用途には使わないでください。';
+        'Sun API から取得した太陽高度角・太陽方位角と日の出／日の入の近似値を表示しています。';
     } catch (e) {
       console.error(e);
       dom.message.textContent = 'Sun API からの取得に失敗しました。';
@@ -156,7 +149,7 @@
 
   function init() {
     requestLocation();
-    renderNow(); // 初期描画（位置情報取得前でもメタだけ更新）
+    renderNow(); // 初期描画（位置取得前でも NOW 行だけ更新）
 
     setInterval(() => {
       renderNow();
