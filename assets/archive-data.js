@@ -100,4 +100,25 @@ const ARCHIVE_ITEMS = [
       label: 'Login を開く'
     }
   }
+  // ここから Local Sun Dome
+  {
+  id: 'arch-20251122-sun-dome',
+  category: 'Visualization Demo',
+  title: 'Local Sun Dome',
+  date: '2025-11-22',
+  duration: 'Plan',
+  status: '構想 v0',
+  lead: 'ユーザーの現在地とローカル時刻から太陽高度・方位角と日の出／日の入りを算出し、半球状のドーム内に「今の太陽位置」と1日の軌道を描く可視化デモ。',
+  points: {
+    before: '太陽高度や方位角は計算式としては扱えるが、数値だけでは「今この場所で太陽がどこにあるか」を直感的に掴みにくかった。',
+    how: 'ブラウザの Geolocation API でユーザーの緯度・経度を取得し、現在のローカル時刻と組み合わせて太陽高度・方位角と日の出／日の入り時刻を計算。SVGまたはCanvasで半球ドームを描き、内側に太陽の軌道と現在位置のマーカーを表示する。',
+    after: '「今この場所で、太陽はどこにいるか？」を一目で把握できるようになり、時間帯と空の関係を感覚的に捉えやすくなる。将来的にはPV設置方位や影のかかり方のイメージ補助など、エネルギー系の可視化にも応用できそう。'
+  },
+  tags: ['#SunPath', '#Geolocation', '#Visualization', '#Energy', '#JavaScript'],
+  link: {
+    href: '/demos/sun-dome/',
+    label: 'Local Sun Dome を開く'
+  }
+}
+
 ];
