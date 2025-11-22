@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Local Sun Dome | Mochitecture Demos</title>
-  <meta name="description" content="現在地とローカル時刻から、太陽の高度・方位角と日の出／日の入りを半球ドームに描くデモ。">
+  <meta name="description" content="現在地とローカル時刻から、太陽高度・方位角と日の出／日の入りを24時間グラフで眺めるデモ。">
   <link rel="icon" href="/mochitecture_icon.png">
   <link rel="stylesheet" href="/assets/base.css">
   <link rel="stylesheet" href="/demos/sun-dome/styles.css">
@@ -19,91 +19,20 @@
       <header class="sun-header">
         <h1 class="sun-title">Local Sun Dome</h1>
         <p class="sun-subtitle">
-          現在地とローカル時刻から、太陽の位置と日の出／日の入りを半球ドームに描く軽量デモ。
+          現在地とローカル時刻から、太陽の位置と日の出／日の入りを24時間グラフで眺めるミニデモ。
         </p>
       </header>
 
       <section class="sun-layout">
-        <!-- 左：ビジュアル -->
-        <div class="sun-visual-panel">
-          <div class="sun-visual-card">
-            <h2 class="sun-section-title">Sun Dome</h2>
-            <div class="sun-visual-wrapper">
-              <svg
-                class="sun-dome-svg"
-                viewBox="0 0 200 130"
-                role="img"
-                aria-label="太陽の位置を表す天球ドーム"
-              >
-                <defs>
-                  <radialGradient id="sunDomeGradient" cx="50%" cy="100%" r="100%">
-                    <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.9" />
-                    <stop offset="60%" stop-color="#bfdbfe" stop-opacity="0.45" />
-                    <stop offset="100%" stop-color="#eff6ff" stop-opacity="0" />
-                  </radialGradient>
-                </defs>
-
-                <!-- 地平面（楕円） -->
-                <ellipse
-                  cx="100"
-                  cy="112"
-                  rx="90"
-                  ry="20"
-                  class="sun-ground"
-                ></ellipse>
-
-                <!-- 地平線 -->
-                <line
-                  x1="10" y1="110"
-                  x2="190" y2="110"
-                  class="sun-horizon"
-                ></line>
-
-                <!-- 半球（天球ドーム） -->
-                <path
-                  d="M 10 110 A 90 90 0 0 1 190 110"
-                  class="sun-dome-arc"
-                ></path>
-
-                <!-- 子午線（南中を通る大円の一部） -->
-                <path
-                  d="M 100 20 A 90 90 0 0 0 100 110"
-                  class="sun-meridian"
-                ></path>
-
-                <!-- 太陽の軌道（1日のパス） -->
-                <path
-                  class="sun-path"
-                  id="sunPath"
-                  d=""
-                ></path>
-
-                <!-- 現在の太陽位置 -->
-                <circle
-                  id="sunDot"
-                  class="sun-dot"
-                  cx="100"
-                  cy="60"
-                  r="4"
-                ></circle>
-
-                <!-- ラベル -->
-                <text x="10" y="120" class="sun-label">東</text>
-                <text x="190" y="120" class="sun-label sun-label-right">西</text>
-                <text x="100" y="20" class="sun-label">南の空</text>
-              </svg>
-            </div>
-
-            <p class="sun-note">
-              ※ 太陽位置はバックエンドの SPA ベース API から取得した近似値です。実際の天文用途には利用しないでください。
-            </p>
-          </div>
-        </div>
-
-        <!-- 右：情報パネル -->
+        <!-- 左：現在の情報 -->
         <div class="sun-info-panel">
           <div class="sun-info-card">
-            <h2 class="sun-section-title">現在の状態</h2>
+            <div class="sun-info-header">
+              <h2 class="sun-section-title">NOW</h2>
+              <p class="sun-info-caption" id="sunInfoCaption">
+                位置情報を取得すると、この場所の太陽位置を表示します。
+              </p>
+            </div>
 
             <div class="sun-row">
               <div class="sun-field">
@@ -112,14 +41,11 @@
               </div>
             </div>
 
-            <div class="sun-row">
+            <div class="sun-row sun-row-inline">
               <div class="sun-field">
                 <span class="sun-label-key">日付</span>
                 <span class="sun-label-val" id="sunLocalDate">--------</span>
               </div>
-            </div>
-
-            <div class="sun-row">
               <div class="sun-field">
                 <span class="sun-label-key">ローカル時刻</span>
                 <span class="sun-label-val" id="sunLocalTime">--:--</span>
@@ -133,7 +59,10 @@
               </div>
               <div class="sun-field">
                 <span class="sun-label-key">太陽方位角</span>
-                <span class="sun-label-val" id="sunAzimuth">-- °</span>
+                <span class="sun-label-val">
+                  <span id="sunAzimuth">-- °</span>
+                  <span class="sun-az-dir" id="sunAzimuthDir"></span>
+                </span>
               </div>
               <div class="sun-field">
                 <span class="sun-label-key">日の出</span>
@@ -158,8 +87,59 @@
             <h2 class="sun-section-title">About this demo</h2>
             <p class="sun-meta-text">
               ブラウザの Geolocation API で取得した緯度・経度とローカル時刻を、独立した Sun API
-              （SPA ベースの太陽位置計算）に送り、返ってきた太陽高度・方位角と日の出／日の入りを
-              半球ドームにプロットしています。エネルギーや日射のイメージ補助としての「ざっくり感」を重視したデモです。
+              （SPA ベースの太陽位置計算）に送り、返ってきた太陽高度・方位角と日の出／日の入り時刻を
+              24時間グラフとして描画しています。エネルギーや日射のイメージ補助のためのライトな可視化です。
+            </p>
+            <p class="sun-meta-text sun-meta-note">
+              ※ 実際の天文用途には利用しないでください。数分程度の誤差を含む近似値です。
+            </p>
+          </div>
+        </div>
+
+        <!-- 右：24時間グラフ -->
+        <div class="sun-chart-panel">
+          <div class="sun-chart-card">
+            <div class="sun-chart-header">
+              <h2 class="sun-section-title">24時間の太陽軌道</h2>
+              <div class="sun-chart-legend">
+                <span class="sun-legend-dot sun-legend-elev"></span>
+                <span class="sun-legend-label">太陽高度 (°)</span>
+                <span class="sun-legend-dot sun-legend-az"></span>
+                <span class="sun-legend-label">太陽方位角 (°)</span>
+              </div>
+            </div>
+
+            <div class="sun-chart-wrapper">
+              <svg
+                id="sunChart"
+                class="sun-chart-svg"
+                viewBox="0 0 420 200"
+                role="img"
+                aria-label="24時間の太陽高度・方位角グラフ"
+              >
+                <!-- 軸は JS 側で描画 -->
+              </svg>
+              <div class="sun-tooltip" id="sunTooltip" hidden>
+                <div class="sun-tooltip-time" id="sunTooltipTime"></div>
+                <div class="sun-tooltip-row">
+                  <span class="sun-tooltip-mark sun-tooltip-mark-elev"></span>
+                  <span>高度</span>
+                  <span class="sun-tooltip-val" id="sunTooltipElev"></span>
+                </div>
+                <div class="sun-tooltip-row">
+                  <span class="sun-tooltip-mark sun-tooltip-mark-az"></span>
+                  <span>方位</span>
+                  <span class="sun-tooltip-val" id="sunTooltipAz"></span>
+                </div>
+                <div class="sun-tooltip-row sun-tooltip-dir-row">
+                  <span>方角</span>
+                  <span class="sun-tooltip-val" id="sunTooltipDir"></span>
+                </div>
+              </div>
+            </div>
+
+            <p class="sun-note">
+              グラフは 1 分刻みのデータを使用しています。線の形状とおおよその時間帯を見るためのラフな表示です。
             </p>
           </div>
         </div>
