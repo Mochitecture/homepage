@@ -33,8 +33,25 @@
                 class="sun-dome-svg"
                 viewBox="0 0 200 130"
                 role="img"
-                aria-label="太陽の位置を表す半球ドーム"
+                aria-label="太陽の位置を表す天球ドーム"
               >
+                <defs>
+                  <radialGradient id="sunDomeGradient" cx="50%" cy="100%" r="100%">
+                    <stop offset="0%" stop-color="#e0f2fe" stop-opacity="0.9" />
+                    <stop offset="60%" stop-color="#bfdbfe" stop-opacity="0.45" />
+                    <stop offset="100%" stop-color="#eff6ff" stop-opacity="0" />
+                  </radialGradient>
+                </defs>
+
+                <!-- 地平面（楕円） -->
+                <ellipse
+                  cx="100"
+                  cy="112"
+                  rx="90"
+                  ry="20"
+                  class="sun-ground"
+                ></ellipse>
+
                 <!-- 地平線 -->
                 <line
                   x1="10" y1="110"
@@ -42,10 +59,16 @@
                   class="sun-horizon"
                 ></line>
 
-                <!-- 半球（ドーム） -->
+                <!-- 半球（天球ドーム） -->
                 <path
                   d="M 10 110 A 90 90 0 0 1 190 110"
                   class="sun-dome-arc"
+                ></path>
+
+                <!-- 子午線（南中を通る大円の一部） -->
+                <path
+                  d="M 100 20 A 90 90 0 0 0 100 110"
+                  class="sun-meridian"
                 ></path>
 
                 <!-- 太陽の軌道（1日のパス） -->
@@ -72,7 +95,7 @@
             </div>
 
             <p class="sun-note">
-              ※ 計算は簡易モデルに基づく近似値です。実際の天文用途には利用しないでください。
+              ※ 太陽位置はバックエンドの SPA ベース API から取得した近似値です。実際の天文用途には利用しないでください。
             </p>
           </div>
         </div>
@@ -92,7 +115,7 @@
             <div class="sun-row">
               <div class="sun-field">
                 <span class="sun-label-key">日付</span>
-                <span class="sun-label-val" id="sunLocalDate">----/--/--</span>
+                <span class="sun-label-val" id="sunLocalDate">--------</span>
               </div>
             </div>
 
@@ -134,7 +157,9 @@
           <div class="sun-info-card sun-meta-card">
             <h2 class="sun-section-title">About this demo</h2>
             <p class="sun-meta-text">
-              ブラウザの Geolocation API で取得した緯度・経度とローカル時刻から、太陽高度・方位角と日の出／日の入りを近似計算し、半球ドームにプロットしています。エネルギーや日射のイメージ補助としての「ざっくり感」を重視したデモです。
+              ブラウザの Geolocation API で取得した緯度・経度とローカル時刻を、独立した Sun API
+              （SPA ベースの太陽位置計算）に送り、返ってきた太陽高度・方位角と日の出／日の入りを
+              半球ドームにプロットしています。エネルギーや日射のイメージ補助としての「ざっくり感」を重視したデモです。
             </p>
           </div>
         </div>
