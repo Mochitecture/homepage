@@ -16,21 +16,46 @@
   };
 
   const dom = {
-    location: document.getElementById("sunLocation"),
-    localTime: document.getElementById("sunLocalTime"),
-    elevation: document.getElementById("sunElevation"),
-    azimuth: document.getElementById("sunAzimuth"),
-    sunrise: document.getElementById("sunSunrise"),
-    sunset: document.getElementById("sunSunset"),
-    message: document.getElementById("sunMessage"),
-    refreshBtn: document.getElementById("sunRefreshBtn"),
-    sunDot: document.getElementById("sunDot"),
-    sunPath: document.getElementById("sunPath")
+    location: document.getElementById('sunLocation'),
+    localTime: document.getElementById('sunLocalTime'),
+    localDate: document.getElementById('sunLocalDate'), // ★追加
+    elevation: document.getElementById('sunElevation'),
+    azimuth: document.getElementById('sunAzimuth'),
+    sunrise: document.getElementById('sunSunrise'),
+    sunset: document.getElementById('sunSunset'),
+    message: document.getElementById('sunMessage'),
+    refreshBtn: document.getElementById('sunRefreshBtn'),
+    sunDot: document.getElementById('sunDot'),
+    sunPath: document.getElementById('sunPath')
   };
 
-  const pad2 = (n) => String(n).padStart(2, "0");
-  const formatTime = (d) =>
-    d ? `${pad2(d.getHours())}:${pad2(d.getMinutes())}` : "--:--";
+  const pad2 = (n) => String(n).padStart(2, '0');
+  
+  function formatTime(date) {
+    if (!date) return '--:--';
+    return `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+  }
+  
+  function formatDate(date) {
+    if (!date) return '----/--/--';
+    return `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+  }
+  
+  // 16 方位に丸めて日本語の方角にする
+  function azimuthToDirection(azDeg) {
+    if (azDeg == null || isNaN(azDeg)) return '--';
+  
+    const dirs = [
+      '北', '北北東', '北東', '東北東',
+      '東', '東南東', '南東', '南南東',
+      '南', '南南西', '南西', '西南西',
+      '西', '西北西', '北西', '北北西'
+    ];
+  
+    const normalized = ((azDeg % 360) + 360) % 360;
+    const index = Math.round(normalized / 22.5) % 16;
+    return dirs[index];
+  }
 
   // -----------------------------
   // API CALLS
