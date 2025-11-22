@@ -37,12 +37,11 @@
   padding:16px 20px 14px;
 }
 
-/* About カードだけ少しマージン多めに */
 .sun-about{
   margin-top:4px;
 }
 
-/* ===== Card header / META（Energy Map と統一） ===== */
+/* ===== Card header / META ===== */
 
 .sun-card-header{
   display:flex;
@@ -75,7 +74,7 @@
   opacity:.8;
 }
 
-/* ===== NOW Snapshot（Energy Map の snapshot-grid 互換） ===== */
+/* ===== NOW Snapshot ===== */
 
 .sun-snapshot-grid{
   display:flex;
@@ -166,7 +165,8 @@
   line-height:1.7;
 }
 
-/* ダークモード微調整（Energy Map に寄せる） */
+/* ダークモード微調整 */
+
 @media (prefers-color-scheme: dark){
   .sun-chart-body{
     background:rgba(15,23,42,.6);
