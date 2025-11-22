@@ -287,84 +287,62 @@
    * 日の出・日の入り（NOAAアルゴリズム準拠）
    * Date はローカル日付。戻り値はローカル Date。
    */
+    /**
+   * 日の出・日の入り（数値探索版）
+   * - その日の 0:00〜24:00 を stepMin 分刻みで走査し、
+   *   太陽高度が altThreshold をまたぐタイミングを線形補間で求める。
+   * - altThreshold = -0.833° は「地平線 + 太陽半径 + 大気差」に相当。
+   * - 戻り値はローカル時刻の Date。
+   */
   function computeSunriseSunset(latDeg, lonDeg, date) {
-    // ローカル正午を基準にEqTimeと赤緯を計算
-    const noonLocal = new Date(
+    const altThreshold = -0.833; // °（調整したければここをいじる）
+    const stepMin = 1;           // 探索ステップ（1分刻み）
+
+    const dayStart = new Date(
       date.getFullYear(),
       date.getMonth(),
       date.getDate(),
-      12,
-      0,
-      0,
-      0
-    );
-    const tzOffsetMin = noonLocal.getTimezoneOffset();
-    const timezoneHours = -tzOffsetMin / 60;
-
-    const noonUtc = new Date(
-      noonLocal.getTime() + tzOffsetMin * 60 * 1000
+      0, 0, 0, 0
     );
 
-    const JD = calcJulianDay(noonUtc);
-    const T = calcJulianCentury(JD);
-    const L0 = geomMeanLongSun(T);
-    const M = geomMeanAnomSun(T);
-    const ecc = eccEarthOrbit(T);
-    const C = sunEqOfCenter(T, M);
-    const trueLong = sunTrueLong(L0, C);
-    const lambdaApp = sunAppLong(T, trueLong);
-    const e0 = meanObliqEcliptic(T);
-    const eps = obliqCorr(T, e0);
-    const decl = sunDeclination(eps, lambdaApp);
-    const eot = eqOfTimeMinutes(T, eps, L0, M, ecc);
+    const minutesPerDay = 24 * 60;
+    let sunrise = null;
+    let sunset = null;
 
-    const latRad = toRad(latDeg);
-    const declRad = toRad(decl);
+    let prevAlt = null;
+    let prevTime = null;
 
-    // 90.833°: 地平線 + 太陽半径 + 大気差
-    const zenithDeg = 90.833;
-    const cosH =
-      (Math.cos(toRad(zenithDeg)) /
-        (Math.cos(latRad) * Math.cos(declRad))) -
-      Math.tan(latRad) * Math.tan(declRad);
-
-    if (cosH > 1 || cosH < -1) {
-      // 終日昇っている or 終日沈んでいる
-      return { sunrise: null, sunset: null };
-    }
-
-    const Hdeg = toDeg(Math.acos(cosH));
-
-    // Solar noon [分]
-    const solarNoonMin =
-      720 - 4 * lonDeg - eot + 60 * timezoneHours;
-
-    const sunriseMin = solarNoonMin - 4 * Hdeg;
-    const sunsetMin = solarNoonMin + 4 * Hdeg;
-
-    function minutesToDate(baseDate, minutes) {
-      let h = Math.floor(minutes / 60);
-      let m = Math.round(minutes % 60);
-      if (m === 60) {
-        h += 1;
-        m = 0;
-      }
-      return new Date(
-        baseDate.getFullYear(),
-        baseDate.getMonth(),
-        baseDate.getDate(),
-        h % 24,
-        m,
-        0,
-        0
-      );
-    }
-
-    return {
-      sunrise: minutesToDate(date, sunriseMin),
-      sunset: minutesToDate(date, sunsetMin)
+    // 線形補間で「高度 = altThreshold」になる時刻を求める
+    const interpolateTime = (t1, a1, t2, a2, targetAlt) => {
+      if (a2 === a1) return t1;
+      const ratio = (targetAlt - a1) / (a2 - a1);
+      const t = t1.getTime() + (t2.getTime() - t1.getTime()) * ratio;
+      return new Date(t);
     };
+
+    for (let m = 0; m <= minutesPerDay; m += stepMin) {
+      const t = new Date(dayStart.getTime() + m * 60 * 1000);
+      const pos = computeSolarPosition(latDeg, lonDeg, t);
+      const alt = pos.elevationDeg;
+
+      if (prevAlt !== null) {
+        // 夜（閾値未満）→ 昼（閾値以上）に切り替わる点 = 日の出
+        if (prevAlt < altThreshold && alt >= altThreshold && !sunrise) {
+          sunrise = interpolateTime(prevTime, prevAlt, t, alt, altThreshold);
+        }
+        // 昼（閾値以上）→ 夜（閾値未満）に切り替わる点 = 日の入り
+        if (prevAlt >= altThreshold && alt < altThreshold) {
+          sunset = interpolateTime(prevTime, prevAlt, t, alt, altThreshold);
+        }
+      }
+
+      prevAlt = alt;
+      prevTime = t;
+    }
+
+    return { sunrise, sunset };
   }
+
 
   /**
    * 半球ドームへの射影
