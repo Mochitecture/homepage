@@ -32,9 +32,10 @@ body.sun-dome-page {
   color: var(--color-muted, #6b7280);
 }
 
+/* Energy Map っぽい 2カラム構成 */
 .sun-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.4fr);
   gap: 1.75rem;
 }
 
@@ -45,18 +46,18 @@ body.sun-dome-page {
 }
 
 /* ------------------------------------------------------
-   Cards
+   Card base
 ------------------------------------------------------ */
 
-.sun-visual-panel,
-.sun-info-panel {
+.sun-info-panel,
+.sun-chart-panel {
   display: flex;
   flex-direction: column;
   gap: 1.25rem;
 }
 
-.sun-visual-card,
-.sun-info-card {
+.sun-info-card,
+.sun-chart-card {
   background: #ffffff;
   border-radius: 1rem;
   box-shadow: var(--shadow-soft, 0 8px 24px rgba(15, 23, 42, 0.06));
@@ -66,88 +67,35 @@ body.sun-dome-page {
 .sun-section-title {
   font-size: 0.95rem;
   font-weight: 600;
-  margin-bottom: 0.75rem;
+  margin-bottom: 0.5rem;
   color: #111827;
 }
 
 /* ------------------------------------------------------
-   Visual
+   Info Panel
 ------------------------------------------------------ */
 
-.sun-visual-wrapper {
-  width: 100%;
-  max-width: 420px;
-  margin: 0 auto;
+.sun-info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
 }
 
-.sun-dome-svg {
-  width: 100%;
-  height: auto;
-  display: block;
-}
-
-.sun-horizon {
-  stroke: #e5e7eb;
-  stroke-width: 1.5;
-}
-
-.sun-dome-arc {
-  fill: url(#sunDomeGradient);
-  stroke: #e5e7eb;
-  stroke-width: 1.5;
-}
-
-/* 地平面（緑の楕円） */
-.sun-ground {
-  fill: rgba(16, 185, 129, 0.08);
-  stroke: #bbf7d0;
-  stroke-width: 1.2;
-}
-
-/* 子午線（南中を通る大円の一部） */
-.sun-meridian {
-  fill: none;
-  stroke: #e5e7eb;
-  stroke-width: 1;
-  stroke-dasharray: 4 3;
-}
-
-.sun-path {
-  fill: none;
-  stroke: #3b82f6;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-dasharray: 4 3;
-}
-
-.sun-dot {
-  fill: #f59e0b;
-  stroke: #fbbf24;
-  stroke-width: 1.5;
-}
-
-.sun-label {
-  font-size: 9px;
-  fill: #6b7280;
-  text-anchor: start;
-}
-
-.sun-label-right {
-  text-anchor: end;
-}
-
-.sun-note {
-  margin-top: 0.75rem;
+.sun-info-caption {
   font-size: 0.8rem;
   color: #9ca3af;
 }
 
-/* ------------------------------------------------------
-   Info fields
------------------------------------------------------- */
-
 .sun-row {
   margin-bottom: 0.5rem;
+}
+
+.sun-row-inline {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
 }
 
 .sun-grid {
@@ -174,6 +122,12 @@ body.sun-dome-page {
   color: #111827;
 }
 
+.sun-az-dir {
+  margin-left: 0.35rem;
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
 .sun-actions {
   margin-top: 1rem;
 }
@@ -182,8 +136,7 @@ body.sun-dome-page {
   font-size: 0.9rem;
 }
 
-/* 共通ボタンが base.css にある前提だが、
-   念のため最低限のフォールバックも用意 */
+/* 共通ボタンが base.css にある前提だがフォールバックも用意 */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -216,4 +169,157 @@ body.sun-dome-page {
 .sun-meta-text {
   color: #4b5563;
   line-height: 1.6;
+}
+
+.sun-meta-note {
+  margin-top: 0.5rem;
+  font-size: 0.78rem;
+  color: #9ca3af;
+}
+
+/* ------------------------------------------------------
+   Chart
+------------------------------------------------------ */
+
+.sun-chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.sun-chart-legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  color: #4b5563;
+}
+
+.sun-legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.sun-legend-elev {
+  background: #3b82f6;
+}
+
+.sun-legend-az {
+  background: #f97316;
+}
+
+.sun-legend-label + .sun-legend-dot {
+  margin-left: 0.8rem;
+}
+
+.sun-chart-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 520px;
+  margin: 0.35rem auto 0;
+}
+
+.sun-chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* 軸・グリッド線のデフォルト色（JS 側で使う） */
+.sun-chart-axis {
+  stroke: #d1d5db;
+  stroke-width: 1;
+}
+
+.sun-chart-grid {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+.sun-chart-line-elev {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+}
+
+.sun-chart-line-az {
+  fill: none;
+  stroke: #f97316;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+  stroke-dasharray: 4 3;
+}
+
+.sun-chart-cursor {
+  stroke: #9ca3af;
+  stroke-width: 1;
+  stroke-dasharray: 2 2;
+}
+
+/* ------------------------------------------------------
+   Tooltip
+------------------------------------------------------ */
+
+.sun-tooltip {
+  position: absolute;
+  min-width: 140px;
+  padding: 0.4rem 0.55rem;
+  border-radius: 0.5rem;
+  background: rgba(17, 24, 39, 0.96);
+  color: #f9fafb;
+  font-size: 0.78rem;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.35);
+  pointer-events: none;
+  transform: translate(-50%, -110%);
+  z-index: 10;
+}
+
+.sun-tooltip-time {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.sun-tooltip-row {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.sun-tooltip-row + .sun-tooltip-row {
+  margin-top: 0.1rem;
+}
+
+.sun-tooltip-mark {
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  display: inline-block;
+}
+
+.sun-tooltip-mark-elev {
+  background: #3b82f6;
+}
+
+.sun-tooltip-mark-az {
+  background: #f97316;
+}
+
+.sun-tooltip-val {
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.sun-tooltip-dir-row {
+  margin-top: 0.15rem;
+}
+
+.sun-note {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
 }
