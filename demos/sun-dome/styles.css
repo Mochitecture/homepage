@@ -1,0 +1,205 @@
+/*
+  File: /demos/sun-dome/styles.css
+  Pattern: Demo CSS Pattern
+  Scope: .sun-* 名前空間 / body.sun-dome-page
+*/
+
+/* ------------------------------------------------------
+   Layout
+------------------------------------------------------ */
+
+body.sun-dome-page {
+  background: var(--color-surface, #f7f7fb);
+}
+
+.sun-dome-wrap {
+  padding-top: 2.5rem;
+  padding-bottom: 3rem;
+}
+
+.sun-header {
+  margin-bottom: 2rem;
+}
+
+.sun-title {
+  font-size: 1.6rem;
+  line-height: 1.3;
+  margin-bottom: 0.35rem;
+}
+
+.sun-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-muted, #6b7280);
+}
+
+.sun-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  gap: 1.75rem;
+}
+
+@media (max-width: 960px) {
+  .sun-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ------------------------------------------------------
+   Cards
+------------------------------------------------------ */
+
+.sun-visual-panel,
+.sun-info-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.sun-visual-card,
+.sun-info-card {
+  background: #ffffff;
+  border-radius: 1rem;
+  box-shadow: var(--shadow-soft, 0 8px 24px rgba(15, 23, 42, 0.06));
+  padding: 1.25rem 1.4rem;
+}
+
+.sun-section-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  color: #111827;
+}
+
+/* ------------------------------------------------------
+   Visual
+------------------------------------------------------ */
+
+.sun-visual-wrapper {
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.sun-dome-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.sun-horizon {
+  stroke: #e5e7eb;
+  stroke-width: 1.5;
+}
+
+.sun-dome-arc {
+  fill: url(#sunDomeGradient);
+  stroke: #e5e7eb;
+  stroke-width: 1.5;
+  fill: rgba(59, 130, 246, 0.04);
+}
+
+.sun-path {
+  fill: none;
+  stroke: #3b82f6;
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-dasharray: 4 3;
+}
+
+.sun-dot {
+  fill: #f59e0b;
+  stroke: #fbbf24;
+  stroke-width: 1.5;
+}
+
+.sun-label {
+  font-size: 9px;
+  fill: #6b7280;
+  text-anchor: start;
+}
+
+.sun-label-right {
+  text-anchor: end;
+}
+
+.sun-note {
+  margin-top: 0.75rem;
+  font-size: 0.8rem;
+  color: #9ca3af;
+}
+
+/* ------------------------------------------------------
+   Info fields
+------------------------------------------------------ */
+
+.sun-row {
+  margin-bottom: 0.5rem;
+}
+
+.sun-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.5rem 1rem;
+  margin-top: 0.75rem;
+}
+
+.sun-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.sun-label-key {
+  font-size: 0.78rem;
+  color: #6b7280;
+}
+
+.sun-label-val {
+  font-size: 0.95rem;
+  font-variant-numeric: tabular-nums;
+  color: #111827;
+}
+
+.sun-actions {
+  margin-top: 1rem;
+}
+
+.sun-actions .btn {
+  font-size: 0.9rem;
+}
+
+/* 共通ボタンが base.css にある前提だが、
+   念のため最低限のフォールバックも用意 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: none;
+  background: #111827;
+  color: #ffffff;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+.sun-message {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* About card */
+
+.sun-meta-card {
+  font-size: 0.85rem;
+}
+
+.sun-meta-text {
+  color: #4b5563;
+  line-height: 1.6;
+}
