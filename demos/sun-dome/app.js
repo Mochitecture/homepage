@@ -125,10 +125,10 @@
 
   function renderSunChart(now) {
     if (!dom.chart) return;
-
+  
     const container = dom.chart;
     const sunpath = state.sunpath;
-
+  
     if (!sunpath || !sunpath.points || sunpath.points.length === 0) {
       container.innerHTML = `
         <p class="sun-chart-placeholder">
@@ -137,66 +137,64 @@
       `;
       return;
     }
-
+  
     const points = sunpath.points;
-
+  
     // Chart dimensions
     const width = 800;
     const height = 220;
     const margin = { top: 16, right: 40, bottom: 26, left: 32 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
-
+  
     // Elevation range（0° ラインが必ず入るように）
     let minElev = Math.min(...points.map(p => p.elevation));
     let maxElev = Math.max(...points.map(p => p.elevation));
-
-    minElev = Math.min(minElev, -5); // 少し下に余裕
-    maxElev = Math.max(maxElev, 10); // 少し上に余裕
+  
+    minElev = Math.min(minElev, -5);
+    maxElev = Math.max(maxElev, 10);
     const elevRange = maxElev - minElev || 1;
-
+  
     const azToX = (az) =>
       margin.left + (az / 360) * innerWidth;
     const elevToY = (e) =>
       margin.top + (1 - (e - minElev) / elevRange) * innerHeight;
-
-    // 画面座標付きのポイント
+  
+    // 画面座標付きポイント
     const screenPoints = points.map((p) => {
       const x = azToX(p.azimuth);
       const y = elevToY(p.elevation);
       return { ...p, x, y };
     });
     state.sunpath.screenPoints = screenPoints;
-
-    // Path string（方位角×高度角の軌道）
-    let dPath = '';
-    screenPoints.forEach((p, i) => {
-      dPath += (i === 0 ? 'M' : 'L') + p.x + ',' + p.y;
-    });
-
-    // 現在時刻に最も近い点
+  
+    // 現在時刻に最も近い点（赤い点用）
     const minutesNow =
       now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
     const nearestNow = findNearestByMinutes(screenPoints, minutesNow);
     const nowDot = nearestNow
       ? `<circle class="sun-chart-now-dot" cx="${nearestNow.x}" cy="${nearestNow.y}" r="3" />`
       : '';
-
-    // X軸（方位角 0,90,180,270,360）
+  
+    // X軸（方位角）
     const azTicks = [0, 90, 180, 270, 360];
-
-    // Y軸（高度角 0° ラインを強調）
+  
+    // Y軸（高度角）: 0° ラインを太めで表示
     const yTicks = [];
     const tickCount = 4;
     for (let i = 0; i <= tickCount; i++) {
       const v = minElev + (elevRange * i) / tickCount;
       yTicks.push(v);
     }
-
+  
+    const svgPoints = screenPoints
+      .map(p => `<circle class="sun-chart-point" cx="${p.x}" cy="${p.y}" r="2.2" />`)
+      .join('');
+  
     const svg = `
       <svg viewBox="0 0 ${width} ${height}" class="sun-chart-svg" aria-hidden="true">
         <rect x="0" y="0" width="${width}" height="${height}" fill="none" />
-
+  
         <!-- グリッド: 横（高度角） -->
         <g>
           ${yTicks
@@ -215,7 +213,7 @@
             })
             .join('')}
         </g>
-
+  
         <!-- グリッド: 縦（方位角） -->
         <g>
           ${azTicks
@@ -233,22 +231,24 @@
             })
             .join('')}
         </g>
-
-        <!-- 太陽軌道ライン -->
-        <path class="sun-chart-line-elev" d="${dPath}" />
-
-        <!-- 現在時刻の点 -->
+  
+        <!-- 太陽位置のポイント群 -->
+        <g>
+          ${svgPoints}
+        </g>
+  
+        <!-- 現在時刻の位置 -->
         ${nowDot}
       </svg>
     `;
-
+  
     const captionText = nearestNow
       ? `現在時刻 ${formatTimeFromMinutes(nearestNow.minutes)} ｜ 高度角 ${nearestNow.elevation.toFixed(1)}° ／ 方位角 ${nearestNow.azimuth.toFixed(1)}°`
       : '現在時刻の位置を赤い点で表示しています。';
-
+  
     const caption = `
       <div class="sun-chart-legend">
-        <span><span class="sun-legend-dot sun-legend-dot--elev"></span>太陽軌道（横軸：太陽方位角／縦軸：太陽高度角）</span>
+        <span><span class="sun-legend-dot sun-legend-dot--elev"></span>太陽軌道（横軸：太陽方位角／縦軸：太陽高度角の散布図）</span>
         <span>赤い点：現在時刻の位置</span>
       </div>
       <p class="sun-chart-caption">
@@ -256,45 +256,44 @@
       </p>
       <div class="sun-chart-tooltip" id="sun-chart-tooltip"></div>
     `;
-
+  
     container.innerHTML = svg + caption;
-
-    // Tooltip 用イベント
+  
+    // Tooltip イベント
     const svgEl = container.querySelector('svg');
     const tooltipEl = container.querySelector('#sun-chart-tooltip');
-
     if (!svgEl || !tooltipEl) return;
-
+  
     function handleMove(evt) {
       const rectSvg = svgEl.getBoundingClientRect();
       const mouseX = evt.clientX - rectSvg.left;
       const mouseY = evt.clientY - rectSvg.top;
-
+  
       const sp = state.sunpath && state.sunpath.screenPoints;
       if (!sp || sp.length === 0) return;
-
+  
       const nearest = findNearestByScreen(sp, mouseX, mouseY);
       if (!nearest) return;
-
+  
       tooltipEl.textContent =
         `${formatTimeFromMinutes(nearest.minutes)} ｜ 高度角 ${nearest.elevation.toFixed(1)}° ／ 方位角 ${nearest.azimuth.toFixed(1)}°`;
-
+  
       const rectContainer = container.getBoundingClientRect();
       const globalX = rectSvg.left + nearest.x;
       const globalY = rectSvg.top + nearest.y;
-
+  
       const relX = globalX - rectContainer.left;
       const relY = globalY - rectContainer.top;
-
+  
       tooltipEl.style.left = `${relX}px`;
       tooltipEl.style.top = `${relY}px`;
       tooltipEl.style.opacity = '1';
     }
-
+  
     function handleLeave() {
       tooltipEl.style.opacity = '0';
     }
-
+  
     svgEl.addEventListener('mousemove', handleMove);
     svgEl.addEventListener('mouseleave', handleLeave);
   }
