@@ -7,7 +7,7 @@
 
   const CONFIG = {
     refreshIntervalMs: 60 * 1000,
-    sunpathStepMinutes: 5
+    sunpathStepMinutes: 1   // ★ ここを 1 に
   };
 
   const state = {
