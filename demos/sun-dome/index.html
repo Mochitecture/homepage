@@ -68,19 +68,19 @@
             <p class="sun-meta">
               <span class="sun-meta-badge">CHART</span>
               <span class="sun-meta-text">
-                24時間の太陽軌道（5分刻みの太陽高度角・太陽方位角）
+                24時間の太陽軌道（方位角 × 高度角）
               </span>
             </p>
           </header>
-
+        
           <div class="sun-chart-body" id="sun-chart">
             <p class="sun-chart-placeholder">
-              位置情報が許可されると、ここに 00:00〜24:00 の太陽高度角・太陽方位角をプロットしたグラフが表示されます。
+              位置情報が許可されると、ここに 24時間分の太陽軌道（横軸：太陽方位角、縦軸：太陽高度角）が表示されます。
             </p>
           </div>
-
+        
           <p class="sun-chart-note">
-            ※ 太陽高度角は左軸、太陽方位角は 0–360° を縦方向にマッピングした参考ラインとして表示しています。
+            ※ 横軸が太陽方位角（0°＝北方向、90°＝東、180°＝南、270°＝西）、縦軸が太陽高度角です。0°のラインが地平線に相当します。
           </p>
         </section>
 
