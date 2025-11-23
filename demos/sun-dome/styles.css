@@ -188,10 +188,11 @@
   fill:#6b7280;
 }
 
-.sun-chart-line-elev{
-  fill:none;
-  stroke:#10b981;           /* 太陽軌道ライン */
-  stroke-width:2;
+/* 太陽位置の点（散布図） */
+
+.sun-chart-point{
+  fill:#10b981;
+  opacity:.85;
 }
 
 /* 現在時刻の点 */
@@ -200,7 +201,6 @@
   fill:#ef4444;
   stroke:#ffffff;
   stroke-width:1.3;
-  r:3;
 }
 
 /* 凡例・キャプション */
