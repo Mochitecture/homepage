@@ -142,8 +142,13 @@
   border:1px dashed #d1d5db;
   padding:12px 14px;
   background:rgba(249,250,251,.85);
-  min-height:160px;
+  min-height:200px;
   font-size:.85rem;
+  position:relative;
+}
+
+.sun-chart-body.sun-chart-loading{
+  opacity:.7;
 }
 
 .sun-chart-placeholder{
@@ -155,6 +160,90 @@
   margin-top:6px;
   font-size:.75rem;
   opacity:.75;
+}
+
+/* SVG */
+
+.sun-chart-svg{
+  width:100%;
+  height:auto;
+  display:block;
+}
+
+/* ライン・軸・グリッド */
+
+.sun-chart-grid-line{
+  stroke:#e5e7eb;
+  stroke-width:1;
+}
+
+.sun-chart-grid-line--bold{
+  stroke:#d1d5db;
+}
+
+.sun-chart-axis-text{
+  font-size:9px;
+  fill:#6b7280;
+}
+
+.sun-chart-line-elev{
+  fill:none;
+  stroke:#10b981;           /* 高度角ライン（緑） */
+  stroke-width:2;
+}
+
+.sun-chart-line-az{
+  fill:none;
+  stroke:#6366f1;           /* 方位角ライン（青系） */
+  stroke-width:1.4;
+  stroke-dasharray:4 3;
+  opacity:.85;
+}
+
+.sun-chart-now-line{
+  stroke:#ef4444;           /* NOW 縦線（赤） */
+  stroke-width:1.2;
+  stroke-dasharray:2 2;
+  opacity:.9;
+}
+
+/* 凡例・キャプション */
+
+.sun-chart-legend{
+  margin-top:6px;
+  font-size:.75rem;
+  opacity:.85;
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.sun-chart-legend span{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+}
+
+.sun-legend-dot{
+  width:14px;
+  height:3px;
+  border-radius:999px;
+  display:inline-block;
+}
+
+.sun-legend-dot--elev{
+  background:#10b981;
+}
+
+.sun-legend-dot--az{
+  background:#6366f1;
+}
+
+.sun-chart-caption{
+  margin-top:4px;
+  font-size:.75rem;
+  opacity:.85;
+  font-variant-numeric:tabular-nums;
 }
 
 /* ===== About ===== */
@@ -174,7 +263,18 @@
   }
   .sun-chart-placeholder,
   .sun-chart-note,
-  .sun-about-text{
+  .sun-about-text,
+  .sun-chart-legend,
+  .sun-chart-caption{
     color:#e5e7eb;
+  }
+  .sun-chart-grid-line{
+    stroke:#1f2937;
+  }
+  .sun-chart-grid-line--bold{
+    stroke:#4b5563;
+  }
+  .sun-chart-axis-text{
+    fill:#9ca3af;
   }
 }
